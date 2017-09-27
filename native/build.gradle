@@ -1,0 +1,48 @@
+group 'ktnat'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.1.50'
+
+    repositories {
+        mavenCentral()
+        maven {
+            url  "https://dl.bintray.com/jetbrains/kotlin-native-dependencies"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:0.3.2"
+    }
+}
+
+apply plugin: 'konan'
+
+repositories {
+    mavenCentral()
+}
+
+konanInterop {
+    cairo {
+        defFile project.file('src/interop/cairo.def')
+        includeDirs "c:/bin/msys64/mingw64/include/cairo"
+        linkerOpts "-Lc:/bin/msys64/mingw64/lib -lcairo -lpixman-1"
+//        includeDirs "/usr/include/cairo"
+//        linkerOpts "-L/usr/lib/x86_64-linux-gnu -lcairo -lpixman-1"
+    }
+
+    sdl {
+        defFile project.file('src/interop/sdl.def')
+        includeDirs "c:/bin/msys64/mingw64/include/SDL2"
+//        includeDirs '/usr/include/SDL2'
+        linkerOpts '-Lc:/bin/msys64/mingw64/lib -lSDL2'
+//        target 'linux'
+    }
+}
+
+konanArtifacts {
+    Hello {
+        inputFiles project.fileTree('src')
+        useInterop 'cairo'
+        useInterop 'sdl'
+    }
+}

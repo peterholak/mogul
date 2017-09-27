@@ -1,0 +1,43 @@
+group 'rkg'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.1.50'
+    ext.jna_version = '4.2.2'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+mainClassName = "rkg.MainKt"
+applicationDefaultJvmArgs = ["-Djava.library.path=" + projectDir.absolutePath + "/native-libs/dll"]
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.18"
+    compile group: 'net.java.dev.jna', name: 'jna', version: "$jna_version"
+    compile group: 'net.java.dev.jna', name: 'jna-platform', version: "$jna_version"
+}
+
+sourceSets {
+    main.java.srcDirs += "src"
+    main.java.srcDirs += "native-libs"
+}
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
