@@ -1,6 +1,7 @@
 package demo
 
 import engine.runKogulEngine
+import engine.testScene
 import kotlinx.coroutines.experimental.runBlocking
 import react.ShallowRenderer
 import react.WorldComponent

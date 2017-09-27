@@ -1,44 +1,15 @@
 package drawing
 
+import engine.Color
+import engine.setSourceRgb
 import sdl2cairo.*
 import sdl2cairo.cairo.*
 import sdl2cairo.SDL2.*
 
 fun l_(o: Any) = (o.javaClass.getMethod("swigValue").invoke(o) as Int).toLong()
 
-class Cairo(val cairo: SWIGTYPE_p__cairo) {
-    fun setSourceRgb(r: Number, g: Number, b: Number) = cairo_set_source_rgb(cairo, r.toDouble(), g.toDouble(), b.toDouble())
-    fun moveTo(x: Number, y: Number) = cairo_move_to(cairo, x.toDouble(), y.toDouble())
-    fun lineTo(x: Number, y: Number) = cairo_line_to(cairo, x.toDouble(), y.toDouble())
-    fun stroke() = cairo_stroke(cairo)
-    fun translate(x: Number, y: Number) = cairo_translate(cairo, x.toDouble(), y.toDouble())
-    fun identityMatrix() = cairo_identity_matrix(cairo)
-    fun save() = cairo_save(cairo)
-    fun restore() = cairo_restore(cairo)
-    fun fill() = cairo_fill(cairo)
-    fun selectFontFace(family: String, slant: FontSlant = FontSlant.Normal, weight: FontWeight = FontWeight.Normal) =
-            cairo_select_font_face(cairo, family, slant.value, weight.value)
-    fun setFontSize(size: Number) = cairo_set_font_size(cairo, size.toDouble())
-    fun showText(utf8: String) = cairo_show_text(cairo, utf8)
-    fun textExtents(utf8: String): cairo_text_extents_t {
-        val extents = cairo_text_extents_t()
-        cairo_text_extents(cairo, utf8, extents)
-        return extents
-    }
 
-    enum class FontSlant(val value: cairo_font_slant_t) {
-        Normal(cairo_font_slant_t.CAIRO_FONT_SLANT_NORMAL),
-        Italic(cairo_font_slant_t.CAIRO_FONT_SLANT_ITALIC),
-        Oblique(cairo_font_slant_t.CAIRO_FONT_SLANT_OBLIQUE)
-    }
-
-    enum class FontWeight(val value: cairo_font_weight_t) {
-        Normal(cairo_font_weight_t.CAIRO_FONT_WEIGHT_NORMAL),
-        Bold(cairo_font_weight_t.CAIRO_FONT_WEIGHT_BOLD)
-    }
-}
-
-class Window(val width: Int, val height: Int) {
+class Window(val width: Int, val height: Int, val background: Color = Color.black) {
 
     val window: SWIGTYPE_p_SDL_Window
     val renderer: SWIGTYPE_p_SDL_Renderer
@@ -81,9 +52,13 @@ class Window(val width: Int, val height: Int) {
                 height,
                 intp_value(pitch)
         )
-        val cairo = cairo_create(surface) ?: throw Exception("Failed to initialize cairo")
-        code(Cairo(cairo))
-        cairo_destroy(cairo)
+        val cairoT = cairo_create(surface) ?: throw Exception("Failed to initialize cairo")
+        val cairo = Cairo(cairoT)
+        cairo.setSourceRgb(background)
+        cairo.setAntialias(Antialias.None)
+        cairo_paint(cairoT)
+        code(cairo)
+        cairo_destroy(cairoT)
         cairo_surface_destroy(surface)
         SDL_UnlockTexture(texture)
         invalidate()

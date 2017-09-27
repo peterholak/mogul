@@ -1,4 +1,9 @@
-package engine
+package engine.primitives
+
+import engine.*
+
+@DslMarker
+annotation class MicroDomMarker
 
 @MicroDomMarker
 abstract class NodeBuilder {
@@ -22,7 +27,13 @@ abstract class ContainerBuilder : NodeBuilder() {
     }
 
     fun row(code: ContainerBuilder.() -> Unit) {
-        val builder = RowBuilder()
+        val builder = LayoutBoxBuilder(HorizontalDirection)
+        code(builder)
+        children.add(builder)
+    }
+
+    fun column(code: ContainerBuilder.() -> Unit) {
+        val builder = LayoutBoxBuilder(VerticalDireciton)
         code(builder)
         children.add(builder)
     }
@@ -49,8 +60,8 @@ class BoxBuilder : ContainerBuilder() {
     override fun build() = Box(innerStyle, children.map { it.build() })
 }
 
-class RowBuilder : ContainerBuilder() {
-    override fun build() = Row(innerStyle, children.map { it.build() })
+class LayoutBoxBuilder(val direction: Direction) : ContainerBuilder() {
+    override fun build() = LayoutBox(direction, innerStyle, children.map { it.build() })
 }
 
 fun microDom(code: BoxBuilder.() -> Unit): Scene {

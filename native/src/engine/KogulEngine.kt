@@ -3,26 +3,12 @@
 package engine
 
 import drawing.Window
-//import kotlinx.coroutines.experimental.CompletableDeferred
-//import kotlin.concurrent.thread
-//
-//suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDeferred<KogulEngine> {
-//    val engine = CompletableDeferred<KogulEngine>()
-//    thread(name="KogulEngine") {
-//        val window = Window(windowWidth, windowHeight)
-//        engine.complete(KogulEngine(window))
-//        window.runEfficientEventLoop()
-//        window.cleanup()
-//        println("Cleanup finished.")
-//    }
-//    return engine
-//}
 
 // Currently doesn't exist in the Kotlin Native stdlib
 annotation class DslMarker
 
 fun runKogulEngine(windowWidth: Int, windowHeight: Int) {
-    val window = Window(windowWidth, windowHeight)
+    val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
     val engine = KogulEngine(window)
     window.runEfficientEventLoop()
     window.cleanup()

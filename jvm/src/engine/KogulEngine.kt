@@ -9,7 +9,7 @@ import kotlin.concurrent.thread
 suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDeferred<KogulEngine> {
     val engine = CompletableDeferred<KogulEngine>()
     thread(name="KogulEngine") {
-        val window = Window(windowWidth, windowHeight)
+        val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
         engine.complete(KogulEngine(window))
         window.runEfficientEventLoop()
         window.cleanup()
@@ -23,7 +23,7 @@ suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDefe
 //annotation class DslMarker
 //
 //fun runKogulEngine(windowWidth: Int, windowHeight: Int) {
-//    val window = Window(windowWidth, windowHeight)
+//    val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
 //    val engine = KogulEngine(window)
 //    window.runEfficientEventLoop()
 //    window.cleanup()

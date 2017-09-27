@@ -2,7 +2,7 @@ package engine
 
 import drawing.Cairo
 
-class Color(val r: Double, val g: Double, val b: Double) {
+data class Color(val r: Double, val g: Double, val b: Double) {
     constructor(r: Int, g: Int, b: Int) : this(r / 255.0, g / 255.0, b / 255.0)
     override fun toString() = "rgb($r255,$g255,$b255)"
 
