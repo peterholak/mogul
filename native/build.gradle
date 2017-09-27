@@ -1,4 +1,4 @@
-group 'ktnat'
+group 'kogul-native'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -40,7 +40,7 @@ konanInterop {
 }
 
 konanArtifacts {
-    Hello {
+    "kogul-native" {
         inputFiles project.fileTree('src')
         useInterop 'cairo'
         useInterop 'sdl'

@@ -18,24 +18,17 @@ suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDefe
     return engine
 }
 
-fun testScene(): Scene {
-    return Scene(
-            Row(children = listOf(
-                Box(style { width = 100; height = 100}),
-                Box(style { width = 100; height = 100 }, children = listOf(
-                        Box(
-                            style {
-                                width = 50; height = 50
-                                margin = BoxSizes(top = 10, left = 30)
-                                backgroundColor = 0x00FF00.color
-                                borderColor = Color.white
-                            }
-                        )
-                )),
-                Text("Hello world!", style { margin = BoxSizes(top = 5) })
-            ), style = style { padding = BoxSizes(50); margin = BoxSizes(50) })
-    )
-}
+// Uncomment for native:
+//// Currently doesn't exist in the Kotlin Native stdlib
+//annotation class DslMarker
+//
+//fun runKogulEngine(windowWidth: Int, windowHeight: Int) {
+//    val window = Window(windowWidth, windowHeight)
+//    val engine = KogulEngine(window)
+//    window.runEfficientEventLoop()
+//    window.cleanup()
+//    println("Cleanup finished.")
+//}
 
 class KogulEngine(val window: Window) {
     var scene = testScene()

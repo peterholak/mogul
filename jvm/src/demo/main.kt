@@ -1,4 +1,4 @@
-package rkg
+package demo
 
 import engine.runKogulEngine
 import kotlinx.coroutines.experimental.runBlocking
@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
     println(renderer.render(element))
 
     runBlocking {
-        val engine = runKogulEngine(800, 600).await()
+        runKogulEngine(800, 600)
     }
+
 }

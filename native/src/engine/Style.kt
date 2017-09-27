@@ -1,8 +1,14 @@
 package engine
 
-annotation class Inherit
+class StyleAttribute(val inherited: Boolean = false)
+
+// Doing it this way instead of annotations, because Kotlin Native doesn't support much reflection atm.
+val StyleMetadata = mapOf(
+        "color" to StyleAttribute(true)
+)
 
 @Suppress("unused")
+@MicroDomMarker
 class Style private constructor(private val map: MutableMap<String, Any?>) {
     val asMap: Map<String, Any?> = map
 
@@ -10,7 +16,6 @@ class Style private constructor(private val map: MutableMap<String, Any?>) {
     operator fun plus(other: Style) = Style(LinkedHashMap(map).apply { putAll(other.map) })
     override fun toString() = "Style:$map"
 
-    @Inherit
     var color: Color? by map
     var backgroundColor: Color? by map
     var borderColor: Color? by map

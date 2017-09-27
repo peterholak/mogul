@@ -1,4 +1,4 @@
-group 'rkg'
+group 'kogul-jvm'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -16,7 +16,7 @@ buildscript {
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-mainClassName = "rkg.MainKt"
+mainClassName = "demo.MainKt"
 applicationDefaultJvmArgs = ["-Djava.library.path=" + projectDir.absolutePath + "/native-libs/dll"]
 
 repositories {

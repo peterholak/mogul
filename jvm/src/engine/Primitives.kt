@@ -2,6 +2,9 @@ package engine
 
 import drawing.Cairo
 
+@DslMarker
+annotation class MicroDomMarker
+
 class Box(
         override val style: Style = Style(),
         override val children: List<Node> = emptyList()
@@ -92,15 +95,17 @@ class Text(
         cairo.selectFontFace("sans-serif")
         cairo.setFontSize(style.fontSize ?: 20.0)
         cairo.translate(0, layoutSize(cairo).height)
-        cairo.setSourceRgb(Color.white)
+        cairo.setSourceRgb(style.color ?: Color.white)
         cairo.showText(text)
         cairo.fill()
         cairo.restore()
     }
 
-    override fun layoutSize(cairo: Cairo) =
-        cairo.textExtents(text).let {
+    override fun layoutSize(cairo: Cairo): Size {
+        cairo.selectFontFace("sans-serif")
+        cairo.setFontSize(style.fontSize ?: 20.0)
+        return cairo.textExtents(text).let {
             Size(it.width.toInt(), it.height.toInt())
         }
-
+    }
 }
