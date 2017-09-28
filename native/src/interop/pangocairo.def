@@ -1,0 +1,3 @@
+headers = pango/pangocairo.h
+headerFilter = pango/* cairo*
+compilerOpts = -std=c99

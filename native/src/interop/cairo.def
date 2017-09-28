@@ -1,2 +1,0 @@
-headers = cairo.h
-compilerOpts = -std=c99

@@ -22,10 +22,13 @@ repositories {
 }
 
 konanInterop {
-    cairo {
-        defFile project.file('src/interop/cairo.def')
-        includeDirs "c:/bin/msys64/mingw64/include/cairo"
-        linkerOpts "-Lc:/bin/msys64/mingw64/lib -lcairo -lpixman-1"
+    pangocairo {
+        defFile project.file('src/interop/pangocairo.def')
+        includeDirs "c:/bin/msys64/mingw64/include/pango-1.0",
+                "c:/bin/msys64/mingw64/include/glib-2.0",
+                "c:/bin/msys64/mingw64/include/cairo",
+                "c:/bin/msys64/mingw64/lib/glib-2.0/include"
+        linkerOpts "-Lc:/bin/msys64/mingw64/lib -lpango-1.0 -lgthread-2.0 -lgobject-2.0 -lffi -lglib-2.0 -lintl -lpcre -liconv -lpcre -lcairo -lpixman-1 -lpangocairo-1.0"
 //        includeDirs "/usr/include/cairo"
 //        linkerOpts "-L/usr/lib/x86_64-linux-gnu -lcairo -lpixman-1"
     }
@@ -42,7 +45,7 @@ konanInterop {
 konanArtifacts {
     "kogul-native" {
         inputFiles project.fileTree('src')
-        useInterop 'cairo'
+        useInterop 'pangocairo'
         useInterop 'sdl'
     }
 }

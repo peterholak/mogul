@@ -1,7 +1,7 @@
 package drawing
 
 import kotlinx.cinterop.*
-import cairo.*
+import pangocairo.*
 
 class Cairo(val cairo: CPointer<cairo_t>) {
     fun setSourceRgb(r: Number, g: Number, b: Number) = cairo_set_source_rgb(cairo, r.toDouble(), g.toDouble(), b.toDouble())

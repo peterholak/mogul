@@ -1,7 +1,7 @@
 package drawing
 
 import kotlinx.cinterop.*
-import cairo.*
+import pangocairo.*
 import sdl.*
 import microdom.*
 
