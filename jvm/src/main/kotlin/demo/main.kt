@@ -1,7 +1,7 @@
 package demo
 
-import microdom.runKogulEngine
 import kotlinx.coroutines.experimental.runBlocking
+import microdom.runKogulEngine
 import react.ShallowRenderer
 import react.WorldComponent
 import react.createElement
@@ -14,5 +14,4 @@ fun main(args: Array<String>) {
     runBlocking {
         runKogulEngine(800, 600)
     }
-
 }

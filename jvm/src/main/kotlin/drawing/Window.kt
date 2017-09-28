@@ -3,8 +3,8 @@ package drawing
 import microdom.Color
 import microdom.setSourceRgb
 import sdl2cairo.*
-import sdl2cairo.cairo.*
 import sdl2cairo.SDL2.*
+import sdl2cairo.pango.*
 
 fun l_(o: Any) = (o.javaClass.getMethod("swigValue").invoke(o) as Int).toLong()
 
@@ -118,7 +118,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
     companion object {
         init {
             System.loadLibrary("sdl_wrap")
-            System.loadLibrary("cairo_wrap")
+            System.loadLibrary("pango_cairo_glib_wrap")
         }
     }
 }

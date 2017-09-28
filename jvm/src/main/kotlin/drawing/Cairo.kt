@@ -1,7 +1,7 @@
 package drawing
 
 import sdl2cairo.*
-import sdl2cairo.cairo.*
+import sdl2cairo.pango.*
 
 class Cairo(val cairo: SWIGTYPE_p__cairo) {
     fun setSourceRgb(r: Number, g: Number, b: Number) = cairo_set_source_rgb(cairo, r.toDouble(), g.toDouble(), b.toDouble())

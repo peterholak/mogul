@@ -33,7 +33,6 @@ dependencies {
 }
 
 sourceSets {
-    main.java.srcDirs += "src"
     main.java.srcDirs += "native-libs"
 }
 kotlin {
