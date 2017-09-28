@@ -15,7 +15,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
 
     init {
         SDL_Init(SDL_INIT_EVERYTHING)
-        window = SDL_CreateWindow("Hello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN)
+        window = SDL_CreateWindow("kogul-native", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN)
                 ?: throw Exception("Failed to create window")
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED or SDL_RENDERER_PRESENTVSYNC)
                 ?: throw Exception("Failed to initialize renderer")

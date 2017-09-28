@@ -1,6 +1,6 @@
-package engine.primitives
+package microdom.primitives
 
-import engine.*
+import microdom.*
 
 @DslMarker
 annotation class MicroDomMarker
@@ -20,20 +20,20 @@ abstract class NodeBuilder {
 abstract class ContainerBuilder : NodeBuilder() {
     protected val children = mutableListOf<NodeBuilder>()
 
-    fun box(code: ContainerBuilder.() -> Unit) {
+    fun box(code: BoxBuilder.() -> Unit) {
         val builder = BoxBuilder()
         code(builder)
         children.add(builder)
     }
 
-    fun row(code: ContainerBuilder.() -> Unit) {
+    fun row(code: LayoutBoxBuilder.() -> Unit) {
         val builder = LayoutBoxBuilder(HorizontalDirection)
         code(builder)
         children.add(builder)
     }
 
-    fun column(code: ContainerBuilder.() -> Unit) {
-        val builder = LayoutBoxBuilder(VerticalDireciton)
+    fun column(code: LayoutBoxBuilder.() -> Unit) {
+        val builder = LayoutBoxBuilder(VerticalDirection)
         code(builder)
         children.add(builder)
     }
@@ -61,7 +61,8 @@ class BoxBuilder : ContainerBuilder() {
 }
 
 class LayoutBoxBuilder(val direction: Direction) : ContainerBuilder() {
-    override fun build() = LayoutBox(direction, innerStyle, children.map { it.build() })
+    var spacing = 0
+    override fun build() = LayoutBox(direction, spacing, innerStyle, children.map { it.build() })
 }
 
 fun microDom(code: BoxBuilder.() -> Unit): Scene {

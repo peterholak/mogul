@@ -1,7 +1,7 @@
-package engine.primitives
+package microdom.primitives
 
 import drawing.Cairo
-import engine.*
+import microdom.*
 
 class Box(
         override val style: Style = Style(),
@@ -9,7 +9,7 @@ class Box(
 ) : Container() {
 
     override fun draw(cairo: Cairo) {
-        val size = layoutSize(cairo)
+        val size = innerSize(cairo)
         cairo.save()
         style.margin?.let { cairo.translate(it.left, it.top) }
         fillRectangle(cairo, size)
@@ -24,8 +24,15 @@ class Box(
         val border = style.border ?: return
 
         if (border.width.allEqual() && border.color.allEqual()) {
-            cairo.rectangle(0, 0, size.width, size.height)
+            val padding = style.padding ?: BoxSizes.zero
+            cairo.rectangle(
+                    -padding.left,
+                    -padding.top,
+                    size.width + padding.left + padding.right,
+                    size.height + padding.top + padding.bottom
+            )
             cairo.setSourceRgb(border.color.top ?: Color.black)
+            cairo.setLineWidth(border.width.top)
         }else{
             val width = border.width
             val color = border.color
@@ -50,6 +57,9 @@ class Box(
     {
         if (borderWidth != 0 || color != null) {
             val horizontal = (yFrom == yTo)
+
+            // When drawing lines individually, the path ends at the exact point (no line joins),
+            // which makes rectangle corners look ugly as fuck. This addresses that problem.
             val extraXFrom = if (horizontal) extraFrom/2 else 0
             val extraYFrom = if (horizontal) 0 else extraFrom/2
             val extraXTo = if (horizontal) extraTo/2 else 0
@@ -71,7 +81,7 @@ class Box(
         }
     }
 
-    override fun layoutSize(cairo: Cairo): Size {
+    override fun defaultInnerSize(cairo: Cairo): Size {
         val width = if (style.width != null) {
             style.width
         }else{

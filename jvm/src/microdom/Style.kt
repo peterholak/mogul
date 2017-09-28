@@ -1,6 +1,6 @@
-package engine
+package microdom
 
-import engine.primitives.MicroDomMarker
+import microdom.primitives.MicroDomMarker
 
 class StyleAttribute(val inherited: Boolean = false)
 

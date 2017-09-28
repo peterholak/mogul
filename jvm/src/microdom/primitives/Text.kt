@@ -1,7 +1,7 @@
-package engine.primitives
+package microdom.primitives
 
 import drawing.Cairo
-import engine.*
+import microdom.*
 
 class Text(
         val text: String,
@@ -20,7 +20,7 @@ class Text(
         cairo.restore()
     }
 
-    override fun layoutSize(cairo: Cairo): Size {
+    override fun defaultInnerSize(cairo: Cairo): Size {
         cairo.selectFontFace("sans-serif")
         cairo.setFontSize(style.fontSize ?: 20.0)
         return cairo.textExtents(text).let {

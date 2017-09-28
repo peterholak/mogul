@@ -1,7 +1,7 @@
 package drawing
 
-import engine.Color
-import engine.setSourceRgb
+import microdom.Color
+import microdom.setSourceRgb
 import sdl2cairo.*
 import sdl2cairo.cairo.*
 import sdl2cairo.SDL2.*
@@ -20,7 +20,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
     init {
         SDL_Init(SDL_INIT_EVERYTHING)
         window = SDL_CreateWindow(
-                "Hello",
+                "kogul-jvm",
                 SDL_WINDOWPOS_UNDEFINED.toInt(),
                 SDL_WINDOWPOS_UNDEFINED.toInt(),
                 width,

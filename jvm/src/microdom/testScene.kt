@@ -1,6 +1,6 @@
-package engine
+package microdom
 
-import engine.primitives.microDom
+import microdom.primitives.microDom
 
 fun testScene(): Scene {
     val weirdBorders = Borders(
@@ -12,6 +12,7 @@ fun testScene(): Scene {
 
     return microDom {
         row {
+            spacing = 50
             style { padding = 50.all; margin = 50.all }
             box { style = myStyle }
             box {
@@ -21,18 +22,21 @@ fun testScene(): Scene {
                         width = 50; height = 50
                         margin = 10.top and 30.left
                         backgroundColor = 0x00FF00.color
-                        borders(2, 0x008000.color)
+                        borders(1, 0x008000.color)
                     }
                 }
             }
             column {
-                style { padding = 30.all }
+                spacing = 30
                 -"Hello world!"
                 text {
                     -"Other text"
                     style { color = 0x0000FF.color; margin = 30.left }
                 }
-                text("Yet another") { style { color = 0xFF0000.color } }
+                box {
+                    style { border = Borders(1); padding = 10.all }
+                    text("In a box") { style { color = 0xFF0000.color } }
+                }
             }
         }
     }
