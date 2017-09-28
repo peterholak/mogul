@@ -3,7 +3,7 @@ package drawing
 import kotlinx.cinterop.*
 import cairo.*
 import sdl.*
-import engine.*
+import microdom.*
 
 class Window(val width: Int, val height: Int, val background: Color = Color.black) {
 

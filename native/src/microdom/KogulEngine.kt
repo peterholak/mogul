@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package engine
+package microdom
 
 import drawing.Window
 
@@ -9,7 +9,7 @@ annotation class DslMarker
 
 fun runKogulEngine(windowWidth: Int, windowHeight: Int) {
     val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
-    val engine = KogulEngine(window)
+    val microdom = KogulEngine(window)
     window.runEfficientEventLoop()
     window.cleanup()
     println("Cleanup finished.")

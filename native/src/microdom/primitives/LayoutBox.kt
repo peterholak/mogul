@@ -1,14 +1,14 @@
-package engine.primitives
+package microdom.primitives
 
 import drawing.Cairo
-import engine.Container
-import engine.Node
-import engine.Size
-import engine.Style
+import microdom.Container
+import microdom.Node
+import microdom.Size
+import microdom.Style
 
 sealed class Direction {
-    abstract fun postDrawTranslateX(cairo: Cairo, child: Node, style: Style): Int
-    abstract fun postDrawTranslateY(cairo: Cairo, child: Node, style: Style): Int
+    abstract fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int): Int
+    abstract fun postDrawTranslateY(cairo: Cairo, child: Node, spacing: Int): Int
     abstract fun totalWidth(cairo: Cairo, children: List<Node>): Int
     abstract fun totalHeight(cairo: Cairo, children: List<Node>): Int
 }
@@ -20,33 +20,30 @@ object HorizontalDirection : Direction() {
     override fun totalHeight(cairo: Cairo, children: List<Node>) =
             children.maxBy { it.layoutSize(cairo).height }!!.layoutSize(cairo).height
 
-    override fun postDrawTranslateX(cairo: Cairo, child: Node, style: Style) =
-            child.layoutSize(cairo).width +
-            (child.style.margin?.right ?: 0) +
-            (style.padding?.left ?: 0)
+    override fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int) =
+            child.layoutSize(cairo).width + spacing
 
-    override fun postDrawTranslateY(cairo: Cairo, child: Node, style: Style) = 0
+    override fun postDrawTranslateY(cairo: Cairo, child: Node, spacing: Int) = 0
 
 }
 
-object VerticalDireciton : Direction() {
+object VerticalDirection : Direction() {
     override fun totalWidth(cairo: Cairo, children: List<Node>) =
             children.maxBy { it.layoutSize(cairo).width }!!.layoutSize(cairo).width
 
     override fun totalHeight(cairo: Cairo, children: List<Node>) =
             children.sumBy { it.layoutSize(cairo).height }
 
-    override fun postDrawTranslateX(cairo: Cairo, child: Node, style: Style) = 0
+    override fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int) = 0
 
-    override fun postDrawTranslateY(cairo: Cairo, child: Node, style: Style) =
-            child.layoutSize(cairo).height +
-            (child.style.margin?.bottom ?: 0) +
-            (style.padding?.top ?: 0)
-
+    override fun postDrawTranslateY(cairo: Cairo, child: Node, spacing: Int) =
+            child.layoutSize(cairo).height + spacing
 }
 
+// The spacing should be later replaced by a flexbox-like style property
 class LayoutBox(
         val direction: Direction = HorizontalDirection,
+        val spacing: Int = 0,
         override val style: Style = Style(),
         override val children: List<Node> = listOf()
 ) : Container() {
@@ -58,15 +55,15 @@ class LayoutBox(
         children.forEach { child ->
             child.draw(cairo)
             cairo.translate(
-                    x = direction.postDrawTranslateX(cairo, child, style),
-                    y = direction.postDrawTranslateY(cairo, child, style)
+                    x = direction.postDrawTranslateX(cairo, child, spacing),
+                    y = direction.postDrawTranslateY(cairo, child, spacing)
             )
         }
         cairo.restore()
     }
 
     // TODO: optimize, one pass is enough, or just put this function to Rectangle
-    override fun layoutSize(cairo: Cairo): Size {
+    override fun defaultInnerSize(cairo: Cairo): Size {
         if (children.isEmpty()) return Size(0, 0)
         return Size(
                 direction.totalWidth(cairo, children),
