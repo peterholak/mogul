@@ -29,54 +29,54 @@ public class cairo_font_extents_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_font_extents_t(swigCPtr);
+        pangoJNI.delete_cairo_font_extents_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setAscent(double value) {
-    cairoJNI.cairo_font_extents_t_ascent_set(swigCPtr, this, value);
+    pangoJNI.cairo_font_extents_t_ascent_set(swigCPtr, this, value);
   }
 
   public double getAscent() {
-    return cairoJNI.cairo_font_extents_t_ascent_get(swigCPtr, this);
+    return pangoJNI.cairo_font_extents_t_ascent_get(swigCPtr, this);
   }
 
   public void setDescent(double value) {
-    cairoJNI.cairo_font_extents_t_descent_set(swigCPtr, this, value);
+    pangoJNI.cairo_font_extents_t_descent_set(swigCPtr, this, value);
   }
 
   public double getDescent() {
-    return cairoJNI.cairo_font_extents_t_descent_get(swigCPtr, this);
+    return pangoJNI.cairo_font_extents_t_descent_get(swigCPtr, this);
   }
 
   public void setHeight(double value) {
-    cairoJNI.cairo_font_extents_t_height_set(swigCPtr, this, value);
+    pangoJNI.cairo_font_extents_t_height_set(swigCPtr, this, value);
   }
 
   public double getHeight() {
-    return cairoJNI.cairo_font_extents_t_height_get(swigCPtr, this);
+    return pangoJNI.cairo_font_extents_t_height_get(swigCPtr, this);
   }
 
   public void setMax_x_advance(double value) {
-    cairoJNI.cairo_font_extents_t_max_x_advance_set(swigCPtr, this, value);
+    pangoJNI.cairo_font_extents_t_max_x_advance_set(swigCPtr, this, value);
   }
 
   public double getMax_x_advance() {
-    return cairoJNI.cairo_font_extents_t_max_x_advance_get(swigCPtr, this);
+    return pangoJNI.cairo_font_extents_t_max_x_advance_get(swigCPtr, this);
   }
 
   public void setMax_y_advance(double value) {
-    cairoJNI.cairo_font_extents_t_max_y_advance_set(swigCPtr, this, value);
+    pangoJNI.cairo_font_extents_t_max_y_advance_set(swigCPtr, this, value);
   }
 
   public double getMax_y_advance() {
-    return cairoJNI.cairo_font_extents_t_max_y_advance_get(swigCPtr, this);
+    return pangoJNI.cairo_font_extents_t_max_y_advance_get(swigCPtr, this);
   }
 
   public cairo_font_extents_t() {
-    this(cairoJNI.new_cairo_font_extents_t(), true);
+    this(pangoJNI.new_cairo_font_extents_t(), true);
   }
 
 }

@@ -29,62 +29,62 @@ public class cairo_matrix_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_matrix_t(swigCPtr);
+        pangoJNI.delete_cairo_matrix_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setXx(double value) {
-    cairoJNI.cairo_matrix_t_xx_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_xx_set(swigCPtr, this, value);
   }
 
   public double getXx() {
-    return cairoJNI.cairo_matrix_t_xx_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_xx_get(swigCPtr, this);
   }
 
   public void setYx(double value) {
-    cairoJNI.cairo_matrix_t_yx_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_yx_set(swigCPtr, this, value);
   }
 
   public double getYx() {
-    return cairoJNI.cairo_matrix_t_yx_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_yx_get(swigCPtr, this);
   }
 
   public void setXy(double value) {
-    cairoJNI.cairo_matrix_t_xy_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_xy_set(swigCPtr, this, value);
   }
 
   public double getXy() {
-    return cairoJNI.cairo_matrix_t_xy_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_xy_get(swigCPtr, this);
   }
 
   public void setYy(double value) {
-    cairoJNI.cairo_matrix_t_yy_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_yy_set(swigCPtr, this, value);
   }
 
   public double getYy() {
-    return cairoJNI.cairo_matrix_t_yy_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_yy_get(swigCPtr, this);
   }
 
   public void setX0(double value) {
-    cairoJNI.cairo_matrix_t_x0_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_x0_set(swigCPtr, this, value);
   }
 
   public double getX0() {
-    return cairoJNI.cairo_matrix_t_x0_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_x0_get(swigCPtr, this);
   }
 
   public void setY0(double value) {
-    cairoJNI.cairo_matrix_t_y0_set(swigCPtr, this, value);
+    pangoJNI.cairo_matrix_t_y0_set(swigCPtr, this, value);
   }
 
   public double getY0() {
-    return cairoJNI.cairo_matrix_t_y0_get(swigCPtr, this);
+    return pangoJNI.cairo_matrix_t_y0_get(swigCPtr, this);
   }
 
   public cairo_matrix_t() {
-    this(cairoJNI.new_cairo_matrix_t(), true);
+    this(pangoJNI.new_cairo_matrix_t(), true);
   }
 
 }

@@ -29,38 +29,38 @@ public class cairo_glyph_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_glyph_t(swigCPtr);
+        pangoJNI.delete_cairo_glyph_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setIndex(long value) {
-    cairoJNI.cairo_glyph_t_index_set(swigCPtr, this, value);
+    pangoJNI.cairo_glyph_t_index_set(swigCPtr, this, value);
   }
 
   public long getIndex() {
-    return cairoJNI.cairo_glyph_t_index_get(swigCPtr, this);
+    return pangoJNI.cairo_glyph_t_index_get(swigCPtr, this);
   }
 
   public void setX(double value) {
-    cairoJNI.cairo_glyph_t_x_set(swigCPtr, this, value);
+    pangoJNI.cairo_glyph_t_x_set(swigCPtr, this, value);
   }
 
   public double getX() {
-    return cairoJNI.cairo_glyph_t_x_get(swigCPtr, this);
+    return pangoJNI.cairo_glyph_t_x_get(swigCPtr, this);
   }
 
   public void setY(double value) {
-    cairoJNI.cairo_glyph_t_y_set(swigCPtr, this, value);
+    pangoJNI.cairo_glyph_t_y_set(swigCPtr, this, value);
   }
 
   public double getY() {
-    return cairoJNI.cairo_glyph_t_y_get(swigCPtr, this);
+    return pangoJNI.cairo_glyph_t_y_get(swigCPtr, this);
   }
 
   public cairo_glyph_t() {
-    this(cairoJNI.new_cairo_glyph_t(), true);
+    this(pangoJNI.new_cairo_glyph_t(), true);
   }
 
 }

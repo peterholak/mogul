@@ -29,62 +29,62 @@ public class cairo_text_extents_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_text_extents_t(swigCPtr);
+        pangoJNI.delete_cairo_text_extents_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setX_bearing(double value) {
-    cairoJNI.cairo_text_extents_t_x_bearing_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_x_bearing_set(swigCPtr, this, value);
   }
 
   public double getX_bearing() {
-    return cairoJNI.cairo_text_extents_t_x_bearing_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_x_bearing_get(swigCPtr, this);
   }
 
   public void setY_bearing(double value) {
-    cairoJNI.cairo_text_extents_t_y_bearing_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_y_bearing_set(swigCPtr, this, value);
   }
 
   public double getY_bearing() {
-    return cairoJNI.cairo_text_extents_t_y_bearing_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_y_bearing_get(swigCPtr, this);
   }
 
   public void setWidth(double value) {
-    cairoJNI.cairo_text_extents_t_width_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_width_set(swigCPtr, this, value);
   }
 
   public double getWidth() {
-    return cairoJNI.cairo_text_extents_t_width_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_width_get(swigCPtr, this);
   }
 
   public void setHeight(double value) {
-    cairoJNI.cairo_text_extents_t_height_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_height_set(swigCPtr, this, value);
   }
 
   public double getHeight() {
-    return cairoJNI.cairo_text_extents_t_height_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_height_get(swigCPtr, this);
   }
 
   public void setX_advance(double value) {
-    cairoJNI.cairo_text_extents_t_x_advance_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_x_advance_set(swigCPtr, this, value);
   }
 
   public double getX_advance() {
-    return cairoJNI.cairo_text_extents_t_x_advance_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_x_advance_get(swigCPtr, this);
   }
 
   public void setY_advance(double value) {
-    cairoJNI.cairo_text_extents_t_y_advance_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_extents_t_y_advance_set(swigCPtr, this, value);
   }
 
   public double getY_advance() {
-    return cairoJNI.cairo_text_extents_t_y_advance_get(swigCPtr, this);
+    return pangoJNI.cairo_text_extents_t_y_advance_get(swigCPtr, this);
   }
 
   public cairo_text_extents_t() {
-    this(cairoJNI.new_cairo_text_extents_t(), true);
+    this(pangoJNI.new_cairo_text_extents_t(), true);
   }
 
 }

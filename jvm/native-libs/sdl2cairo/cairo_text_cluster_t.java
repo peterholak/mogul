@@ -29,30 +29,30 @@ public class cairo_text_cluster_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_text_cluster_t(swigCPtr);
+        pangoJNI.delete_cairo_text_cluster_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setNum_bytes(int value) {
-    cairoJNI.cairo_text_cluster_t_num_bytes_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_cluster_t_num_bytes_set(swigCPtr, this, value);
   }
 
   public int getNum_bytes() {
-    return cairoJNI.cairo_text_cluster_t_num_bytes_get(swigCPtr, this);
+    return pangoJNI.cairo_text_cluster_t_num_bytes_get(swigCPtr, this);
   }
 
   public void setNum_glyphs(int value) {
-    cairoJNI.cairo_text_cluster_t_num_glyphs_set(swigCPtr, this, value);
+    pangoJNI.cairo_text_cluster_t_num_glyphs_set(swigCPtr, this, value);
   }
 
   public int getNum_glyphs() {
-    return cairoJNI.cairo_text_cluster_t_num_glyphs_get(swigCPtr, this);
+    return pangoJNI.cairo_text_cluster_t_num_glyphs_get(swigCPtr, this);
   }
 
   public cairo_text_cluster_t() {
-    this(cairoJNI.new_cairo_text_cluster_t(), true);
+    this(pangoJNI.new_cairo_text_cluster_t(), true);
   }
 
 }

@@ -29,30 +29,30 @@ public class _cairo_path_data_t_point {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete__cairo_path_data_t_point(swigCPtr);
+        pangoJNI.delete__cairo_path_data_t_point(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setX(double value) {
-    cairoJNI._cairo_path_data_t_point_x_set(swigCPtr, this, value);
+    pangoJNI._cairo_path_data_t_point_x_set(swigCPtr, this, value);
   }
 
   public double getX() {
-    return cairoJNI._cairo_path_data_t_point_x_get(swigCPtr, this);
+    return pangoJNI._cairo_path_data_t_point_x_get(swigCPtr, this);
   }
 
   public void setY(double value) {
-    cairoJNI._cairo_path_data_t_point_y_set(swigCPtr, this, value);
+    pangoJNI._cairo_path_data_t_point_y_set(swigCPtr, this, value);
   }
 
   public double getY() {
-    return cairoJNI._cairo_path_data_t_point_y_get(swigCPtr, this);
+    return pangoJNI._cairo_path_data_t_point_y_get(swigCPtr, this);
   }
 
   public _cairo_path_data_t_point() {
-    this(cairoJNI.new__cairo_path_data_t_point(), true);
+    this(pangoJNI.new__cairo_path_data_t_point(), true);
   }
 
 }

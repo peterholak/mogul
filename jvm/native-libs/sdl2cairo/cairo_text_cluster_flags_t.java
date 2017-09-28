@@ -9,7 +9,7 @@
 package sdl2cairo;
 
 public final class cairo_text_cluster_flags_t {
-  public final static cairo_text_cluster_flags_t CAIRO_TEXT_CLUSTER_FLAG_BACKWARD = new cairo_text_cluster_flags_t("CAIRO_TEXT_CLUSTER_FLAG_BACKWARD", cairoJNI.CAIRO_TEXT_CLUSTER_FLAG_BACKWARD_get());
+  public final static cairo_text_cluster_flags_t CAIRO_TEXT_CLUSTER_FLAG_BACKWARD = new cairo_text_cluster_flags_t("CAIRO_TEXT_CLUSTER_FLAG_BACKWARD", pangoJNI.CAIRO_TEXT_CLUSTER_FLAG_BACKWARD_get());
 
   public final int swigValue() {
     return swigValue;

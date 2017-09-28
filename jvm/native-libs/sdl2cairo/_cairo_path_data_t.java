@@ -29,24 +29,24 @@ public class _cairo_path_data_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete__cairo_path_data_t(swigCPtr);
+        pangoJNI.delete__cairo_path_data_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public _cairo_path_data_t_header getHeader() {
-    long cPtr = cairoJNI._cairo_path_data_t_header_get(swigCPtr, this);
+    long cPtr = pangoJNI._cairo_path_data_t_header_get(swigCPtr, this);
     return (cPtr == 0) ? null : new _cairo_path_data_t_header(cPtr, false);
   }
 
   public _cairo_path_data_t_point getPoint() {
-    long cPtr = cairoJNI._cairo_path_data_t_point_get(swigCPtr, this);
+    long cPtr = pangoJNI._cairo_path_data_t_point_get(swigCPtr, this);
     return (cPtr == 0) ? null : new _cairo_path_data_t_point(cPtr, false);
   }
 
   public _cairo_path_data_t() {
-    this(cairoJNI.new__cairo_path_data_t(), true);
+    this(pangoJNI.new__cairo_path_data_t(), true);
   }
 
 }

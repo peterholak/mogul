@@ -9,7 +9,7 @@
 package sdl2cairo;
 
 public final class cairo_status_t {
-  public final static cairo_status_t CAIRO_STATUS_SUCCESS = new cairo_status_t("CAIRO_STATUS_SUCCESS", cairoJNI.CAIRO_STATUS_SUCCESS_get());
+  public final static cairo_status_t CAIRO_STATUS_SUCCESS = new cairo_status_t("CAIRO_STATUS_SUCCESS", pangoJNI.CAIRO_STATUS_SUCCESS_get());
   public final static cairo_status_t CAIRO_STATUS_NO_MEMORY = new cairo_status_t("CAIRO_STATUS_NO_MEMORY");
   public final static cairo_status_t CAIRO_STATUS_INVALID_RESTORE = new cairo_status_t("CAIRO_STATUS_INVALID_RESTORE");
   public final static cairo_status_t CAIRO_STATUS_INVALID_POP_GROUP = new cairo_status_t("CAIRO_STATUS_INVALID_POP_GROUP");

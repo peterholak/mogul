@@ -17,7 +17,7 @@ public final class cairo_device_type_t {
   public final static cairo_device_type_t CAIRO_DEVICE_TYPE_XML = new cairo_device_type_t("CAIRO_DEVICE_TYPE_XML");
   public final static cairo_device_type_t CAIRO_DEVICE_TYPE_COGL = new cairo_device_type_t("CAIRO_DEVICE_TYPE_COGL");
   public final static cairo_device_type_t CAIRO_DEVICE_TYPE_WIN32 = new cairo_device_type_t("CAIRO_DEVICE_TYPE_WIN32");
-  public final static cairo_device_type_t CAIRO_DEVICE_TYPE_INVALID = new cairo_device_type_t("CAIRO_DEVICE_TYPE_INVALID", cairoJNI.CAIRO_DEVICE_TYPE_INVALID_get());
+  public final static cairo_device_type_t CAIRO_DEVICE_TYPE_INVALID = new cairo_device_type_t("CAIRO_DEVICE_TYPE_INVALID", pangoJNI.CAIRO_DEVICE_TYPE_INVALID_get());
 
   public final int swigValue() {
     return swigValue;

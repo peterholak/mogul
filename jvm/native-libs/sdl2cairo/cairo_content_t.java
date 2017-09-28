@@ -9,9 +9,9 @@
 package sdl2cairo;
 
 public final class cairo_content_t {
-  public final static cairo_content_t CAIRO_CONTENT_COLOR = new cairo_content_t("CAIRO_CONTENT_COLOR", cairoJNI.CAIRO_CONTENT_COLOR_get());
-  public final static cairo_content_t CAIRO_CONTENT_ALPHA = new cairo_content_t("CAIRO_CONTENT_ALPHA", cairoJNI.CAIRO_CONTENT_ALPHA_get());
-  public final static cairo_content_t CAIRO_CONTENT_COLOR_ALPHA = new cairo_content_t("CAIRO_CONTENT_COLOR_ALPHA", cairoJNI.CAIRO_CONTENT_COLOR_ALPHA_get());
+  public final static cairo_content_t CAIRO_CONTENT_COLOR = new cairo_content_t("CAIRO_CONTENT_COLOR", pangoJNI.CAIRO_CONTENT_COLOR_get());
+  public final static cairo_content_t CAIRO_CONTENT_ALPHA = new cairo_content_t("CAIRO_CONTENT_ALPHA", pangoJNI.CAIRO_CONTENT_ALPHA_get());
+  public final static cairo_content_t CAIRO_CONTENT_COLOR_ALPHA = new cairo_content_t("CAIRO_CONTENT_COLOR_ALPHA", pangoJNI.CAIRO_CONTENT_COLOR_ALPHA_get());
 
   public final int swigValue() {
     return swigValue;

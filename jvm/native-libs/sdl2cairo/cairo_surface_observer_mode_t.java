@@ -9,8 +9,8 @@
 package sdl2cairo;
 
 public final class cairo_surface_observer_mode_t {
-  public final static cairo_surface_observer_mode_t CAIRO_SURFACE_OBSERVER_NORMAL = new cairo_surface_observer_mode_t("CAIRO_SURFACE_OBSERVER_NORMAL", cairoJNI.CAIRO_SURFACE_OBSERVER_NORMAL_get());
-  public final static cairo_surface_observer_mode_t CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS = new cairo_surface_observer_mode_t("CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS", cairoJNI.CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS_get());
+  public final static cairo_surface_observer_mode_t CAIRO_SURFACE_OBSERVER_NORMAL = new cairo_surface_observer_mode_t("CAIRO_SURFACE_OBSERVER_NORMAL", pangoJNI.CAIRO_SURFACE_OBSERVER_NORMAL_get());
+  public final static cairo_surface_observer_mode_t CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS = new cairo_surface_observer_mode_t("CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS", pangoJNI.CAIRO_SURFACE_OBSERVER_RECORD_OPERATIONS_get());
 
   public final int swigValue() {
     return swigValue;

@@ -29,30 +29,30 @@ public class _cairo_path_data_t_header {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete__cairo_path_data_t_header(swigCPtr);
+        pangoJNI.delete__cairo_path_data_t_header(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setType(cairo_path_data_type_t value) {
-    cairoJNI._cairo_path_data_t_header_type_set(swigCPtr, this, value.swigValue());
+    pangoJNI._cairo_path_data_t_header_type_set(swigCPtr, this, value.swigValue());
   }
 
   public cairo_path_data_type_t getType() {
-    return cairo_path_data_type_t.swigToEnum(cairoJNI._cairo_path_data_t_header_type_get(swigCPtr, this));
+    return cairo_path_data_type_t.swigToEnum(pangoJNI._cairo_path_data_t_header_type_get(swigCPtr, this));
   }
 
   public void setLength(int value) {
-    cairoJNI._cairo_path_data_t_header_length_set(swigCPtr, this, value);
+    pangoJNI._cairo_path_data_t_header_length_set(swigCPtr, this, value);
   }
 
   public int getLength() {
-    return cairoJNI._cairo_path_data_t_header_length_get(swigCPtr, this);
+    return pangoJNI._cairo_path_data_t_header_length_get(swigCPtr, this);
   }
 
   public _cairo_path_data_t_header() {
-    this(cairoJNI.new__cairo_path_data_t_header(), true);
+    this(pangoJNI.new__cairo_path_data_t_header(), true);
   }
 
 }

@@ -29,39 +29,39 @@ public class cairo_path_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_path_t(swigCPtr);
+        pangoJNI.delete_cairo_path_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setStatus(cairo_status_t value) {
-    cairoJNI.cairo_path_t_status_set(swigCPtr, this, value.swigValue());
+    pangoJNI.cairo_path_t_status_set(swigCPtr, this, value.swigValue());
   }
 
   public cairo_status_t getStatus() {
-    return cairo_status_t.swigToEnum(cairoJNI.cairo_path_t_status_get(swigCPtr, this));
+    return cairo_status_t.swigToEnum(pangoJNI.cairo_path_t_status_get(swigCPtr, this));
   }
 
   public void setData(_cairo_path_data_t value) {
-    cairoJNI.cairo_path_t_data_set(swigCPtr, this, _cairo_path_data_t.getCPtr(value), value);
+    pangoJNI.cairo_path_t_data_set(swigCPtr, this, _cairo_path_data_t.getCPtr(value), value);
   }
 
   public _cairo_path_data_t getData() {
-    long cPtr = cairoJNI.cairo_path_t_data_get(swigCPtr, this);
+    long cPtr = pangoJNI.cairo_path_t_data_get(swigCPtr, this);
     return (cPtr == 0) ? null : new _cairo_path_data_t(cPtr, false);
   }
 
   public void setNum_data(int value) {
-    cairoJNI.cairo_path_t_num_data_set(swigCPtr, this, value);
+    pangoJNI.cairo_path_t_num_data_set(swigCPtr, this, value);
   }
 
   public int getNum_data() {
-    return cairoJNI.cairo_path_t_num_data_get(swigCPtr, this);
+    return pangoJNI.cairo_path_t_num_data_get(swigCPtr, this);
   }
 
   public cairo_path_t() {
-    this(cairoJNI.new_cairo_path_t(), true);
+    this(pangoJNI.new_cairo_path_t(), true);
   }
 
 }

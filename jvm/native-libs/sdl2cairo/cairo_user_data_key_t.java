@@ -29,22 +29,22 @@ public class cairo_user_data_key_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_user_data_key_t(swigCPtr);
+        pangoJNI.delete_cairo_user_data_key_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setUnused(int value) {
-    cairoJNI.cairo_user_data_key_t_unused_set(swigCPtr, this, value);
+    pangoJNI.cairo_user_data_key_t_unused_set(swigCPtr, this, value);
   }
 
   public int getUnused() {
-    return cairoJNI.cairo_user_data_key_t_unused_get(swigCPtr, this);
+    return pangoJNI.cairo_user_data_key_t_unused_get(swigCPtr, this);
   }
 
   public cairo_user_data_key_t() {
-    this(cairoJNI.new_cairo_user_data_key_t(), true);
+    this(pangoJNI.new_cairo_user_data_key_t(), true);
   }
 
 }

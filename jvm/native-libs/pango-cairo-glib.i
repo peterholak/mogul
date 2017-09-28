@@ -1,6 +1,6 @@
 %module pango
 %{
-    #include <pango/pango.h>
+    #include <pango/pangocairo.h>
 %}
 
 %define GLIB_VAR %inline %{ %} %enddef
@@ -34,4 +34,4 @@
 %ignore _g_log_fallback_handler;
 %ignore _g_param_type_register_static_constant;
 %ignore _g_signals_destroy;
-%include "pango/pango.h"
+%include "pango/pangocairo.h"

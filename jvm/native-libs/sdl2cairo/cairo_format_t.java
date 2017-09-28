@@ -9,13 +9,13 @@
 package sdl2cairo;
 
 public final class cairo_format_t {
-  public final static cairo_format_t CAIRO_FORMAT_INVALID = new cairo_format_t("CAIRO_FORMAT_INVALID", cairoJNI.CAIRO_FORMAT_INVALID_get());
-  public final static cairo_format_t CAIRO_FORMAT_ARGB32 = new cairo_format_t("CAIRO_FORMAT_ARGB32", cairoJNI.CAIRO_FORMAT_ARGB32_get());
-  public final static cairo_format_t CAIRO_FORMAT_RGB24 = new cairo_format_t("CAIRO_FORMAT_RGB24", cairoJNI.CAIRO_FORMAT_RGB24_get());
-  public final static cairo_format_t CAIRO_FORMAT_A8 = new cairo_format_t("CAIRO_FORMAT_A8", cairoJNI.CAIRO_FORMAT_A8_get());
-  public final static cairo_format_t CAIRO_FORMAT_A1 = new cairo_format_t("CAIRO_FORMAT_A1", cairoJNI.CAIRO_FORMAT_A1_get());
-  public final static cairo_format_t CAIRO_FORMAT_RGB16_565 = new cairo_format_t("CAIRO_FORMAT_RGB16_565", cairoJNI.CAIRO_FORMAT_RGB16_565_get());
-  public final static cairo_format_t CAIRO_FORMAT_RGB30 = new cairo_format_t("CAIRO_FORMAT_RGB30", cairoJNI.CAIRO_FORMAT_RGB30_get());
+  public final static cairo_format_t CAIRO_FORMAT_INVALID = new cairo_format_t("CAIRO_FORMAT_INVALID", pangoJNI.CAIRO_FORMAT_INVALID_get());
+  public final static cairo_format_t CAIRO_FORMAT_ARGB32 = new cairo_format_t("CAIRO_FORMAT_ARGB32", pangoJNI.CAIRO_FORMAT_ARGB32_get());
+  public final static cairo_format_t CAIRO_FORMAT_RGB24 = new cairo_format_t("CAIRO_FORMAT_RGB24", pangoJNI.CAIRO_FORMAT_RGB24_get());
+  public final static cairo_format_t CAIRO_FORMAT_A8 = new cairo_format_t("CAIRO_FORMAT_A8", pangoJNI.CAIRO_FORMAT_A8_get());
+  public final static cairo_format_t CAIRO_FORMAT_A1 = new cairo_format_t("CAIRO_FORMAT_A1", pangoJNI.CAIRO_FORMAT_A1_get());
+  public final static cairo_format_t CAIRO_FORMAT_RGB16_565 = new cairo_format_t("CAIRO_FORMAT_RGB16_565", pangoJNI.CAIRO_FORMAT_RGB16_565_get());
+  public final static cairo_format_t CAIRO_FORMAT_RGB30 = new cairo_format_t("CAIRO_FORMAT_RGB30", pangoJNI.CAIRO_FORMAT_RGB30_get());
 
   public final int swigValue() {
     return swigValue;

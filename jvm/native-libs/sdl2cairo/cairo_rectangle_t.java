@@ -29,46 +29,46 @@ public class cairo_rectangle_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_rectangle_t(swigCPtr);
+        pangoJNI.delete_cairo_rectangle_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setX(double value) {
-    cairoJNI.cairo_rectangle_t_x_set(swigCPtr, this, value);
+    pangoJNI.cairo_rectangle_t_x_set(swigCPtr, this, value);
   }
 
   public double getX() {
-    return cairoJNI.cairo_rectangle_t_x_get(swigCPtr, this);
+    return pangoJNI.cairo_rectangle_t_x_get(swigCPtr, this);
   }
 
   public void setY(double value) {
-    cairoJNI.cairo_rectangle_t_y_set(swigCPtr, this, value);
+    pangoJNI.cairo_rectangle_t_y_set(swigCPtr, this, value);
   }
 
   public double getY() {
-    return cairoJNI.cairo_rectangle_t_y_get(swigCPtr, this);
+    return pangoJNI.cairo_rectangle_t_y_get(swigCPtr, this);
   }
 
   public void setWidth(double value) {
-    cairoJNI.cairo_rectangle_t_width_set(swigCPtr, this, value);
+    pangoJNI.cairo_rectangle_t_width_set(swigCPtr, this, value);
   }
 
   public double getWidth() {
-    return cairoJNI.cairo_rectangle_t_width_get(swigCPtr, this);
+    return pangoJNI.cairo_rectangle_t_width_get(swigCPtr, this);
   }
 
   public void setHeight(double value) {
-    cairoJNI.cairo_rectangle_t_height_set(swigCPtr, this, value);
+    pangoJNI.cairo_rectangle_t_height_set(swigCPtr, this, value);
   }
 
   public double getHeight() {
-    return cairoJNI.cairo_rectangle_t_height_get(swigCPtr, this);
+    return pangoJNI.cairo_rectangle_t_height_get(swigCPtr, this);
   }
 
   public cairo_rectangle_t() {
-    this(cairoJNI.new_cairo_rectangle_t(), true);
+    this(pangoJNI.new_cairo_rectangle_t(), true);
   }
 
 }

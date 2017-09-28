@@ -29,39 +29,39 @@ public class cairo_rectangle_list_t {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        cairoJNI.delete_cairo_rectangle_list_t(swigCPtr);
+        pangoJNI.delete_cairo_rectangle_list_t(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
   public void setStatus(cairo_status_t value) {
-    cairoJNI.cairo_rectangle_list_t_status_set(swigCPtr, this, value.swigValue());
+    pangoJNI.cairo_rectangle_list_t_status_set(swigCPtr, this, value.swigValue());
   }
 
   public cairo_status_t getStatus() {
-    return cairo_status_t.swigToEnum(cairoJNI.cairo_rectangle_list_t_status_get(swigCPtr, this));
+    return cairo_status_t.swigToEnum(pangoJNI.cairo_rectangle_list_t_status_get(swigCPtr, this));
   }
 
   public void setRectangles(cairo_rectangle_t value) {
-    cairoJNI.cairo_rectangle_list_t_rectangles_set(swigCPtr, this, cairo_rectangle_t.getCPtr(value), value);
+    pangoJNI.cairo_rectangle_list_t_rectangles_set(swigCPtr, this, cairo_rectangle_t.getCPtr(value), value);
   }
 
   public cairo_rectangle_t getRectangles() {
-    long cPtr = cairoJNI.cairo_rectangle_list_t_rectangles_get(swigCPtr, this);
+    long cPtr = pangoJNI.cairo_rectangle_list_t_rectangles_get(swigCPtr, this);
     return (cPtr == 0) ? null : new cairo_rectangle_t(cPtr, false);
   }
 
   public void setNum_rectangles(int value) {
-    cairoJNI.cairo_rectangle_list_t_num_rectangles_set(swigCPtr, this, value);
+    pangoJNI.cairo_rectangle_list_t_num_rectangles_set(swigCPtr, this, value);
   }
 
   public int getNum_rectangles() {
-    return cairoJNI.cairo_rectangle_list_t_num_rectangles_get(swigCPtr, this);
+    return pangoJNI.cairo_rectangle_list_t_num_rectangles_get(swigCPtr, this);
   }
 
   public cairo_rectangle_list_t() {
-    this(cairoJNI.new_cairo_rectangle_list_t(), true);
+    this(pangoJNI.new_cairo_rectangle_list_t(), true);
   }
 
 }
