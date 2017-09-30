@@ -2,7 +2,7 @@ package kogul.react.slow
 
 class KgxBuilder {
     val children = mutableListOf<Element>()
-    operator fun String.unaryMinus() = children.add(Element(String::class, this))
+    operator fun String.unaryMinus() = children.add(Element(StringType, this))
 }
 
 fun kgx(code: KgxBuilder.() -> Unit): Element {

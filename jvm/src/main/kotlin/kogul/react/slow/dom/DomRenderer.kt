@@ -4,10 +4,11 @@ import kogul.microdom.Node
 import kogul.microdom.Style
 import kogul.microdom.primitives.*
 import kogul.react.slow.Element
+import kogul.react.slow.ElementType
+import kogul.react.slow.StringType
 import kogul.react.slow.reconcile
-import kotlin.reflect.KClass
 
-class InvalidElementType(val type: KClass<*>) : Exception()
+class InvalidElementType : Exception()
 
 class BoxProps(val style: Style = Style())
 class TextProps(val text: String, val style: Style = Style())
@@ -17,22 +18,26 @@ class LayoutBoxProps(
         val style: Style = Style()
 )
 
+val BoxType = ElementType()
+val TextType = ElementType()
+val LayoutBoxType = ElementType()
+
 fun constructDomNode(e: Element): Node =
     when(e.type) {
-        Box::class -> Box(
+        BoxType -> Box(
                 (e.props as BoxProps).style,
                 e.children.map { constructDomNode(it) }
         )
-        Text::class -> {
+        TextType -> {
             val props = e.props as TextProps
             Text(props.text, props.style)
         }
-        String::class -> Text(e.props as String)
-        LayoutBox::class -> {
+        StringType -> Text(e.props as String)
+        LayoutBoxType -> {
             val props = e.props as LayoutBoxProps
             LayoutBox(props.direction, props.spacing, props.style, e.children.map { constructDomNode(it) })
         }
-        else -> throw InvalidElementType(e.type)
+        else -> throw InvalidElementType()
     }
 
 fun domRender(root: Element): Node {

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package kogul.react.slow.dom
 
 import kogul.microdom.Style
@@ -13,17 +15,17 @@ fun KgxBuilder.layoutBox(
 ) {
     val nested = KgxBuilder()
     builder(nested)
-    children.add(Element(LayoutBox::class, LayoutBoxProps(direction, spacing), nested.children))
+    children.add(Element(LayoutBoxType, LayoutBoxProps(direction, spacing), nested.children))
 }
 
 fun KgxBuilder.box(style: Style = Style(), builder: (KgxBuilder.() -> Unit)? = null) {
     val nested = KgxBuilder()
     builder?.invoke(nested)
-    children.add(Element(Box::class, BoxProps(style), nested.children))
+    children.add(Element(BoxType, BoxProps(style), nested.children))
 }
 
 fun KgxBuilder.text(text: String, style: Style = Style()) {
-    children.add(Element(Text::class, TextProps(text, style)))
+    children.add(Element(TextType, TextProps(text, style)))
 }
 
 fun KgxBuilder.s(styleBuilder: Style.() -> Unit) = style(styleBuilder)

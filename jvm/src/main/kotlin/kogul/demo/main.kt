@@ -5,11 +5,8 @@ import kogul.microdom.Scene
 import kogul.microdom.color
 import kogul.microdom.primitives.VerticalDirection
 import kogul.microdom.runKogulEngine
-import kogul.react.slow.Component
-import kogul.react.slow.Element
-import kogul.react.slow.KgxBuilder
+import kogul.react.slow.*
 import kogul.react.slow.dom.*
-import kogul.react.slow.kgx
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.runBlocking
 
@@ -25,8 +22,9 @@ class TwoBoxesAndText : Component<TwoBoxesAndTextProps>() {
         }
     }
 }
+val TwoBoxesAndTextType = ElementType({ TwoBoxesAndText() })
 fun KgxBuilder.twoBoxesAndText(firstColor: Color = Color.white, secondColor: Color = Color.black, text: String) {
-    children.add(Element(TwoBoxesAndText::class, TwoBoxesAndTextProps(firstColor, secondColor, text)))
+    children.add(Element(TwoBoxesAndTextType, TwoBoxesAndTextProps(firstColor, secondColor, text)))
 }
 
 class FourBoxes : Component<Any>() {
@@ -39,7 +37,8 @@ class FourBoxes : Component<Any>() {
     }
 
 }
-val KgxBuilder.fourBoxes; get() = children.add(Element(FourBoxes::class, Unit))
+val FourBoxesType = ElementType({ FourBoxes() })
+val KgxBuilder.fourBoxes; get() = children.add(Element(FourBoxesType, Unit))
 
 fun main(args: Array<String>) {
 
