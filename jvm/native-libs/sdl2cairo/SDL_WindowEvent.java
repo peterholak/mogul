@@ -91,20 +91,20 @@ public class SDL_WindowEvent {
     return SDL2JNI.SDL_WindowEvent_padding3_get(swigCPtr, this);
   }
 
-  public void setData1(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_WindowEvent_data1_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setData1(int value) {
+    SDL2JNI.SDL_WindowEvent_data1_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getData1() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_WindowEvent_data1_get(swigCPtr, this), true);
+  public int getData1() {
+    return SDL2JNI.SDL_WindowEvent_data1_get(swigCPtr, this);
   }
 
-  public void setData2(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_WindowEvent_data2_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setData2(int value) {
+    SDL2JNI.SDL_WindowEvent_data2_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getData2() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_WindowEvent_data2_get(swigCPtr, this), true);
+  public int getData2() {
+    return SDL2JNI.SDL_WindowEvent_data2_get(swigCPtr, this);
   }
 
   public SDL_WindowEvent() {

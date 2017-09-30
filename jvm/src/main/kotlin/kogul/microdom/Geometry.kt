@@ -1,6 +1,9 @@
 package kogul.microdom
 
+import kogul.drawing.XY
+
 data class Position(val x: Int, val y: Int)
+val XY.position; get() = Position(x.toInt(), y.toInt())
 
 data class Size(val width: Int, val height: Int) {
     companion object {
@@ -10,6 +13,7 @@ data class Size(val width: Int, val height: Int) {
     operator fun plus(boxSizes: BoxSizes?) = this + (boxSizes?.topLeft ?: zero) + (boxSizes?.bottomRight ?: zero)
     operator fun minus(other: Size?) = Size(width - (other?.width ?: 0), height - (other?.height ?: 0))
     operator fun minus(boxSizes: BoxSizes?) = this - (boxSizes?.topLeft ?: zero) - (boxSizes?.bottomRight ?: zero)
+    operator fun div(by: Int) = Size(width / by, height / by)
 }
 
 data class Rectangle(val topLeft: Position, val size: Size) {
@@ -24,6 +28,12 @@ data class Rectangle(val topLeft: Position, val size: Size) {
     constructor(left: Int, top: Int, width: Int, height: Int) : this(Position(left, top), Size(width, height))
     constructor(topLeft: Position, bottomRight: Position) :
             this(topLeft, Size(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y))
+
+    fun overlaps(other: Rectangle) =
+        left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
+
+    fun contains(point: Position) =
+        point.x in left..right && point.y in top..bottom
 
     companion object {
         fun with(left: Int, top: Int, right: Int, bottom: Int) = Rectangle(

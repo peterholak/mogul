@@ -67,20 +67,20 @@ public class SDL_TextEditingEvent {
     return SDL2JNI.SDL_TextEditingEvent_text_get(swigCPtr, this);
   }
 
-  public void setStart(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_TextEditingEvent_start_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setStart(int value) {
+    SDL2JNI.SDL_TextEditingEvent_start_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getStart() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_TextEditingEvent_start_get(swigCPtr, this), true);
+  public int getStart() {
+    return SDL2JNI.SDL_TextEditingEvent_start_get(swigCPtr, this);
   }
 
-  public void setLength(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_TextEditingEvent_length_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setLength(int value) {
+    SDL2JNI.SDL_TextEditingEvent_length_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getLength() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_TextEditingEvent_length_get(swigCPtr, this), true);
+  public int getLength() {
+    return SDL2JNI.SDL_TextEditingEvent_length_get(swigCPtr, this);
   }
 
   public SDL_TextEditingEvent() {

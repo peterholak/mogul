@@ -54,6 +54,28 @@ public class SDL2 implements SDL2Constants {
     return SDL2JNI.intp_value(SWIGTYPE_p_int.getCPtr(obj));
   }
 
+  public static SWIGTYPE_p_double new_doublep() {
+    long cPtr = SDL2JNI.new_doublep();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
+  }
+
+  public static SWIGTYPE_p_double copy_doublep(double value) {
+    long cPtr = SDL2JNI.copy_doublep(value);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_double(cPtr, false);
+  }
+
+  public static void delete_doublep(SWIGTYPE_p_double obj) {
+    SDL2JNI.delete_doublep(SWIGTYPE_p_double.getCPtr(obj));
+  }
+
+  public static void doublep_assign(SWIGTYPE_p_double obj, double value) {
+    SDL2JNI.doublep_assign(SWIGTYPE_p_double.getCPtr(obj), value);
+  }
+
+  public static double doublep_value(SWIGTYPE_p_double obj) {
+    return SDL2JNI.doublep_value(SWIGTYPE_p_double.getCPtr(obj));
+  }
+
   public static SWIGTYPE_p_unsigned_char voidp_to_ucharp(SWIGTYPE_p_void x) {
     long cPtr = SDL2JNI.voidp_to_ucharp(SWIGTYPE_p_void.getCPtr(x));
     return (cPtr == 0) ? null : new SWIGTYPE_p_unsigned_char(cPtr, false);

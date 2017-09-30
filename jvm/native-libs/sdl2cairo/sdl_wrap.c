@@ -211,6 +211,7 @@ static void SWIGUNUSED SWIG_JavaThrowException(JNIEnv *jenv, SWIG_JavaExceptionC
 #ifdef SWIG
 %pointer_functions(void*,voidpp)
 %pointer_functions(int,intp)
+%pointer_functions(double,doublep)
 %pointer_cast(void*, unsigned char*, voidp_to_ucharp)
 #endif
 
@@ -257,6 +258,29 @@ static void intp_assign(int *obj, int value) {
 }
 
 static int intp_value(int *obj) {
+  return *obj;
+}
+
+
+static double *new_doublep() { 
+  return (double *) calloc(1,sizeof(double)); 
+}
+
+static double *copy_doublep(double value) { 
+  double *obj = (double *) calloc(1,sizeof(double));
+  *obj = value;
+  return obj; 
+}
+
+static void delete_doublep(double *obj) { 
+  if (obj) free(obj); 
+}
+
+static void doublep_assign(double *obj, double value) {
+  *obj = value;
+}
+
+static double doublep_value(double *obj) {
   return *obj;
 }
 
@@ -390,6 +414,68 @@ SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_intp_1value(JNIEnv *jenv, jclass 
   arg1 = *(int **)&jarg1; 
   result = (int)intp_value(arg1);
   jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_new_1doublep(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  double *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (double *)new_doublep();
+  *(double **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_copy_1doublep(JNIEnv *jenv, jclass jcls, jdouble jarg1) {
+  jlong jresult = 0 ;
+  double arg1 ;
+  double *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (double)jarg1; 
+  result = (double *)copy_doublep(arg1);
+  *(double **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_delete_1doublep(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  double *arg1 = (double *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(double **)&jarg1; 
+  delete_doublep(arg1);
+}
+
+
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_doublep_1assign(JNIEnv *jenv, jclass jcls, jlong jarg1, jdouble jarg2) {
+  double *arg1 = (double *) 0 ;
+  double arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(double **)&jarg1; 
+  arg2 = (double)jarg2; 
+  doublep_assign(arg1,arg2);
+}
+
+
+SWIGEXPORT jdouble JNICALL Java_sdl2cairo_SDL2JNI_doublep_1value(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  jdouble jresult = 0 ;
+  double *arg1 = (double *) 0 ;
+  double result;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(double **)&jarg1; 
+  result = (double)doublep_value(arg1);
+  jresult = (jdouble)result; 
   return jresult;
 }
 
@@ -977,6 +1063,18 @@ SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WINDOW_1POPUP_1MENU_1get(JNI
 }
 
 
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WINDOW_1VULKAN_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  SDL_WindowFlags result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (SDL_WindowFlags)SDL_WINDOW_VULKAN;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WINDOWPOS_1UNDEFINED_1MASK_1get(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   unsigned int result;
@@ -1128,6 +1226,30 @@ SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1GL_1CONTEXT_1RELEASE_1BEHAVI
   (void)jenv;
   (void)jcls;
   result = (SDL_GLcontextReleaseFlag)SDL_GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1GL_1CONTEXT_1RESET_1NO_1NOTIFICATION_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  SDL_GLContextResetNotification result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (SDL_GLContextResetNotification)SDL_GL_CONTEXT_RESET_NO_NOTIFICATION;
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1GL_1CONTEXT_1RESET_1LOSE_1CONTEXT_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  SDL_GLContextResetNotification result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (SDL_GLContextResetNotification)SDL_GL_CONTEXT_RESET_LOSE_CONTEXT;
   jresult = (jint)result; 
   return jresult;
 }
@@ -2825,27 +2947,21 @@ SWIGEXPORT jshort JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1padding3_1get
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data1_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data1_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_WindowEvent *arg1 = (struct SDL_WindowEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_WindowEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->data1 = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data1_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data1_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_WindowEvent *arg1 = (struct SDL_WindowEvent *) 0 ;
   Sint32 result;
   
@@ -2853,37 +2969,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data1_1get(JNI
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_WindowEvent **)&jarg1; 
-  result =  ((arg1)->data1);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->data1);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data2_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data2_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_WindowEvent *arg1 = (struct SDL_WindowEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_WindowEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->data2 = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data2_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data2_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_WindowEvent *arg1 = (struct SDL_WindowEvent *) 0 ;
   Sint32 result;
   
@@ -2891,12 +2997,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1WindowEvent_1data2_1get(JNI
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_WindowEvent **)&jarg1; 
-  result =  ((arg1)->data2);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->data2);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -3316,27 +3418,21 @@ SWIGEXPORT jstring JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1text_1g
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1start_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1start_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_TextEditingEvent *arg1 = (struct SDL_TextEditingEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_TextEditingEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->start = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1start_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1start_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_TextEditingEvent *arg1 = (struct SDL_TextEditingEvent *) 0 ;
   Sint32 result;
   
@@ -3344,37 +3440,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1start_1ge
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_TextEditingEvent **)&jarg1; 
-  result =  ((arg1)->start);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->start);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1length_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1length_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_TextEditingEvent *arg1 = (struct SDL_TextEditingEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_TextEditingEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->length = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1length_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1length_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_TextEditingEvent *arg1 = (struct SDL_TextEditingEvent *) 0 ;
   Sint32 result;
   
@@ -3382,12 +3468,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1TextEditingEvent_1length_1g
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_TextEditingEvent **)&jarg1; 
-  result =  ((arg1)->length);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->length);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -3713,27 +3795,21 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1state_1ge
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->x = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 result;
   
@@ -3741,37 +3817,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1x_1get(JN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  result =  ((arg1)->x);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->x);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->y = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 result;
   
@@ -3779,37 +3845,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1y_1get(JN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  result =  ((arg1)->y);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->y);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1xrel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1xrel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->xrel = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1xrel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1xrel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 result;
   
@@ -3817,37 +3873,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1xrel_1get
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  result =  ((arg1)->xrel);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->xrel);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1yrel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1yrel_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->yrel = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1yrel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1yrel_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseMotionEvent *arg1 = (struct SDL_MouseMotionEvent *) 0 ;
   Sint32 result;
   
@@ -3855,12 +3901,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseMotionEvent_1yrel_1get
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseMotionEvent **)&jarg1; 
-  result =  ((arg1)->yrel);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->yrel);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -4111,27 +4153,21 @@ SWIGEXPORT jshort JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1padding1
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseButtonEvent *arg1 = (struct SDL_MouseButtonEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseButtonEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->x = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseButtonEvent *arg1 = (struct SDL_MouseButtonEvent *) 0 ;
   Sint32 result;
   
@@ -4139,37 +4175,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1x_1get(JN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseButtonEvent **)&jarg1; 
-  result =  ((arg1)->x);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->x);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseButtonEvent *arg1 = (struct SDL_MouseButtonEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseButtonEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->y = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseButtonEvent *arg1 = (struct SDL_MouseButtonEvent *) 0 ;
   Sint32 result;
   
@@ -4177,12 +4203,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseButtonEvent_1y_1get(JN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseButtonEvent **)&jarg1; 
-  result =  ((arg1)->y);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->y);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -4321,27 +4343,21 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1which_1get
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1x_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseWheelEvent *arg1 = (struct SDL_MouseWheelEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseWheelEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->x = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1x_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseWheelEvent *arg1 = (struct SDL_MouseWheelEvent *) 0 ;
   Sint32 result;
   
@@ -4349,37 +4365,27 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1x_1get(JNI
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseWheelEvent **)&jarg1; 
-  result =  ((arg1)->x);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->x);
+  jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1y_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_MouseWheelEvent *arg1 = (struct SDL_MouseWheelEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseWheelEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->y = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1y_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_MouseWheelEvent *arg1 = (struct SDL_MouseWheelEvent *) 0 ;
   Sint32 result;
   
@@ -4387,12 +4393,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1MouseWheelEvent_1y_1get(JNI
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_MouseWheelEvent **)&jarg1; 
-  result =  ((arg1)->y);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->y);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -5557,27 +5559,21 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1timestamp_1
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1which_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1which_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_JoyDeviceEvent *arg1 = (struct SDL_JoyDeviceEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_JoyDeviceEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->which = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1which_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1which_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_JoyDeviceEvent *arg1 = (struct SDL_JoyDeviceEvent *) 0 ;
   Sint32 result;
   
@@ -5585,12 +5581,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1JoyDeviceEvent_1which_1get(
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_JoyDeviceEvent **)&jarg1; 
-  result =  ((arg1)->which);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->which);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -6195,27 +6187,21 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1time
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1which_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1which_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_ControllerDeviceEvent *arg1 = (struct SDL_ControllerDeviceEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_ControllerDeviceEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->which = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1which_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1which_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_ControllerDeviceEvent *arg1 = (struct SDL_ControllerDeviceEvent *) 0 ;
   Sint32 result;
   
@@ -6223,12 +6209,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1ControllerDeviceEvent_1whic
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_ControllerDeviceEvent **)&jarg1; 
-  result =  ((arg1)->which);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->which);
+  jresult = (jint)result; 
   return jresult;
 }
 
@@ -7704,27 +7686,21 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1windowID_1get(JN
 }
 
 
-SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1code_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1code_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   struct SDL_UserEvent *arg1 = (struct SDL_UserEvent *) 0 ;
   Sint32 arg2 ;
-  Sint32 *argp2 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_UserEvent **)&jarg1; 
-  argp2 = *(Sint32 **)&jarg2; 
-  if (!argp2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "Attempt to dereference null Sint32");
-    return ;
-  }
-  arg2 = *argp2; 
+  arg2 = (Sint32)jarg2; 
   if (arg1) (arg1)->code = arg2;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1code_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
+SWIGEXPORT jint JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1code_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
   struct SDL_UserEvent *arg1 = (struct SDL_UserEvent *) 0 ;
   Sint32 result;
   
@@ -7732,12 +7708,8 @@ SWIGEXPORT jlong JNICALL Java_sdl2cairo_SDL2JNI_SDL_1UserEvent_1code_1get(JNIEnv
   (void)jcls;
   (void)jarg1_;
   arg1 = *(struct SDL_UserEvent **)&jarg1; 
-  result =  ((arg1)->code);
-  {
-    Sint32 * resultptr = (Sint32 *) malloc(sizeof(Sint32));
-    memmove(resultptr, &result, sizeof(Sint32));
-    *(Sint32 **)&jresult = resultptr;
-  }
+  result = (Sint32) ((arg1)->code);
+  jresult = (jint)result; 
   return jresult;
 }
 

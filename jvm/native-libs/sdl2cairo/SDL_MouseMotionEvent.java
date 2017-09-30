@@ -75,36 +75,36 @@ public class SDL_MouseMotionEvent {
     return SDL2JNI.SDL_MouseMotionEvent_state_get(swigCPtr, this);
   }
 
-  public void setX(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseMotionEvent_x_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setX(int value) {
+    SDL2JNI.SDL_MouseMotionEvent_x_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getX() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseMotionEvent_x_get(swigCPtr, this), true);
+  public int getX() {
+    return SDL2JNI.SDL_MouseMotionEvent_x_get(swigCPtr, this);
   }
 
-  public void setY(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseMotionEvent_y_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setY(int value) {
+    SDL2JNI.SDL_MouseMotionEvent_y_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getY() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseMotionEvent_y_get(swigCPtr, this), true);
+  public int getY() {
+    return SDL2JNI.SDL_MouseMotionEvent_y_get(swigCPtr, this);
   }
 
-  public void setXrel(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseMotionEvent_xrel_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setXrel(int value) {
+    SDL2JNI.SDL_MouseMotionEvent_xrel_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getXrel() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseMotionEvent_xrel_get(swigCPtr, this), true);
+  public int getXrel() {
+    return SDL2JNI.SDL_MouseMotionEvent_xrel_get(swigCPtr, this);
   }
 
-  public void setYrel(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseMotionEvent_yrel_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setYrel(int value) {
+    SDL2JNI.SDL_MouseMotionEvent_yrel_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getYrel() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseMotionEvent_yrel_get(swigCPtr, this), true);
+  public int getYrel() {
+    return SDL2JNI.SDL_MouseMotionEvent_yrel_get(swigCPtr, this);
   }
 
   public SDL_MouseMotionEvent() {

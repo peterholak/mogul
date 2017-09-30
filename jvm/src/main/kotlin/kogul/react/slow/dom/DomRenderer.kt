@@ -1,41 +1,40 @@
 package kogul.react.slow.dom
 
+import kogul.microdom.Events
 import kogul.microdom.Node
 import kogul.microdom.Style
 import kogul.microdom.primitives.*
-import kogul.react.slow.Element
-import kogul.react.slow.ElementType
-import kogul.react.slow.StringType
-import kogul.react.slow.reconcile
+import kogul.react.slow.*
 
 class InvalidElementType : Exception()
 
-class BoxProps(val style: Style = Style())
-class TextProps(val text: String, val style: Style = Style())
+class BoxProps(val style: Style = Style(), val events: Events = Events())
+class TextProps(val text: String, val style: Style = Style(), val events: Events = Events())
 class LayoutBoxProps(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
-        val style: Style = Style()
+        val style: Style = Style(),
+        val events: Events = Events()
 )
 
-val BoxType = ElementType()
-val TextType = ElementType()
-val LayoutBoxType = ElementType()
+val boxType = ElementType()
+val textType = ElementType()
+val layoutBoxType = ElementType()
 
 fun constructDomNode(e: Element): Node =
     when(e.type) {
-        BoxType -> Box(
-                (e.props as BoxProps).style,
-                e.children.map { constructDomNode(it) }
-        )
-        TextType -> {
+        boxType -> {
+            val props = e.props as BoxProps
+            Box(props.style, props.events, e.children.map { constructDomNode(it) })
+        }
+        textType -> {
             val props = e.props as TextProps
             Text(props.text, props.style)
         }
-        StringType -> Text(e.props as String)
-        LayoutBoxType -> {
+        stringType -> Text(e.props as String)
+        layoutBoxType -> {
             val props = e.props as LayoutBoxProps
-            LayoutBox(props.direction, props.spacing, props.style, e.children.map { constructDomNode(it) })
+            LayoutBox(props.direction, props.spacing, props.style, props.events, e.children.map { constructDomNode(it) })
         }
         else -> throw InvalidElementType()
     }

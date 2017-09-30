@@ -1,22 +1,24 @@
 package kogul.drawing
 
 import kogul.microdom.Color
+import kogul.microdom.Position
 import kogul.microdom.setSourceRgb
 import sdl2cairo.*
 import sdl2cairo.SDL2.*
 import sdl2cairo.pango.*
+import java.util.concurrent.BlockingQueue
 
 fun l_(o: Any) = (o.javaClass.getMethod("swigValue").invoke(o) as Int).toLong()
 
 
-class Window(val width: Int, val height: Int, val background: Color = Color.black) {
+class Window(val width: Int, val height: Int, val background: Color = Color.black, val eventListener: BlockingQueue<Event>) {
 
     val window: SWIGTYPE_p_SDL_Window
     val renderer: SWIGTYPE_p_SDL_Renderer
     val texture: SWIGTYPE_p_SDL_Texture
     val invalidatedEventType: Long
     private var invalidated = true
-    private var shouldQuit = false
+    var shouldQuit = false; private set
 
     init {
         SDL_Init(SDL_INIT_EVERYTHING)
@@ -40,7 +42,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
                 width,
                 height
         ) ?: throw Exception("Failed to create texture")
-        invalidatedEventType = SDL_RegisterEvents(1)
+        invalidatedEventType = SDL_RegisterEvents(1) // TODO: check result
     }
 
     fun draw(code: (cairo: Cairo) -> Unit) {
@@ -80,6 +82,16 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
                         SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED -> invalidate()
                         SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED -> invalidate()
                     }
+                }
+                // TODO: only fire events that someone is subscribed to
+                l_(SDL_EventType.SDL_MOUSEBUTTONDOWN) -> {
+                    eventListener.put(MouseEvent(MouseDown, Position(event.button.x, event.button.y)))
+                }
+                l_(SDL_EventType.SDL_MOUSEBUTTONUP) -> {
+                    eventListener.put(MouseEvent(MouseUp, Position(event.button.x, event.button.y)))
+                }
+                l_(SDL_EventType.SDL_MOUSEMOTION) -> {
+                    eventListener.put(MouseEvent(MouseMove, Position(event.motion.x, event.motion.y)))
                 }
             }
 

@@ -6,14 +6,17 @@
 #ifdef SWIG
 %pointer_functions(void*,voidpp)
 %pointer_functions(int,intp)
+%pointer_functions(double,doublep)
 %pointer_cast(void*, unsigned char*, voidp_to_ucharp)
 #endif
 %}
 
 %pointer_functions(void*,voidpp)
 %pointer_functions(int,intp)
+%pointer_functions(double,doublep)
 %pointer_cast(void*, unsigned char*, voidp_to_ucharp)
 
+typedef int Sint32;
 typedef unsigned int Uint32;
 typedef unsigned short Uint16;
 typedef unsigned char Uint8;

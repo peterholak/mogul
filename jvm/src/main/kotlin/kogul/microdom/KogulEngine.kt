@@ -2,19 +2,25 @@
 
 package kogul.microdom
 
+import kogul.drawing.Event
+import kogul.drawing.QuitEvent
 import kogul.drawing.Window
-import kotlinx.coroutines.experimental.CompletableDeferred
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
+import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
 
-suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene): CompletableDeferred<KogulEngine> {
-    val engine = CompletableDeferred<KogulEngine>()
+fun runKogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene): Future<KogulEngine> {
+    val events = LinkedBlockingQueue<Event>()
+    val engine = CompletableFuture<KogulEngine>()
     thread(name="KogulEngine") {
-        val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
+        val window = Window(windowWidth, windowHeight, 0xDDDDDD.color, events)
         engine.complete(KogulEngine(window, scene))
         window.runEfficientEventLoop()
         window.cleanup()
-        println("Cleanup finished.")
+        events.put(QuitEvent)
     }
+    println("Cleanup finished.")
     return engine
 }
 

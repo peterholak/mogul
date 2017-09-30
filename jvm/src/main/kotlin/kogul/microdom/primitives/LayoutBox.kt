@@ -1,10 +1,7 @@
 package kogul.microdom.primitives
 
 import kogul.drawing.Cairo
-import kogul.microdom.Container
-import kogul.microdom.Node
-import kogul.microdom.Size
-import kogul.microdom.Style
+import kogul.microdom.*
 
 sealed class Direction {
     abstract fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int): Int
@@ -45,6 +42,7 @@ class LayoutBox(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
         override val style: Style = Style(),
+        override val events: Events = Events(),
         override val children: List<Node> = listOf()
 ) : Container() {
 
@@ -53,6 +51,7 @@ class LayoutBox(
         cairo.save()
         style.margin?.let { cairo.translate(it.left, it.top) }
         children.forEach { child ->
+            child.topLeft = cairo.userToDevice(0, 0).position
             child.draw(cairo)
             cairo.translate(
                     x = direction.postDrawTranslateX(cairo, child, spacing),

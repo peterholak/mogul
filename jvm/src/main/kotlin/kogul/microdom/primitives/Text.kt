@@ -4,8 +4,9 @@ import kogul.drawing.Cairo
 import kogul.microdom.*
 
 class Text(
-        val text: String,
-        override val style: Style = Style()
+    val text: String,
+    override val style: Style = Style(),
+    override val events: Events = Events()
 ) : Leaf() {
 
     override fun draw(cairo: Cairo) {

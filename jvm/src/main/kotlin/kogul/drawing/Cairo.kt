@@ -1,8 +1,10 @@
 package kogul.drawing
 
 import sdl2cairo.*
+import sdl2cairo.SDL2.*
 import sdl2cairo.pango.*
 
+class XY(val x: Double, val y: Double)
 class Cairo(val cairo: SWIGTYPE_p__cairo) {
     fun setSourceRgb(r: Number, g: Number, b: Number) = cairo_set_source_rgb(cairo, r.toDouble(), g.toDouble(), b.toDouble())
     fun moveTo(x: Number, y: Number) = cairo_move_to(cairo, x.toDouble(), y.toDouble())
@@ -26,6 +28,14 @@ class Cairo(val cairo: SWIGTYPE_p__cairo) {
     fun setAntialias(antialias: Antialias) = cairo_set_antialias(cairo, antialias.value)
     fun setLineJoin(lineJoin: LineJoin) = cairo_set_line_join(cairo, lineJoin.value)
     fun rectangle(x: Number, y: Number, width: Number, height: Number) = cairo_rectangle(cairo, x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
+    fun userToDevice(x: Number, y: Number): XY {
+        val xp = new_doublep()
+        val yp = new_doublep()
+        doublep_assign(xp, x.toDouble())
+        doublep_assign(yp, y.toDouble())
+        cairo_user_to_device(cairo, xp, yp)
+        return XY(doublep_value(xp), doublep_value(yp))
+    }
 }
 
 enum class FontSlant(val value: cairo_font_slant_t) {

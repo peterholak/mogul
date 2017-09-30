@@ -99,20 +99,20 @@ public class SDL_MouseButtonEvent {
     return SDL2JNI.SDL_MouseButtonEvent_padding1_get(swigCPtr, this);
   }
 
-  public void setX(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseButtonEvent_x_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setX(int value) {
+    SDL2JNI.SDL_MouseButtonEvent_x_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getX() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseButtonEvent_x_get(swigCPtr, this), true);
+  public int getX() {
+    return SDL2JNI.SDL_MouseButtonEvent_x_get(swigCPtr, this);
   }
 
-  public void setY(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_MouseButtonEvent_y_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setY(int value) {
+    SDL2JNI.SDL_MouseButtonEvent_y_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getY() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_MouseButtonEvent_y_get(swigCPtr, this), true);
+  public int getY() {
+    return SDL2JNI.SDL_MouseButtonEvent_y_get(swigCPtr, this);
   }
 
   public SDL_MouseButtonEvent() {

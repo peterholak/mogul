@@ -1,0 +1,7 @@
+<code_scheme name="kogul">
+  <JetCodeStyleSettings>
+    <option name="CONTINUATION_INDENT_IN_PARAMETER_LISTS" value="false" />
+    <option name="CONTINUATION_INDENT_FOR_EXPRESSION_BODIES" value="false" />
+    <option name="CONTINUATION_INDENT_FOR_CHAINED_CALLS" value="false" />
+  </JetCodeStyleSettings>
+</code_scheme>

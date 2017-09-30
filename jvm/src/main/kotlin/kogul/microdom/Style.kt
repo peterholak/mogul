@@ -15,7 +15,10 @@ class Style private constructor(private val map: MutableMap<String, Any?>) {
     val asMap: Map<String, Any?> = map
 
     constructor() : this(mutableMapOf<String, Any?>().withDefault { null })
-    operator fun plus(other: Style) = Style(LinkedHashMap(map).apply { putAll(other.map) })
+
+    operator fun plus(other: Style) =
+        Style(LinkedHashMap(map).withDefault { null }.apply { putAll(other.map) })
+
     override fun toString() = "Style:$map"
 
     var color: Color? by map

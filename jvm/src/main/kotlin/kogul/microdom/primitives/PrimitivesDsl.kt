@@ -8,11 +8,17 @@ annotation class MicroDomMarker
 @MicroDomMarker
 abstract class NodeBuilder {
     protected var innerStyle = Style()
+    protected var innerEvents = Events()
 
     fun style(code: Style.() -> Unit) { code(innerStyle) }
     var style
         get() = innerStyle
         set(value) { innerStyle = value }
+
+    fun events(code: Events.() -> Unit) { code(innerEvents) }
+    var events
+        get() = innerEvents
+        set(value) { innerEvents = value }
 
     abstract fun build(): Node
 }
@@ -50,19 +56,19 @@ abstract class ContainerBuilder : NodeBuilder() {
 }
 
 class TextBuilder(private var text: String) : NodeBuilder() {
-    override fun build() = Text(text, innerStyle)
+    override fun build() = Text(text, innerStyle, innerEvents)
     operator fun String.unaryMinus() {
         text += this
     }
 }
 
 class BoxBuilder : ContainerBuilder() {
-    override fun build() = Box(innerStyle, children.map { it.build() })
+    override fun build() = Box(innerStyle, innerEvents, children.map { it.build() })
 }
 
 class LayoutBoxBuilder(val direction: Direction) : ContainerBuilder() {
     var spacing = 0
-    override fun build() = LayoutBox(direction, spacing, innerStyle, children.map { it.build() })
+    override fun build() = LayoutBox(direction, spacing, innerStyle, innerEvents, children.map { it.build() })
 }
 
 fun microDom(code: BoxBuilder.() -> Unit): Scene {

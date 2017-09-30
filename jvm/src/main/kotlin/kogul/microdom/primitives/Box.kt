@@ -4,8 +4,9 @@ import kogul.drawing.Cairo
 import kogul.microdom.*
 
 class Box(
-        override val style: Style = Style(),
-        override val children: List<Node> = emptyList()
+    override val style: Style = Style(),
+    override val events: Events = Events(),
+    override val children: List<Node> = emptyList()
 ) : Container() {
 
     override fun draw(cairo: Cairo) {
@@ -15,6 +16,7 @@ class Box(
         fillRectangle(cairo, size)
         drawBorder(cairo, size)
         children.forEach {
+            it.topLeft = cairo.userToDevice(0, 0).position
             it.draw(cairo)
         }
         cairo.restore()

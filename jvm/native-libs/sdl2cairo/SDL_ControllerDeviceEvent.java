@@ -51,12 +51,12 @@ public class SDL_ControllerDeviceEvent {
     return SDL2JNI.SDL_ControllerDeviceEvent_timestamp_get(swigCPtr, this);
   }
 
-  public void setWhich(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_ControllerDeviceEvent_which_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setWhich(int value) {
+    SDL2JNI.SDL_ControllerDeviceEvent_which_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getWhich() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_ControllerDeviceEvent_which_get(swigCPtr, this), true);
+  public int getWhich() {
+    return SDL2JNI.SDL_ControllerDeviceEvent_which_get(swigCPtr, this);
   }
 
   public SDL_ControllerDeviceEvent() {

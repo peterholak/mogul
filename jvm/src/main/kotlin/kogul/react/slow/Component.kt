@@ -17,7 +17,7 @@ abstract class Component<PropTypes> {
 }
 
 typealias ComponentConstructor = () -> Component<out Any>
-val StringType = ElementType()
+val stringType = ElementType()
 
 // This is because Kotlin Native currently doesn't support much reflection, otherwise Component::class could be used.
 class ElementType(val constructComponent: ComponentConstructor? = null)

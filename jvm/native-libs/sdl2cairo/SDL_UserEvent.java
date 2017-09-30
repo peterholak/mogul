@@ -59,12 +59,12 @@ public class SDL_UserEvent {
     return SDL2JNI.SDL_UserEvent_windowID_get(swigCPtr, this);
   }
 
-  public void setCode(SWIGTYPE_p_Sint32 value) {
-    SDL2JNI.SDL_UserEvent_code_set(swigCPtr, this, SWIGTYPE_p_Sint32.getCPtr(value));
+  public void setCode(int value) {
+    SDL2JNI.SDL_UserEvent_code_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_Sint32 getCode() {
-    return new SWIGTYPE_p_Sint32(SDL2JNI.SDL_UserEvent_code_get(swigCPtr, this), true);
+  public int getCode() {
+    return SDL2JNI.SDL_UserEvent_code_get(swigCPtr, this);
   }
 
   public void setData1(SWIGTYPE_p_void value) {
