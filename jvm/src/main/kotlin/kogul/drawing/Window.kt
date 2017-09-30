@@ -14,6 +14,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
     val window: SWIGTYPE_p_SDL_Window
     val renderer: SWIGTYPE_p_SDL_Renderer
     val texture: SWIGTYPE_p_SDL_Texture
+    val invalidatedEventType: Long
     private var invalidated = true
     private var shouldQuit = false
 
@@ -39,6 +40,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
                 width,
                 height
         ) ?: throw Exception("Failed to create texture")
+        invalidatedEventType = SDL_RegisterEvents(1)
     }
 
     fun draw(code: (cairo: Cairo) -> Unit) {
@@ -113,6 +115,16 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
 
     fun invalidate() {
         invalidated = true
+        SDL_PushEvent(createUserEvent(invalidatedEventType))
+    }
+
+    fun createUserEvent(eventType: Long): SDL_Event {
+        return SDL_Event().apply {
+            type = l_(SDL_EventType.SDL_USEREVENT)
+            user = SDL_UserEvent().apply {
+                type = eventType
+            }
+        }
     }
 
     private companion object {

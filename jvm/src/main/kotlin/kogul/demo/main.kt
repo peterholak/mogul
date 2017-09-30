@@ -10,6 +10,7 @@ import kogul.react.slow.Element
 import kogul.react.slow.KgxBuilder
 import kogul.react.slow.dom.*
 import kogul.react.slow.kgx
+import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.runBlocking
 
 class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
@@ -45,6 +46,13 @@ fun main(args: Array<String>) {
     val page = domRender(kgx { fourBoxes })
 
     runBlocking {
-        runKogulEngine(800, 600, Scene(page))
+        val engine = runKogulEngine(800, 600, Scene(page)).await()
+        delay(5000)
+        engine.scene = Scene(domRender(kgx {
+            layoutBox(direction = VerticalDirection) {
+                (1..4).forEach { fourBoxes }
+            }
+        }))
+        engine.render()
     }
 }

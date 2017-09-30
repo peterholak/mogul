@@ -30,7 +30,7 @@ suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene): C
 //    println("Cleanup finished.")
 //}
 
-class KogulEngine(val window: Window, val scene: Scene) {
+class KogulEngine(val window: Window, var scene: Scene) {
     init {
         render()
     }
