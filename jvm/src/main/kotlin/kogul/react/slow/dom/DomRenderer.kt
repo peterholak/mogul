@@ -27,6 +27,7 @@ fun constructDomNode(e: Element): Node =
             val props = e.props as TextProps
             Text(props.text, props.style)
         }
+        String::class -> Text(e.props as String)
         LayoutBox::class -> {
             val props = e.props as LayoutBoxProps
             LayoutBox(props.direction, props.spacing, props.style, e.children.map { constructDomNode(it) })
