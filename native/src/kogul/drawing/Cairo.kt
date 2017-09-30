@@ -1,4 +1,4 @@
-package drawing
+package kogul.drawing
 
 import kotlinx.cinterop.*
 import pangocairo.*

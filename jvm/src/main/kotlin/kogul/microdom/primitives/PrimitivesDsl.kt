@@ -1,8 +1,6 @@
 package kogul.microdom.primitives
 
-import kogul.microdom.Node
-import kogul.microdom.Scene
-import kogul.microdom.Style
+import kogul.microdom.*
 
 @DslMarker
 annotation class MicroDomMarker

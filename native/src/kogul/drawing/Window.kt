@@ -1,9 +1,9 @@
-package drawing
+package kogul.drawing
 
 import kotlinx.cinterop.*
 import pangocairo.*
 import sdl.*
-import microdom.*
+import kogul.microdom.*
 
 class Window(val width: Int, val height: Int, val background: Color = Color.black) {
 

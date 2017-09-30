@@ -1,6 +1,6 @@
-package microdom
+package kogul.microdom
 
-import microdom.primitives.MicroDomMarker
+import kogul.microdom.primitives.MicroDomMarker
 
 class StyleAttribute(val inherited: Boolean = false)
 

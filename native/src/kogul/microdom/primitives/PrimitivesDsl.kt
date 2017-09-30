@@ -1,6 +1,6 @@
-package microdom.primitives
+package kogul.microdom.primitives
 
-import microdom.*
+import kogul.microdom.*
 
 @DslMarker
 annotation class MicroDomMarker

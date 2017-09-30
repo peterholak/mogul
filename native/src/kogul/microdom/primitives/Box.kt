@@ -1,7 +1,7 @@
-package microdom.primitives
+package kogul.microdom.primitives
 
-import drawing.Cairo
-import microdom.*
+import kogul.drawing.Cairo
+import kogul.microdom.*
 
 class Box(
         override val style: Style = Style(),

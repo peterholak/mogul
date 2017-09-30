@@ -1,10 +1,10 @@
-package microdom.primitives
+package kogul.microdom.primitives
 
-import drawing.Cairo
-import microdom.Container
-import microdom.Node
-import microdom.Size
-import microdom.Style
+import kogul.drawing.Cairo
+import kogul.microdom.Container
+import kogul.microdom.Node
+import kogul.microdom.Size
+import kogul.microdom.Style
 
 sealed class Direction {
     abstract fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int): Int
