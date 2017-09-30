@@ -9,7 +9,11 @@ import kogul.react.slow.dom.layoutBox
 import kogul.react.slow.dom.s
 
 class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
-class TwoBoxesAndText : Component<TwoBoxesAndTextProps>() {
+class TwoBoxesState(
+    var clickCount: Int
+)
+class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
+    override val state = TwoBoxesState(7)
 
     override fun render() = kgx {
         val boxStyle = style {
@@ -27,11 +31,19 @@ class TwoBoxesAndText : Component<TwoBoxesAndTextProps>() {
         layoutBox(spacing = 10, style = s{ margin = 10.all }) {
             box(
                     style = s{ width = 50; height = 50; backgroundColor = props.firstColor } + boxStyle,
-                    events = e{ mouseDown { println("Small box mouseDown") } }
+                    events = e{ mouseDown { smallBoxClicked() } }
             )
             box(style = s{ width = 100; height = 100; backgroundColor = props.secondColor } + boxStyle)
             -props.text
+            -state.clickCount.toString()
             -"!"
+        }
+    }
+
+    fun smallBoxClicked() {
+        println("Small box mouse down")
+        setState {
+            clickCount = 1
         }
     }
 }
