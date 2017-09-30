@@ -1,6 +1,6 @@
-package microdom
+package kogul.microdom
 
-import microdom.primitives.microDom
+import kogul.microdom.primitives.microDom
 
 fun testScene(): Scene {
     val weirdBorders = Borders(

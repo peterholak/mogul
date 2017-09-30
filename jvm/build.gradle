@@ -2,7 +2,7 @@ group 'kogul-jvm'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.1.50'
+    ext.kotlin_version = '1.1.51'
     ext.jna_version = '4.2.2'
 
     repositories {
@@ -16,7 +16,7 @@ buildscript {
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-mainClassName = "demo.MainKt"
+mainClassName = "kogul.demo.MainKt"
 applicationDefaultJvmArgs = ["-Djava.library.path=" + projectDir.absolutePath + "/native-libs/dll"]
 
 repositories {

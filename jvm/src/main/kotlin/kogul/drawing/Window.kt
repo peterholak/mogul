@@ -1,7 +1,7 @@
-package drawing
+package kogul.drawing
 
-import microdom.Color
-import microdom.setSourceRgb
+import kogul.microdom.Color
+import kogul.microdom.setSourceRgb
 import sdl2cairo.*
 import sdl2cairo.SDL2.*
 import sdl2cairo.pango.*
@@ -115,7 +115,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
         invalidated = true
     }
 
-    companion object {
+    private companion object {
         init {
             System.loadLibrary("sdl_wrap")
             System.loadLibrary("pango_cairo_glib_wrap")

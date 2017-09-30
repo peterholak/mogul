@@ -1,6 +1,6 @@
-package microdom
+package kogul.microdom
 
-import drawing.Cairo
+import kogul.drawing.Cairo
 
 sealed class Node {
     abstract val style: Style

@@ -1,16 +1,16 @@
 @file:Suppress("unused")
 
-package microdom
+package kogul.microdom
 
-import drawing.Window
+import kogul.drawing.Window
 import kotlinx.coroutines.experimental.CompletableDeferred
 import kotlin.concurrent.thread
 
-suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDeferred<KogulEngine> {
+suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene): CompletableDeferred<KogulEngine> {
     val engine = CompletableDeferred<KogulEngine>()
     thread(name="KogulEngine") {
         val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
-        engine.complete(KogulEngine(window))
+        engine.complete(KogulEngine(window, scene))
         window.runEfficientEventLoop()
         window.cleanup()
         println("Cleanup finished.")
@@ -22,17 +22,15 @@ suspend fun runKogulEngine(windowWidth: Int, windowHeight: Int): CompletableDefe
 //// Currently doesn't exist in the Kotlin Native stdlib
 //annotation class DslMarker
 //
-//fun runKogulEngine(windowWidth: Int, windowHeight: Int) {
+//fun runKogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene) {
 //    val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
-//    val microdom = KogulEngine(window)
+//    val microdom = KogulEngine(window, scene)
 //    window.runEfficientEventLoop()
 //    window.cleanup()
 //    println("Cleanup finished.")
 //}
 
-class KogulEngine(val window: Window) {
-    var scene = testScene()
-
+class KogulEngine(val window: Window, val scene: Scene) {
     init {
         render()
     }

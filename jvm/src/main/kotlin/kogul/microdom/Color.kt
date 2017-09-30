@@ -1,6 +1,6 @@
-package microdom
+package kogul.microdom
 
-import drawing.Cairo
+import kogul.drawing.Cairo
 
 data class Color(val r: Double, val g: Double, val b: Double) {
     constructor(r: Int, g: Int, b: Int) : this(r / 255.0, g / 255.0, b / 255.0)

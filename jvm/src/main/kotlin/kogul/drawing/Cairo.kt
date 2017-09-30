@@ -1,4 +1,4 @@
-package drawing
+package kogul.drawing
 
 import sdl2cairo.*
 import sdl2cairo.pango.*

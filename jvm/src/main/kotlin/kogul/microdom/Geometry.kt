@@ -1,4 +1,4 @@
-package microdom
+package kogul.microdom
 
 data class Position(val x: Int, val y: Int)
 
@@ -7,9 +7,9 @@ data class Size(val width: Int, val height: Int) {
         val zero = Size(0, 0)
     }
     operator fun plus(other: Size?) = Size(width + (other?.width ?: 0), height + (other?.height ?: 0))
-    operator fun plus(boxSizes: BoxSizes?) = this + (boxSizes?.topLeft ?: Size.zero) + (boxSizes?.bottomRight ?: Size.zero)
+    operator fun plus(boxSizes: BoxSizes?) = this + (boxSizes?.topLeft ?: zero) + (boxSizes?.bottomRight ?: zero)
     operator fun minus(other: Size?) = Size(width - (other?.width ?: 0), height - (other?.height ?: 0))
-    operator fun minus(boxSizes: BoxSizes?) = this - (boxSizes?.topLeft ?: Size.zero) - (boxSizes?.bottomRight ?: Size.zero)
+    operator fun minus(boxSizes: BoxSizes?) = this - (boxSizes?.topLeft ?: zero) - (boxSizes?.bottomRight ?: zero)
 }
 
 data class Rectangle(val topLeft: Position, val size: Size) {

@@ -1,4 +1,4 @@
-package drawing
+package kogul.drawing
 
 import sdl2cairo.pango.*
 import sdl2cairo.SWIGTYPE_p__PangoContext
