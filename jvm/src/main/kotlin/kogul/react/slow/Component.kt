@@ -40,6 +40,7 @@ fun copyState(state: Any): Any {
 
 abstract class StatefulComponent<out PropTypes, StateType : Any> : Component<PropTypes>() {
     abstract var state: StateType
+    // To be able to actually use this, I need an actual reconciler that doesn't just throw everything away
     internal var newState: StateType? = null
 
     fun setState(mutation: StateType.() -> Unit) {

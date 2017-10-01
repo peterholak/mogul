@@ -5,7 +5,6 @@ fun reconcile(root: Element, updater: Updater): Element {
         root.type.constructComponent != null -> {
             @Suppress("UNCHECKED_CAST")
             val instance = root.type.constructComponent.invoke()
-            // TODO: props really shouldn't be nullable
             instance.createInstance(root.props, root.children, updater)
             reconcile(instance.render(), updater)
         }
