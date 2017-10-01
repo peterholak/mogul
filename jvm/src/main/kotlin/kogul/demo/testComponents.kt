@@ -13,7 +13,7 @@ class TwoBoxesState(
     var clickCount: Int
 )
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
-    override val state = TwoBoxesState(7)
+    override var state = TwoBoxesState(7)
 
     override fun render() = kgx {
         val boxStyle = style {
@@ -36,6 +36,7 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
             box(style = s{ width = 100; height = 100; backgroundColor = props.secondColor } + boxStyle)
             -props.text
             -state.clickCount.toString()
+            -"Random ${Math.random()}"
             -"!"
         }
     }
@@ -43,7 +44,7 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
     fun smallBoxClicked() {
         println("Small box mouse down")
         setState {
-            clickCount = 1
+            clickCount++
         }
     }
 }

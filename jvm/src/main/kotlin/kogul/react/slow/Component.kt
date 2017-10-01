@@ -2,17 +2,25 @@ package kogul.react.slow
 
 import kotlin.reflect.full.*
 
+interface Updater {
+    fun update()
+}
+
 abstract class Component<out PropTypes> {
 
     private var hackyProps: PropTypes? = null
-    private var hackyChildren: List<Element>? = null
+    private lateinit var hackyChildren: List<Element>
+    protected lateinit var updater: Updater
     val props by lazy { hackyProps!! }
-    val children by lazy { hackyChildren!! }
+    val children by lazy { hackyChildren }
 
-    internal fun createInstance(props: Any, children: List<Element>) {
+    // This hack is here to hide the implementation details from users who implement components
+    // - if only Kotlin had some construct to easily auto-inherit the default constructor...
+    internal fun createInstance(props: Any, children: List<Element>, updater: Updater) {
         @Suppress("UNCHECKED_CAST")
         hackyProps = props as PropTypes
         hackyChildren = children
+        this.updater = updater
     }
 
     abstract fun render(): Element
@@ -30,12 +38,15 @@ fun copyState(state: Any): Any {
     return state::class.primaryConstructor!!.callBy(values)
 }
 
-abstract class StatefulComponent<out PropTypes, out StateType : Any> : Component<PropTypes>() {
-    abstract val state: StateType
+abstract class StatefulComponent<out PropTypes, StateType : Any> : Component<PropTypes>() {
+    abstract var state: StateType
+    internal var newState: StateType? = null
 
     fun setState(mutation: StateType.() -> Unit) {
         @Suppress("UNCHECKED_CAST")
-        mutation(copyState(state) as StateType)
+        newState = copyState(state) as StateType
+        mutation(newState!!)
+        updater.update()
     }
 }
 

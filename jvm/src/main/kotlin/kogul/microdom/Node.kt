@@ -54,16 +54,31 @@ abstract class Container : Node() {
 
 abstract class Leaf : Node()
 
-class Scene(val root: Node) {
+class Scene(private var root: Node) {
 
-    val flatNodes: List<Node> = if (root is Container) addToFlattenedList(mutableListOf(root), root) else listOf(root)
+    val flatNodes: MutableList<Node> =
+            if (root is Container)
+                addToFlattenedList(mutableListOf(root), root as Container)
+            else
+                mutableListOf(root)
     var hasLayoutInfo = false
 
     init {
         root.topLeft = Position(0, 0)
     }
 
-    private fun addToFlattenedList(list: MutableList<Node>, node: Container): List<Node> {
+    fun replaceRoot(newRoot: Node) {
+        // TODO: this will really need thread safety later
+        hasLayoutInfo = false
+        root = newRoot
+        flatNodes.clear()
+        if (root is Container)
+            addToFlattenedList(flatNodes, root as Container)
+        else
+            flatNodes.add(root)
+    }
+
+    private fun addToFlattenedList(list: MutableList<Node>, node: Container): MutableList<Node> {
         list.addAll(node.children)
         node.children.forEach {
             if (it is Container) {
@@ -74,7 +89,9 @@ class Scene(val root: Node) {
     }
 
     fun draw(cairo: Cairo) {
-        root.populateLayoutSize(cairo)
+        if (!hasLayoutInfo) {
+            root.populateLayoutSize(cairo)
+        }
         root.draw(cairo)
         hasLayoutInfo = true
     }

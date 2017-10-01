@@ -2,6 +2,7 @@ package kogul.react.slow.dom
 
 import kogul.microdom.Events
 import kogul.microdom.Node
+import kogul.microdom.Scene
 import kogul.microdom.Style
 import kogul.microdom.primitives.*
 import kogul.react.slow.*
@@ -39,6 +40,17 @@ fun constructDomNode(e: Element): Node =
         else -> throw InvalidElementType()
     }
 
-fun domRender(root: Element): Node {
-    return constructDomNode(reconcile(root))
+class DomUpdater(val root: Element, val scene: Scene, val triggerRedraw: () -> Unit) : Updater {
+    override fun update() {
+        scene.replaceRoot(constructDomNode(reconcile(root, this)))
+        triggerRedraw()
+    }
+}
+
+// This clearly needs more features in the DOM itself before proceeding...
+fun domRender(root: Element, triggerRedraw: () -> Unit): Scene {
+    val scene = Scene(Box()) // lol
+    val newUpdater = DomUpdater(root, scene, triggerRedraw)
+    newUpdater.update()
+    return scene
 }
