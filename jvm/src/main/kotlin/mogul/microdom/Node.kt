@@ -144,7 +144,7 @@ class Scene(root: Node) {
 
     val flatNodes: MutableList<Node> =
             if (root is Container)
-                addToFlattenedList(mutableListOf(root), root as Container)
+                addToFlattenedList(mutableListOf(root), root)
             else
                 mutableListOf(root)
     var hasLayoutInfo = false

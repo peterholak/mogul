@@ -11,5 +11,5 @@ class KgxBuilder {
 fun kgx(code: KgxBuilder.() -> Unit): Element {
     val builder = KgxBuilder()
     code(builder)
-    return builder.children[0] // TODO: checks
+    return builder.children.single()
 }
