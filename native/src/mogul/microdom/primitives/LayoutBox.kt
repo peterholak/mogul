@@ -43,8 +43,8 @@ class LayoutBox(
         val spacing: Int = 0,
         override val style: Style = Style(),
         override val events: Events = Events(),
-        override val children: ObservableList<Node> = ObservableList()
-) : Container() {
+        children: List<Node> = emptyList()
+) : Container(children) {
 
     override fun draw(cairo: Cairo) {
         cairo.save()

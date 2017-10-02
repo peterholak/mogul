@@ -1,7 +1,5 @@
 package mogul.react.slow
 
-import kotlin.reflect.full.*
-
 interface Updater {
     fun update()
 }
@@ -11,7 +9,8 @@ abstract class Component<out PropTypes> {
     private var hackyProps: PropTypes? = null
     private lateinit var hackyChildren: List<Element>
     protected lateinit var updater: Updater
-    val props by lazy { hackyProps!! }
+    val props
+        get() = hackyProps!!
     val children by lazy { hackyChildren }
 
     // This hack is here to hide the implementation details from users who implement components
@@ -23,31 +22,45 @@ abstract class Component<out PropTypes> {
         this.updater = updater
     }
 
+    internal fun updateProps(newProps: Any) {
+        // TODO: this should really only update the props that have changed (maybe to preserve some identity semantics?)
+        @Suppress("UNCHECKED_CAST")
+        hackyProps = newProps as PropTypes
+    }
+
     abstract fun render(): Element
 }
 
-fun copyState(state: Any): Any {
-    // This is hacky as fuck, I need to find a better solution for this
-    // Some things could be cached for better performance, but it still won't work in native...
-    // In general, it's probably better to give up on this altogether and use a different mechanism for state
-    val values = state::class.primaryConstructor!!.valueParameters.associate { parameter ->
-        // Slow as fuck, but it doesn't matter at this stage
-        val property = state::class.declaredMemberProperties.find { it.name == parameter.name }!!
-        parameter to property.getter.call(state)
-    }
-    return state::class.primaryConstructor!!.callBy(values)
+interface Copyable {
+    fun copy(): Copyable
 }
 
-abstract class StatefulComponent<out PropTypes, StateType : Any> : Component<PropTypes>() {
+typealias StateMap = MutableMap<String, Any?>
+// Somewhat of an ugly way of dealing with this without using reflection
+abstract class State(private val create: () -> State) : Copyable {
+    protected val map: StateMap = mutableMapOf()
+    override fun copy(): State {
+        val newState = create()
+        newState.map.putAll(map)
+        return newState
+    }
+}
+
+abstract class StatefulComponent<out PropTypes, StateType : Copyable> : Component<PropTypes>() {
     abstract var state: StateType
     // To be able to actually use this, I need an actual reconciler that doesn't just throw everything away
     internal var newState: StateType? = null
 
     fun setState(mutation: StateType.() -> Unit) {
         @Suppress("UNCHECKED_CAST")
-        newState = copyState(state) as StateType
+        newState = state.copy() as StateType
         mutation(newState!!)
+        // TODO: why exactly can't I just put the new state in there right here (so it'd be synchronous)?
         updater.update()
+    }
+
+    internal fun updateToNewState() {
+        newState?.let { state = it }
     }
 }
 
@@ -56,4 +69,16 @@ val stringType = ElementType()
 
 // This is because Kotlin Native currently doesn't support much reflection, otherwise Component::class could be used.
 class ElementType(val constructComponent: ComponentConstructor? = null)
-data class Element(val type: ElementType, val props: Any, val children: List<Element> = emptyList())
+data class Element(
+    val type: ElementType,
+    val props: Any,
+    val children: List<Element> = emptyList()
+)
+
+// Something like this should also be available for DOM-backed elements
+class InstantiatedElement(
+    val type: ElementType,
+    val props: Any,
+    val children: List<InstantiatedElement>,
+    val instance: Any
+)

@@ -5,11 +5,8 @@ package mogul.microdom
 import mogul.drawing.Event
 import mogul.drawing.QuitEvent
 import mogul.drawing.Window
-//import java.util.concurrent.CompletableFuture
-//import java.util.concurrent.Future
-//import java.util.concurrent.LinkedBlockingQueue
-//import kotlin.concurrent.thread
 
+//
 //fun runMogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene): Future<MogulEngine> {
 //    val events = LinkedBlockingQueue<Event>()
 //    val engine = CompletableFuture<MogulEngine>()
@@ -28,12 +25,10 @@ import mogul.drawing.Window
 // Currently doesn't exist in the Kotlin Native stdlib
 annotation class DslMarker
 
-fun runMogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene) {
-    val window = Window(windowWidth, windowHeight, 0xDDDDDD.color)
-    val microdom = MogulEngine(window, scene)
-    window.runEfficientEventLoop()
-    window.cleanup()
-    println("Cleanup finished.")
+fun runMogulEngine(windowWidth: Int, windowHeight: Int, scene: Scene, eventListener: (Event) -> Unit): MogulEngine {
+    val window = Window(windowWidth, windowHeight, 0xDDDDDD.color, eventListener)
+    val engine = MogulEngine(window, scene)
+    return engine
 }
 
 class MogulEngine(val window: Window, var scene: Scene) {
@@ -46,6 +41,12 @@ class MogulEngine(val window: Window, var scene: Scene) {
         window.draw { cairo ->
             scene.draw(cairo)
         }
+    }
+
+    fun runBlocking() {
+        window.runEfficientEventLoop()
+        window.cleanup()
+        println("Cleanup finished.")
     }
 
     fun shutdown() {

@@ -3,11 +3,11 @@ package mogul.microdom.primitives
 import mogul.drawing.Cairo
 import mogul.microdom.*
 
-data class Box(
+class Box(
     override val style: Style = Style(),
     override val events: Events = Events(),
-    override val children: ObservableList<Node> = ObservableList()
-) : Container() {
+    children: List<Node> = emptyList()
+) : Container(children) {
 
     override fun draw(cairo: Cairo) {
         val size = innerSize(cairo)

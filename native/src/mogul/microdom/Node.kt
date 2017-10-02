@@ -1,9 +1,10 @@
 package mogul.microdom
 
 import mogul.drawing.*
+import mogul.microdom.ObservableList.Change.*
 
 sealed class Node {
-    lateinit var parent: Node; protected set
+    var parent: Container? = null; internal set
     var dirty = true; private set
 
     abstract val style: Style
@@ -45,28 +46,89 @@ sealed class Node {
     fun boundingRectangle(): Rectangle? = topLeft?.let {
         Rectangle(it, cachedLayoutSize!!)
     }
+
+    fun replaceWith(newChild: Node) {
+        if (parent !is Container) {
+            throw UnsupportedOperationException("replaceWith cannot be called on root node! (parent of node must be a Container).")
+        }else{
+            (parent as Container).replaceChild(this, newChild)
+        }
+    }
 }
 
 // TODO: this doesn't really notify on all operations yet, so that needs to be fixed
-class ObservableList<T>(val list: MutableList<T> = mutableListOf()): MutableList<T> by list {
-    val listeners = mutableListOf<() -> Unit>()
-    private fun notifyListeners() { listeners.forEach { it.invoke() }}
+class ObservableList<T>(private val list: MutableList<T> = mutableListOf()): MutableList<T> by list {
 
-    override fun add(element: T) = list.add(element).also { notifyListeners() }
-    override fun add(index: Int, element: T) = list.add(index, element).also { notifyListeners() }
-    override fun addAll(elements: Collection<T>) = list.addAll(elements).also { notifyListeners() }
-    override fun addAll(index: Int, elements: Collection<T>) = list.addAll(index, elements).also { notifyListeners() }
-    override fun remove(element: T) = list.remove(element).also { notifyListeners() }
-    override fun removeAt(index: Int) = list.removeAt(index).also { notifyListeners() }
-    override fun removeAll(elements: Collection<T>) = list.removeAll(elements).also { notifyListeners() }
-    override fun clear() = list.clear().also { notifyListeners() }
+    constructor(vararg children: T) : this(children.toMutableList())
+
+    val listeners = mutableListOf<(change: Change<T>) -> Unit>()
+    private fun notifyListeners(change: Change<T>) { listeners.forEach { it.invoke(change) }}
+
+    sealed class Change<T> {
+        class Added<T>(val elements: Collection<T>) : Change<T>()
+        class Removed<T>(val elements: Collection<T>) : Change<T>()
+    }
+
+    override fun add(element: T) =
+        list.add(element).also { notifyListeners(Added(listOf(element))) }
+
+    override fun add(index: Int, element: T) =
+        list.add(index, element).also { notifyListeners(Added(listOf(element))) }
+
+    override fun addAll(elements: Collection<T>) =
+        list.addAll(elements).also { notifyListeners(Added(elements)) }
+
+    override fun addAll(index: Int, elements: Collection<T>) =
+        list.addAll(index, elements).also { notifyListeners(Added(elements)) }
+
+    override fun remove(element: T) =
+        list.remove(element).also { notifyListeners(Removed(listOf(element))) }
+
+    override fun removeAt(index: Int) =
+        list.removeAt(index).also { notifyListeners(Removed(listOf(it))) }
+
+    override fun removeAll(elements: Collection<T>) =
+        list.removeAll(elements).also { notifyListeners(Removed(elements)) }
+
+    // This could be pretty inefficient and maybe pointless (right now its only used for setting parent to null)
+    override fun clear() = list.also { notifyListeners(Removed(it)) }.clear()
+
+    // Maybe the Removed should be called as well, or it should be a different Change type, but for now I don't need it
+    override fun set(index: Int, element: T) =
+        list.set(index, element).also { notifyListeners(Removed(listOf(it))) }.also{ notifyListeners(Added(listOf(element))) }
 }
 
-abstract class Container : Node() {
-    abstract val children: ObservableList<Node>
+class NodeNotFoundException : Exception()
+abstract class Container(initialChildren: List<Node>) : Node() {
+
+    val children: ObservableList<Node> = ObservableList()
+
+    init {
+        children.listeners.add { change ->
+            when (change) {
+                is Added -> change.elements.forEach {
+                    if (it.parent != null) {
+                        // TODO Not thread safe
+                        it.parent!!.children.remove(it)
+                    }
+                    it.parent = this
+                }
+                // Is there any point to this?
+                is Removed -> change.elements.forEach { it.parent = null }
+            }
+        }
+        children.addAll(initialChildren)
+    }
+
     override fun populateLayoutSize(cairo: Cairo) {
         super.populateLayoutSize(cairo)
         children.forEach { it.populateLayoutSize(cairo) }
+    }
+
+    internal fun replaceChild(old: Node, new: Node) {
+        val position = children.indexOf(old)
+        if (position == -1) throw NodeNotFoundException()
+        children[position] = new
     }
 }
 
@@ -82,7 +144,7 @@ class Scene(root: Node) {
 
     val flatNodes: MutableList<Node> =
             if (root is Container)
-                addToFlattenedList(mutableListOf(root), root as Container)
+                addToFlattenedList(mutableListOf(root), root)
             else
                 mutableListOf(root)
     var hasLayoutInfo = false

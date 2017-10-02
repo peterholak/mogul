@@ -1,7 +1,5 @@
 package mogul.react.slow
 
-import kotlin.reflect.full.*
-
 interface Updater {
     fun update()
 }
@@ -33,26 +31,29 @@ abstract class Component<out PropTypes> {
     abstract fun render(): Element
 }
 
-fun copyState(state: Any): Any {
-    // This is hacky as fuck, I need to find a better solution for this
-    // Some things could be cached for better performance, but it still won't work in native...
-    // In general, it's probably better to give up on this altogether and use a different mechanism for state
-    val values = state::class.primaryConstructor!!.valueParameters.associate { parameter ->
-        // Slow as fuck, but it doesn't matter at this stage
-        val property = state::class.declaredMemberProperties.find { it.name == parameter.name }!!
-        parameter to property.getter.call(state)
-    }
-    return state::class.primaryConstructor!!.callBy(values)
+interface Copyable {
+    fun copy(): Copyable
 }
 
-abstract class StatefulComponent<out PropTypes, StateType : Any> : Component<PropTypes>() {
+typealias StateMap = MutableMap<String, Any?>
+// Somewhat of an ugly way of dealing with this without using reflection
+abstract class State(private val create: () -> State) : Copyable {
+    protected val map: StateMap = mutableMapOf()
+    override fun copy(): State {
+        val newState = create()
+        newState.map.putAll(map)
+        return newState
+    }
+}
+
+abstract class StatefulComponent<out PropTypes, StateType : Copyable> : Component<PropTypes>() {
     abstract var state: StateType
     // To be able to actually use this, I need an actual reconciler that doesn't just throw everything away
     internal var newState: StateType? = null
 
     fun setState(mutation: StateType.() -> Unit) {
         @Suppress("UNCHECKED_CAST")
-        newState = copyState(state) as StateType
+        newState = state.copy() as StateType
         mutation(newState!!)
         // TODO: why exactly can't I just put the new state in there right here (so it'd be synchronous)?
         updater.update()

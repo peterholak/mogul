@@ -5,13 +5,14 @@ import pangocairo.*
 import sdl.*
 import mogul.microdom.*
 
-class Window(val width: Int, val height: Int, val background: Color = Color.black) {
+class Window(val width: Int, val height: Int, val background: Color = Color.black, val eventListener: (Event) -> Unit) {
 
     val window: CPointer<SDL_Window>
     val renderer: CPointer<SDL_Renderer>
     val texture: CPointer<SDL_Texture>
+    val invalidatedEventType: Uint32
     private var invalidated = false
-    private var shouldQuit = false
+    var shouldQuit = false; private set
 
     init {
         SDL_Init(SDL_INIT_EVERYTHING)
@@ -26,6 +27,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
                 width,
                 height
         ) ?: throw Exception("Failed to create texture")
+        invalidatedEventType = SDL_RegisterEvents(1) // TODO: check result
     }
 
     fun draw(code: (cairo: Cairo) -> Unit) {
@@ -47,6 +49,7 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
             cairo_paint(cairoT)
             code(cairo)
             SDL_UnlockTexture(texture)
+            invalidate()
         }
     }
 
@@ -64,6 +67,15 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
                             SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED.value -> invalidate()
                         }
                     }
+
+                    SDL_MOUSEBUTTONDOWN ->
+                        eventListener.invoke(MouseEvent(MouseDown, Position(event.button.x, event.button.y)))
+
+                    SDL_MOUSEBUTTONUP ->
+                        eventListener.invoke(MouseEvent(MouseUp, Position(event.button.x, event.button.y)))
+
+                    SDL_MOUSEMOTION ->
+                        eventListener.invoke(MouseEvent(MouseMove, Position(event.motion.x, event.motion.y)))
                 }
 
                 if (invalidated) {
@@ -96,6 +108,12 @@ class Window(val width: Int, val height: Int, val background: Color = Color.blac
 
     fun invalidate() {
         invalidated = true
+        memScoped {
+            val event = alloc<SDL_Event>()
+            event.type = SDL_USEREVENT
+            event.user.type = invalidatedEventType
+            SDL_PushEvent(event.ptr)
+        }
     }
 
     fun quit() {

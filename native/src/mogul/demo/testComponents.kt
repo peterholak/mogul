@@ -9,11 +9,14 @@ import mogul.react.slow.dom.layoutBox
 import mogul.react.slow.dom.s
 
 class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
-class TwoBoxesState(
-    var clickCount: Int
-)
+class TwoBoxesState : State({ TwoBoxesState() }) {
+    var clickCount: Int by map
+}
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
-    override var state = TwoBoxesState(7)
+    // This is a pretty terrible way of initializing state, as it doesn't enforce required initial values...
+    override var state = TwoBoxesState().apply {
+        clickCount = 1
+    }
 
     override fun render() = kgx {
         val boxStyle = style {
@@ -33,16 +36,21 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
                     style = s{ width = 50; height = 50; backgroundColor = props.firstColor } + boxStyle,
                     events = e{ mouseDown { smallBoxClicked() } }
             )
-            box(style = s{ width = 100; height = 100; backgroundColor = props.secondColor } + boxStyle)
+            if (state.clickCount % 3 != 0) {
+                box(style = s { width = 100; height = 100; backgroundColor = props.secondColor } + boxStyle)
+            }else{
+                layoutBox(direction = VerticalDirection) {
+                    box(style = s { width = 50; height = 50; backgroundColor = props.secondColor } + boxStyle)
+                    box(style = s { width = 50; height = 50; backgroundColor = props.secondColor } + boxStyle)
+                }
+            }
             -props.text
             -state.clickCount.toString()
-            -"Random ${Math.random()}"
             -"!"
         }
     }
 
     fun smallBoxClicked() {
-        println("Small box mouse down")
         setState {
             clickCount++
         }

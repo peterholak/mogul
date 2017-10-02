@@ -19,11 +19,12 @@ val boxType = ElementType()
 val textType = ElementType()
 val layoutBoxType = ElementType()
 
-fun constructDomNode(e: Element): Node =
-    when(e.type) {
+// For now, the `instance` field is not used and this always creates new dom nodes.
+fun constructDomNode(e: InstantiatedElement): Node {
+    return when (e.type) {
         boxType -> {
             val props = e.props as BoxProps
-            Box(props.style, props.events, e.children.mapTo(ObservableList()) { constructDomNode(it) })
+            Box(props.style, props.events, e.children.map { constructDomNode(it) })
         }
         textType -> {
             val props = e.props as TextProps
@@ -37,15 +38,23 @@ fun constructDomNode(e: Element): Node =
                     props.spacing,
                     props.style,
                     props.events,
-                    e.children.mapTo(ObservableList()) { constructDomNode(it) }
+                    e.children.map { constructDomNode(it) }
             )
         }
-        else -> throw InvalidElementType()
+        // This happens when `e` is the element of a Component in the VDOM
+        // Let's just skip it here and move on to its first child
+        // The reason the component's element itself stays in the VDOM is for later diffing...
+        else -> constructDomNode(e.children.single())
     }
+}
 
 class DomUpdater(val root: Element, val scene: Scene, val triggerRedraw: () -> Unit) : Updater {
+    var oldTree: InstantiatedElement? = null
+
     override fun update() {
-        scene.replaceRoot(constructDomNode(reconcile(root, this)))
+        val tree = ReactReconciler.reconcile(root, oldTree, this)
+        scene.replaceRoot(constructDomNode(tree))
+        oldTree = tree
         triggerRedraw()
     }
 }

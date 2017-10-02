@@ -3,6 +3,7 @@ package mogul.drawing
 import kotlinx.cinterop.*
 import pangocairo.*
 
+class XY(val x: Double, val y: Double)
 class Cairo(val cairo: CPointer<cairo_t>) {
     fun setSourceRgb(r: Number, g: Number, b: Number) = cairo_set_source_rgb(cairo, r.toDouble(), g.toDouble(), b.toDouble())
     fun moveTo(x: Number, y: Number) = cairo_move_to(cairo, x.toDouble(), y.toDouble())
@@ -27,6 +28,16 @@ class Cairo(val cairo: CPointer<cairo_t>) {
     fun setAntialias(antialias: Antialias) = cairo_set_antialias(cairo, antialias.value)
     fun setLineJoin(lineJoin: LineJoin) = cairo_set_line_join(cairo, lineJoin.value)
     fun rectangle(x: Number, y: Number, width: Number, height: Number) = cairo_rectangle(cairo, x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
+    fun userToDevice(x: Number, y: Number): XY {
+        memScoped {
+            val xp = alloc<DoubleVar>()
+            xp.value = x.toDouble()
+            val yp = alloc<DoubleVar>()
+            yp.value = y.toDouble()
+            cairo_user_to_device(cairo, xp.ptr, yp.ptr)
+            return XY(xp.value, yp.value)
+        }
+    }
 }
 
 enum class FontSlant(val value: cairo_font_slant_t) {
