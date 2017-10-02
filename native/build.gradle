@@ -1,4 +1,4 @@
-group 'kogul-native'
+group 'mogul-native'
 version '1.0-SNAPSHOT'
 
 buildscript {
@@ -23,7 +23,7 @@ repositories {
 
 konanInterop {
     pangocairo {
-        defFile project.file('src/kogul/interop/pangocairo.def')
+        defFile project.file('src/mogul/interop/pangocairo.def')
         includeDirs "c:/bin/msys64/mingw64/include/pango-1.0",
                 "c:/bin/msys64/mingw64/include/glib-2.0",
                 "c:/bin/msys64/mingw64/include/cairo",
@@ -34,7 +34,7 @@ konanInterop {
     }
 
     sdl {
-        defFile project.file('src/kogul/interop/sdl.def')
+        defFile project.file('src/mogul/interop/sdl.def')
         includeDirs "c:/bin/msys64/mingw64/include/SDL2"
 //        includeDirs '/usr/include/SDL2'
         linkerOpts '-Lc:/bin/msys64/mingw64/lib -lSDL2'
@@ -43,10 +43,10 @@ konanInterop {
 }
 
 konanArtifacts {
-    "kogul-native" {
+    "mogul-native" {
         inputFiles project.fileTree('src')
         useInterop 'pangocairo'
         useInterop 'sdl'
-        extraOpts '-entry', 'kogul.demo.main'
+        extraOpts '-entry', 'mogul.demo.main'
     }
 }
