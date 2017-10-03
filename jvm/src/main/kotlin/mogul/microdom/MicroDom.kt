@@ -3,25 +3,29 @@
 package mogul.microdom
 
 import mogul.microdom.primitives.Text
-import mogul.platform.Engine
-import mogul.platform.Event
-import mogul.platform.EventWithWindow
-import mogul.platform.Window
+import mogul.platform.*
 
 class WindowNotRegisteredException : Exception()
-class MicroDom(val engine: Engine) {
-    private val sceneForWindow = mutableMapOf<Window, Scene>().withDefault { Scene(Text("No Scene on this Window")) }
+class MicroDom(val engine: Engine, val events: EventPubSub) {
+    private val scenesByWindow = mutableMapOf<Window, Scene>().withDefault { Scene(Text("No Scene on this Window")) }
+
+    fun sceneForWindow(window: Window) = scenesByWindow[window] ?: throw WindowNotRegisteredException()
 
     fun registerWindow(window: Window, scene: Scene) {
-        sceneForWindow[window] = scene
+        scenesByWindow[window] = scene
         scene.onRootReplaced = { render(window) }
         render(window)
+    }
+
+    fun unregisterWindow(window: Window) {
+        sceneForWindow(window).onRootReplaced = null
+        scenesByWindow.remove(window)
     }
 
     fun render(window: Window) {
         // TODO: maybe this should be async, just send an event to the Window to schedule a re-render
         window.draw { cairo ->
-            sceneForWindow[window]?.draw(cairo)
+            scenesByWindow[window]?.draw(cairo)
                     ?: throw WindowNotRegisteredException()
         }
     }
@@ -29,11 +33,22 @@ class MicroDom(val engine: Engine) {
     fun processEvent(event: Event) {
         if (event !is EventWithWindow) return
 
-        sceneForWindow[event.window]?.processEvent(event)
+        if (event is WindowDestroyedEvent) {
+            return unregisterWindow(event.window)
+        }
+
+        scenesByWindow[event.window]?.processEvent(event)
                 ?: throw WindowNotRegisteredException()
     }
 
     fun shutdown() {
         engine.quit()
+    }
+
+    fun runEventLoop() {
+        while (!engine.quitting()) {
+            val event = events.waitForEvent()
+            processEvent(event)
+        }
     }
 }

@@ -3,6 +3,7 @@ package mogul.platform.jvm
 import mogul.microdom.Color
 import mogul.microdom.setSourceRgb
 import mogul.platform.Antialias
+import mogul.platform.AutoClose
 import mogul.platform.Cairo
 import sdl2cairo.*
 import sdl2cairo.SDL2.*
@@ -17,7 +18,8 @@ class Window(
     val userEvents: UserEvents,
     val width: Int,
     val height: Int,
-    val background: Color = Color.black
+    val background: Color = Color.black,
+    val autoClose: AutoClose = AutoClose.Close
 ) : WindowInterface {
 
     val window: SWIGTYPE_p_SDL_Window = SDL_CreateWindow(

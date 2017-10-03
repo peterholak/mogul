@@ -2,13 +2,14 @@ package mogul.demo
 
 import mogul.microdom.*
 import mogul.microdom.primitives.VerticalDirection
+import mogul.platform.MouseEvent
 import mogul.react.slow.*
 import mogul.react.slow.dom.box
 import mogul.react.slow.dom.e
 import mogul.react.slow.dom.layoutBox
 import mogul.react.slow.dom.s
 
-class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
+data class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
 class TwoBoxesState : State({ TwoBoxesState() }) {
     var clickCount: Int by map
 }
@@ -34,11 +35,11 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
         layoutBox(spacing = 10, style = s{ margin = 10.all }) {
             box(
                     style = s{
-                        width = 50;
-                        height = 50;
+                        width = 50
+                        height = 50
                         backgroundColor = props.firstColor
                     } + boxStyle,
-                    events = e{ mouseDown { smallBoxClicked() } }
+                    events = e{ mouseUp += this@TwoBoxesAndText::smallBoxClicked }
             )
             if (state.clickCount % 3 != 0) {
                 box(style = s {
@@ -59,7 +60,7 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
         }
     }
 
-    fun smallBoxClicked() {
+    fun smallBoxClicked(event: MouseEvent) {
         setState {
             clickCount++
         }
@@ -67,20 +68,56 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
 }
 
 // This ugly boilerplate would preferably be generated with a compiler plugin...
-val twoBoxesAndTextType = ElementType({ TwoBoxesAndText() })
+val twoBoxesAndTextType = ElementType("TwoBoxesAndText", { TwoBoxesAndText() })
 fun KgxBuilder.twoBoxesAndText(firstColor: Color = Color.white, secondColor: Color = Color.black, text: String) {
     children.add(Element(twoBoxesAndTextType, TwoBoxesAndTextProps(firstColor, secondColor, text)))
 }
 
-class FourBoxes : Component<Nothing>() {
+data class FourBoxesProps(val title: String, val onMoreWindows: MouseEventHandler? = null, val onLessWindows: MouseEventHandler? = null)
+class FourBoxes : Component<FourBoxesProps>() {
 
     override fun render() = kgx {
         layoutBox(direction = VerticalDirection, spacing = 10) {
+            -props.title
             twoBoxesAndText(text = "Hello", firstColor = 0xFFEEEE.color, secondColor = 0xEEEEFF.color)
             twoBoxesAndText(text = "World", firstColor = 0xEEEEFF.color, secondColor = 0xFFEEEE.color)
+            button(text = "More windows", onClick = props.onMoreWindows)
+            button(text = "Fewer windows", onClick = props.onLessWindows)
         }
     }
 
 }
-val fourBoxesType = ElementType({ FourBoxes() })
-val KgxBuilder.fourBoxes; get() = children.add(Element(fourBoxesType, Unit))
+val fourBoxesType = ElementType("FourBoxes", { FourBoxes() })
+fun KgxBuilder.fourBoxes(title: String, onMoreWindows: MouseEventHandler? = null, onFewerWindows: MouseEventHandler? = null) =
+    children.add(Element(fourBoxesType, FourBoxesProps(title, onMoreWindows, onFewerWindows)))
+
+data class ButtonProps(val text: String, val onClick: MouseEventHandler? = null)
+class Button : Component<ButtonProps>() {
+
+    val buttonStyle = style {
+        padding = 10.all
+        margin = 20.left
+        border = Borders(
+                width = BoxSizes(top = 1, right = 2, bottom = 2, left = 1),
+                color = BoxColors(
+                        top = 0xAAAAAA.color,
+                        left = 0xAAAAAA.color,
+                        bottom = 0x444444.color,
+                        right = 0x444444.color
+                )
+        )
+    }
+
+    override fun render(): Element {
+
+        return kgx {
+            box(style = buttonStyle, events = e{ mouseUp += props.onClick }) {
+                -props.text
+            }
+        }
+    }
+
+}
+val buttonType = ElementType("Button", { Button() })
+fun KgxBuilder.button(text: String, onClick: MouseEventHandler? = null) =
+    children.add(Element(buttonType, ButtonProps(text, onClick)))

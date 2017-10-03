@@ -18,7 +18,7 @@ apply plugin: 'kotlin'
 apply plugin: 'application'
 
 mainClassName = "mogul.demo.MainKt"
-applicationDefaultJvmArgs = ["-Djava.library.path=" + projectDir.absolutePath + "/native-libs/dll"]
+applicationDefaultJvmArgs = ["-ea", "-Djava.library.path=" + projectDir.absolutePath + "/native-libs/dll"]
 
 repositories {
     mavenCentral()

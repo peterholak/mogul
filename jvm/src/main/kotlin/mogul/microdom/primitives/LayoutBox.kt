@@ -6,15 +6,15 @@ import mogul.microdom.*
 sealed class Direction {
     abstract fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int): Int
     abstract fun postDrawTranslateY(cairo: Cairo, child: Node, spacing: Int): Int
-    abstract fun totalWidth(cairo: Cairo, children: List<Node>): Int
-    abstract fun totalHeight(cairo: Cairo, children: List<Node>): Int
+    abstract fun totalWidth(cairo: Cairo, children: List<Node>, spacing: Int): Int
+    abstract fun totalHeight(cairo: Cairo, children: List<Node>, spacing: Int): Int
 }
 
 object HorizontalDirection : Direction() {
-    override fun totalWidth(cairo: Cairo, children: List<Node>) =
-            children.sumBy { it.layoutSize(cairo).width }
+    override fun totalWidth(cairo: Cairo, children: List<Node>, spacing: Int) =
+            children.sumBy { it.layoutSize(cairo).width + spacing } - spacing
 
-    override fun totalHeight(cairo: Cairo, children: List<Node>) =
+    override fun totalHeight(cairo: Cairo, children: List<Node>, spacing: Int) =
             children.maxBy { it.layoutSize(cairo).height }!!.layoutSize(cairo).height
 
     override fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int) =
@@ -25,11 +25,11 @@ object HorizontalDirection : Direction() {
 }
 
 object VerticalDirection : Direction() {
-    override fun totalWidth(cairo: Cairo, children: List<Node>) =
+    override fun totalWidth(cairo: Cairo, children: List<Node>, spacing: Int) =
             children.maxBy { it.layoutSize(cairo).width }!!.layoutSize(cairo).width
 
-    override fun totalHeight(cairo: Cairo, children: List<Node>) =
-            children.sumBy { it.layoutSize(cairo).height }
+    override fun totalHeight(cairo: Cairo, children: List<Node>, spacing: Int) =
+            children.sumBy { it.layoutSize(cairo).height + spacing } - spacing
 
     override fun postDrawTranslateX(cairo: Cairo, child: Node, spacing: Int) = 0
 
@@ -64,8 +64,8 @@ class LayoutBox(
     override fun defaultInnerSize(cairo: Cairo): Size {
         if (children.isEmpty()) return Size(0, 0)
         return Size(
-                direction.totalWidth(cairo, children),
-                direction.totalHeight(cairo, children)
+                direction.totalWidth(cairo, children, spacing),
+                direction.totalHeight(cairo, children, spacing)
         )
     }
 }

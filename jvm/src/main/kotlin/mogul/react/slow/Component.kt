@@ -65,10 +65,15 @@ abstract class StatefulComponent<out PropTypes, StateType : Copyable> : Componen
 }
 
 typealias ComponentConstructor = () -> Component<Any>
-val stringType = ElementType()
+val stringType = ElementType("string")
 
 // This is because Kotlin Native currently doesn't support much reflection, otherwise Component::class could be used.
-class ElementType(val constructComponent: ComponentConstructor? = null)
+class ElementType(val name: String, val constructComponent: ComponentConstructor? = null) {
+    override fun toString(): String {
+        return name + if (constructComponent != null) " (C)" else ""
+    }
+}
+
 data class Element(
     val type: ElementType,
     val props: Any,
@@ -80,5 +85,11 @@ class InstantiatedElement(
     val type: ElementType,
     val props: Any,
     val children: List<InstantiatedElement>,
-    val instance: Any
+    val instance: Any,
+    val change: Change?
 )
+
+sealed class Change
+class Add : Change()
+class Remove(val element: InstantiatedElement): Change()
+class Modify(val oldProps: Any) : Change()

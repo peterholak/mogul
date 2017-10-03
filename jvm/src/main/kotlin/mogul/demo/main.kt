@@ -1,37 +1,57 @@
 package mogul.demo
 
-import mogul.microdom.*
-import mogul.platform.QuitEvent
-import mogul.platform.Window
-import mogul.platform.Engine as EngineInterface
-import mogul.platform.jvm.Engine
-import mogul.platform.jvm.QueueEventPubSub
-import mogul.react.slow.dom.domRender
-import mogul.react.slow.kgx
-import java.util.concurrent.CompletableFuture
-import kotlin.concurrent.thread
+import mogul.microdom.MicroDom
+import mogul.microdom.primitives.VerticalDirection
+import mogul.platform.MouseEvent
+import mogul.react.slow.*
+import mogul.react.slow.dom.appKgx
+import mogul.react.slow.dom.layoutBox
+import mogul.react.slow.dom.runApp
+
+class MyAppState : State({ MyAppState() }) {
+    var windowCount: Int by map
+    var globalCounter: Int by map
+}
+class MyApp : StatefulComponent<Nothing, MyAppState>() {
+    override var state = MyAppState().apply { windowCount = 1; globalCounter = 0 }
+
+    override fun render() = appKgx {
+
+        (1..state.windowCount).map {
+            window(title = "mogul-$platformName #$it", width = 800, height = 600, root = kgx {
+                layoutBox(direction = VerticalDirection, spacing = 15) {
+                    fourBoxes(
+                            title = "Window #$it",
+                            onMoreWindows = this@MyApp::onMoreWindows,
+                            onFewerWindows = this@MyApp::onFewerWindows
+                    )
+                    -"Global counter: ${state.globalCounter}"
+                    button(text="Increment", onClick = this@MyApp::incrementGlobalCounter)
+                }
+            })
+        }
+
+    }
+
+    fun onMoreWindows(event: MouseEvent) {
+        setState { windowCount++ }
+    }
+
+    fun onFewerWindows(event: MouseEvent) {
+        setState { windowCount-- }
+    }
+
+    fun incrementGlobalCounter(event: MouseEvent) {
+        setState { globalCounter++ }
+    }
+
+}
+val myAppType = ElementType("MyApp", { MyApp() })
 
 fun main(args: Array<String>) {
 
-    val events = QueueEventPubSub()
-    // Make sure we don't accidentally rely on implementation details - make the type just the cross-platform interface.
-    val engine: EngineInterface = Engine(events)
+    val (engine, events) = platformInit()
+    val microDom = MicroDom(engine, events)
+    runApp(microDom, myAppType)
 
-    val windowFuture = CompletableFuture<Window>()
-    thread(name="MogulEngine") {
-        // Window must be created in the same thread where the event loop is.
-        windowFuture.complete(engine.createWindow("mogul-jvm", 800, 600))
-        engine.runEfficientEventLoop()
-        engine.cleanup()
-        events.publish(QuitEvent)
-    }
-    val window = windowFuture.get()
-
-    val microDom = MicroDom(engine)
-    microDom.registerWindow(window, domRender(kgx { fourBoxes }))
-
-    while (!engine.quitting()) {
-        val event = events.waitForEvent()
-        microDom.processEvent(event)
-    }
 }

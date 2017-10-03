@@ -1,21 +1,24 @@
 package mogul.react.slow.dom
 
-import mogul.microdom.*
+import mogul.microdom.Events
+import mogul.microdom.Node
+import mogul.microdom.Scene
+import mogul.microdom.Style
 import mogul.microdom.primitives.*
 import mogul.react.slow.*
 
-class BoxProps(val style: Style = Style(), val events: Events = Events())
-class TextProps(val text: String, val style: Style = Style(), val events: Events = Events())
-class LayoutBoxProps(
+data class BoxProps(val style: Style = Style(), val events: Events = Events())
+data class TextProps(val text: String, val style: Style = Style(), val events: Events = Events())
+data class LayoutBoxProps(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
         val style: Style = Style(),
         val events: Events = Events()
 )
 
-val boxType = ElementType()
-val textType = ElementType()
-val layoutBoxType = ElementType()
+val boxType = ElementType("dom.box")
+val textType = ElementType("dom.text")
+val layoutBoxType = ElementType("dom.layoutBox")
 
 // For now, the `instance` field is not used and this always creates new dom nodes.
 fun constructDomNode(e: InstantiatedElement): Node {
@@ -51,7 +54,8 @@ class DomUpdater(val root: Element, val scene: Scene) : Updater {
     var oldTree: InstantiatedElement? = null
 
     override fun update() {
-        val tree = ReactReconciler.reconcile(root, oldTree, this)
+        val toRemove = mutableListOf<Remove>()
+        val tree = ReactReconciler.reconcile(root, oldTree, ReconcileRunArguments(this, toRemove))
         oldTree = tree
         scene.replaceRoot(constructDomNode(tree))
     }
@@ -60,7 +64,6 @@ class DomUpdater(val root: Element, val scene: Scene) : Updater {
 // This clearly needs more features in the DOM itself before proceeding...
 fun domRender(root: Element): Scene {
     val scene = Scene(Box()) // lol
-    val newUpdater = DomUpdater(root, scene)
-    newUpdater.update()
+    DomUpdater(root, scene).update()
     return scene
 }
