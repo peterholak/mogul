@@ -1,6 +1,6 @@
 package mogul.microdom.primitives
 
-import mogul.drawing.Cairo
+import mogul.platform.Cairo
 import mogul.microdom.*
 
 class Text(

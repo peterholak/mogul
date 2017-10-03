@@ -1,6 +1,6 @@
 package mogul.microdom.primitives
 
-import mogul.drawing.Cairo
+import mogul.platform.Cairo
 import mogul.microdom.*
 
 class Box(
@@ -47,20 +47,20 @@ class Box(
     }
 
     private fun drawSingleBorder(
-            cairo: Cairo,
-            borderWidth: Int,
-            color: Color?,
-            xFrom: Int,
-            yFrom: Int,
-            xTo: Int,
-            yTo: Int,
-            extraFrom: Int,
-            extraTo: Int)
+        cairo: Cairo,
+        borderWidth: Int,
+        color: Color?,
+        xFrom: Int,
+        yFrom: Int,
+        xTo: Int,
+        yTo: Int,
+        extraFrom: Int,
+        extraTo: Int)
     {
         if (borderWidth != 0 || color != null) {
             val horizontal = (yFrom == yTo)
 
-            // When drawing lines individually, the path ends at the exact point (no line joins),
+            // When platformJvm lines individually, the path ends at the exact point (no line joins),
             // which makes rectangle corners look ugly as fuck. This addresses that problem.
             val extraXFrom = if (horizontal) extraFrom/2 else 0
             val extraYFrom = if (horizontal) 0 else extraFrom/2

@@ -1,4 +1,4 @@
-package mogul.drawing
+package mogul.platform.jvm
 
 import sdl2cairo.pango.*
 import sdl2cairo.SWIGTYPE_p__PangoContext

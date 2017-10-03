@@ -4,8 +4,6 @@ import mogul.microdom.*
 import mogul.microdom.primitives.*
 import mogul.react.slow.*
 
-class InvalidElementType : Exception()
-
 class BoxProps(val style: Style = Style(), val events: Events = Events())
 class TextProps(val text: String, val style: Style = Style(), val events: Events = Events())
 class LayoutBoxProps(
@@ -44,25 +42,25 @@ fun constructDomNode(e: InstantiatedElement): Node {
         // This happens when `e` is the element of a Component in the VDOM
         // Let's just skip it here and move on to its first child
         // The reason the component's element itself stays in the VDOM is for later diffing...
+        // TODO: checks for when it's not a component
         else -> constructDomNode(e.children.single())
     }
 }
 
-class DomUpdater(val root: Element, val scene: Scene, val triggerRedraw: () -> Unit) : Updater {
+class DomUpdater(val root: Element, val scene: Scene) : Updater {
     var oldTree: InstantiatedElement? = null
 
     override fun update() {
         val tree = ReactReconciler.reconcile(root, oldTree, this)
-        scene.replaceRoot(constructDomNode(tree))
         oldTree = tree
-        triggerRedraw()
+        scene.replaceRoot(constructDomNode(tree))
     }
 }
 
 // This clearly needs more features in the DOM itself before proceeding...
-fun domRender(root: Element, triggerRedraw: () -> Unit): Scene {
+fun domRender(root: Element): Scene {
     val scene = Scene(Box()) // lol
-    val newUpdater = DomUpdater(root, scene, triggerRedraw)
+    val newUpdater = DomUpdater(root, scene)
     newUpdater.update()
     return scene
 }

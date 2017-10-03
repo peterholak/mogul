@@ -1,4 +1,4 @@
-package mogul.drawing
+package mogul.platform
 
 import sdl2cairo.*
 import sdl2cairo.SDL2.*

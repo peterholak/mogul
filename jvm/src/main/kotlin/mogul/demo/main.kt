@@ -1,24 +1,37 @@
 package mogul.demo
 
-import mogul.microdom.Container
-import mogul.microdom.MogulEngine
-import mogul.microdom.runMogulEngine
-import mogul.microdom.testScene
+import mogul.microdom.*
+import mogul.platform.QuitEvent
+import mogul.platform.Window
+import mogul.platform.Engine as EngineInterface
+import mogul.platform.jvm.Engine
+import mogul.platform.jvm.QueueEventPubSub
 import mogul.react.slow.dom.domRender
 import mogul.react.slow.kgx
+import java.util.concurrent.CompletableFuture
+import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
 
-    var engine: MogulEngine? = null
-    val scene = domRender(kgx { fourBoxes }, { engine?.render() })
+    val events = QueueEventPubSub()
+    // Make sure we don't accidentally rely on implementation details - make the type just the cross-platform interface.
+    val engine: EngineInterface = Engine(events)
 
-//    val scene = testScene()
+    val windowFuture = CompletableFuture<Window>()
+    thread(name="MogulEngine") {
+        // Window must be created in the same thread where the event loop is.
+        windowFuture.complete(engine.createWindow("mogul-jvm", 800, 600))
+        engine.runEfficientEventLoop()
+        engine.cleanup()
+        events.publish(QuitEvent)
+    }
+    val window = windowFuture.get()
 
-    engine = runMogulEngine(800, 600, scene).get()
-    val greenBox = ((((scene.root as Container).children[1]) as Container).children[0])
-//    println(greenBox.parent)
-    while (!engine.window.shouldQuit) {
-        val event = engine.window.eventListener.take()
-        engine.scene.processEvent(event)
+    val microDom = MicroDom(engine)
+    microDom.registerWindow(window, domRender(kgx { fourBoxes }))
+
+    while (!engine.quitting()) {
+        val event = events.waitForEvent()
+        microDom.processEvent(event)
     }
 }

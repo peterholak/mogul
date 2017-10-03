@@ -1,7 +1,9 @@
 package mogul.microdom
 
-import mogul.drawing.*
 import mogul.microdom.ObservableList.Change.*
+import mogul.platform.Cairo
+import mogul.platform.Event
+import mogul.platform.MouseEvent
 
 sealed class Node {
     var parent: Container? = null; internal set
@@ -137,6 +139,8 @@ abstract class Leaf : Node()
 class Scene(root: Node) {
 
     var root: Node; private set
+    // Obviously a better notification system will be used later (or a different mechanism altogether)
+    internal var onRootReplaced: (() -> Unit)? = null
 
     init {
         this.root = root
@@ -162,6 +166,7 @@ class Scene(root: Node) {
             addToFlattenedList(flatNodes, root as Container)
         else
             flatNodes.add(root)
+        onRootReplaced?.invoke()
     }
 
     private fun addToFlattenedList(list: MutableList<Node>, node: Container): MutableList<Node> {

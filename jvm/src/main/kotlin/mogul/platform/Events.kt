@@ -1,9 +1,12 @@
-package mogul.drawing
+package mogul.platform
 
 import mogul.microdom.Position
 
 interface Event {
     val type: EventType
+}
+interface EventWithWindow : Event {
+    val window: Window
 }
 abstract class EventType
 
@@ -20,4 +23,4 @@ object QuitEvent : Event {
 }
 
 // TODO: what's with 0 1 when mouse leaves window
-class MouseEvent(override val type: EventType, val position: Position) : Event
+class MouseEvent(override val window: Window, override val type: EventType, val position: Position) : EventWithWindow

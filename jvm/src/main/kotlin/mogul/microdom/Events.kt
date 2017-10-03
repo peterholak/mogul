@@ -1,7 +1,7 @@
 package mogul.microdom
 
-import mogul.drawing.*
 import mogul.microdom.primitives.MicroDomMarker
+import mogul.platform.*
 
 typealias Handler<T> = (T) -> Unit
 
