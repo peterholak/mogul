@@ -1,5 +1,7 @@
 package mogul.platform
 
+import mogul.platform.Cairo
+
 /**
  * What happens when the window is closed in a system way (e.g. close button in title bar).
  * This will be used to determine how the window should behave in case the application doesn't

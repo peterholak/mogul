@@ -4,11 +4,11 @@ import mogul.microdom.Color
 import mogul.microdom.setSourceRgb
 import mogul.platform.Antialias
 import mogul.platform.AutoClose
-import mogul.platform.Cairo
 import sdl2cairo.*
 import sdl2cairo.SDL2.*
 import sdl2cairo.pango.*
 import mogul.platform.Window as WindowInterface
+import mogul.platform.Cairo as CairoInterface
 
 fun l_(o: Any) = (o.javaClass.getMethod("swigValue").invoke(o) as Int).toLong()
 val SDL_EventType.l; get() = (javaClass.getMethod("swigValue").invoke(this) as Int).toLong()
@@ -50,7 +50,7 @@ class Window(
     private var invalidated = true
     override fun wasInvalidated() = invalidated
 
-    override fun draw(code: (cairo: Cairo) -> Unit) {
+    override fun draw(code: (cairo: CairoInterface) -> Unit) {
         val pixels = new_voidpp()
         val pitch = new_intp()
         SDL_LockTexture(texture, null, pixels, pitch)

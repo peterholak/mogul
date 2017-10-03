@@ -1,6 +1,5 @@
 package mogul.microdom.primitives
 
-import javafx.geometry.Pos
 import mogul.platform.Cairo
 import mogul.microdom.*
 
