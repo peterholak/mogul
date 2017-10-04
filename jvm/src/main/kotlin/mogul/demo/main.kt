@@ -21,7 +21,7 @@ class MyApp : StatefulComponent<Nothing, MyAppState>() {
             window(title = "mogul-$platformName #$it", width = 800, height = 600, root = kgx {
                 layoutBox(direction = VerticalDirection, spacing = 15) {
                     fourBoxes(
-                            title = "Window #$it",
+                            title = "Window #$it. Click on the small boxes.",
                             onMoreWindows = this@MyApp::onMoreWindows,
                             onFewerWindows = this@MyApp::onFewerWindows
                     )

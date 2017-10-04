@@ -22,7 +22,7 @@ class Window(
     val autoClose: AutoClose = AutoClose.Close
 ) : WindowInterface {
 
-    val window: SWIGTYPE_p_SDL_Window = SDL_CreateWindow(
+    val window = SDL_CreateWindow(
             title,
             SDL_WINDOWPOS_UNDEFINED.toInt(),
             SDL_WINDOWPOS_UNDEFINED.toInt(),

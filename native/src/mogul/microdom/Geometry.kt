@@ -1,6 +1,6 @@
 package mogul.microdom
 
-import mogul.drawing.XY
+import mogul.platform.XY
 
 data class Position(val x: Int, val y: Int)
 val XY.position; get() = Position(x.toInt(), y.toInt())

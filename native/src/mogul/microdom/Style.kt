@@ -16,6 +16,9 @@ class Style private constructor(private val map: MutableMap<String, Any?>) {
 
     constructor() : this(mutableMapOf<String, Any?>().withDefault { null })
 
+    override fun equals(other: Any?) = other is Style && other.map == map
+    override fun hashCode() = map.hashCode()
+
     operator fun plus(other: Style) =
         Style(LinkedHashMap(map).withDefault { null }.apply { putAll(other.map) })
 
@@ -42,7 +45,7 @@ class Style private constructor(private val map: MutableMap<String, Any?>) {
     }
 }
 
-class Borders(val width: BoxSizes = BoxSizes.zero, val color: BoxColors = BoxColors.none) {
+data class Borders(val width: BoxSizes = BoxSizes.zero, val color: BoxColors = BoxColors.none) {
     constructor(width: Int = 0, color: Color? = null) : this(BoxSizes(width), BoxColors(color))
 }
 

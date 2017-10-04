@@ -99,15 +99,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override fun runEfficientEventLoop() {
         val event = SDL_Event()
         eventLoopStarted = true
-
-        if (runMode == RunMode.Threaded) {
-            thread(name = "onEventLoopStarted") {
-                onEventLoopStarted.forEach { it.invoke() }
-            }
-        }else{
-            onEventLoopStarted.forEach { it.invoke() }
-        }
-
+        notifyOnStart()
         while (!shouldQuit) {
             // Blocking wait, there are no animation just yet, so we don't need to keep rendering the texture over and over
             if (SDL_WaitEvent(event) == 0) { throw Exception("Error in SDL_WaitEvent") }
@@ -126,13 +118,24 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override fun runGameEventLoop() {
         val event = SDL_Event()
         eventLoopStarted = true
+        notifyOnStart()
         while (!shouldQuit) {
-            while(SDL_PollEvent(event) != 0) {
+            while(!shouldQuit && SDL_PollEvent(event) != 0) {
                 processEvent(event)
             }
             windows.forEach { it.render() }
         }
         eventLoopStarted = false
+    }
+
+    private fun notifyOnStart() {
+        if (runMode == RunMode.Threaded) {
+            thread(name = "onEventLoopStarted") {
+                onEventLoopStarted.forEach { it.invoke() }
+            }
+        }else{
+            onEventLoopStarted.forEach { it.invoke() }
+        }
     }
 
     private fun processEvent(event: SDL_Event) {

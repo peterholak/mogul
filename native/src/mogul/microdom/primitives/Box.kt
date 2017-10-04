@@ -1,6 +1,6 @@
 package mogul.microdom.primitives
 
-import mogul.drawing.Cairo
+import mogul.platform.Cairo
 import mogul.microdom.*
 
 class Box(
@@ -38,29 +38,64 @@ class Box(
         }else{
             val width = border.width
             val color = border.color
-            drawSingleBorder(cairo, width.top, color.top, 0, 0, size.width, 0, -width.left, width.right)
-            drawSingleBorder(cairo, width.right, color.right, size.width, 0, size.width, size.height, -width.top, width.bottom)
-            drawSingleBorder(cairo, width.bottom, color.bottom, size.width, size.height, 0, size.height, width.right, -width.left)
-            drawSingleBorder(cairo, width.left, color.left, 0, size.height, 0, 0, width.bottom, -width.top)
+            val padding = style.padding ?: BoxSizes.zero
+            val xLeft = -padding.left
+            val xRight = size.width + padding.right
+            val yTop = -padding.top
+            val yBottom = size.height + padding.bottom
+            drawSingleBorder(
+                    cairo = cairo,
+                    borderWidth = width.top,
+                    color = color.top,
+                    from = Position(xLeft, yTop),
+                    to = Position(xRight, yTop),
+                    extraFrom = -width.left,
+                    extraTo = width.right
+            )
+            drawSingleBorder(
+                    cairo = cairo,
+                    borderWidth = width.right,
+                    color = color.right,
+                    from = Position(xRight, yTop),
+                    to = Position(xRight, yBottom),
+                    extraFrom = -width.top,
+                    extraTo = width.bottom
+            )
+            drawSingleBorder(
+                    cairo = cairo,
+                    borderWidth = width.bottom,
+                    color = color.bottom,
+                    from = Position(xRight, yBottom),
+                    to = Position(xLeft, yBottom),
+                    extraFrom = width.right,
+                    extraTo = -width.left
+            )
+            drawSingleBorder(
+                    cairo = cairo,
+                    borderWidth = width.left,
+                    color = color.left,
+                    from = Position(xLeft, yBottom),
+                    to = Position(xLeft, yTop),
+                    extraFrom = width.bottom,
+                    extraTo = -width.top
+            )
         }
         cairo.stroke()
     }
 
     private fun drawSingleBorder(
-            cairo: Cairo,
-            borderWidth: Int,
-            color: Color?,
-            xFrom: Int,
-            yFrom: Int,
-            xTo: Int,
-            yTo: Int,
-            extraFrom: Int,
-            extraTo: Int)
+        cairo: Cairo,
+        borderWidth: Int,
+        color: Color?,
+        from: Position,
+        to: Position,
+        extraFrom: Int,
+        extraTo: Int)
     {
         if (borderWidth != 0 || color != null) {
-            val horizontal = (yFrom == yTo)
+            val horizontal = (from.y == to.y)
 
-            // When drawing lines individually, the path ends at the exact point (no line joins),
+            // When platformJvm lines individually, the path ends at the exact point (no line joins),
             // which makes rectangle corners look ugly as fuck. This addresses that problem.
             val extraXFrom = if (horizontal) extraFrom/2 else 0
             val extraYFrom = if (horizontal) 0 else extraFrom/2
@@ -69,8 +104,8 @@ class Box(
 
             cairo.setLineWidth(borderWidth)
             cairo.setSourceRgb(color ?: Color.black)
-            cairo.moveTo(xFrom + extraXFrom, yFrom + extraYFrom)
-            cairo.lineTo(xTo + extraXTo, yTo + extraYTo)
+            cairo.moveTo(from.x + extraXFrom, from.y + extraYFrom)
+            cairo.lineTo(to.x + extraXTo, to.y + extraYTo)
             cairo.stroke()
         }
     }

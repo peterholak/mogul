@@ -1,6 +1,6 @@
 package mogul.microdom
 
-import mogul.drawing.Cairo
+import mogul.platform.Cairo
 
 data class Color(val r: Double, val g: Double, val b: Double) {
     constructor(r: Int, g: Int, b: Int) : this(r / 255.0, g / 255.0, b / 255.0)

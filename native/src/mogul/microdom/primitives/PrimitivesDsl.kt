@@ -2,6 +2,8 @@ package mogul.microdom.primitives
 
 import mogul.microdom.*
 
+annotation class DslMarker
+
 @DslMarker
 annotation class MicroDomMarker
 
