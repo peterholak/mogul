@@ -197,7 +197,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     private companion object {
         init {
             System.loadLibrary("sdl_wrap")
-            System.loadLibrary("pango_cairo_glib_wrap")
+            System.loadLibrary("cairo_wrap")
         }
     }
 }
