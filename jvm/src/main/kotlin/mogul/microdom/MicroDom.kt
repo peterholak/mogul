@@ -2,6 +2,7 @@
 
 package mogul.microdom
 
+import mogul.demo.platformRunEventLoop
 import mogul.microdom.primitives.Text
 import mogul.platform.*
 
@@ -46,9 +47,6 @@ class MicroDom(val engine: Engine, val events: EventPubSub) {
     }
 
     fun runEventLoop() {
-        while (!engine.quitting()) {
-            val event = events.waitForEvent()
-            processEvent(event)
-        }
+        platformRunEventLoop(events, this)
     }
 }

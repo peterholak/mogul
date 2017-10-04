@@ -5,6 +5,11 @@ import mogul.microdom.color
 
 interface Engine {
     val windows: List<Window>
+
+    // This is handled separately from other events to make it work with QueueEventPublisher. Cleanup of this
+    // shit definitely needed.
+    var onEventLoopStarted: MutableList<() -> Unit>
+
     fun createWindow(title: String, width: Int, height: Int, background: Color = 0xDDDDDD.color, autoClose: AutoClose = AutoClose.Close): Window
     fun destroyWindow(window: Window)
     fun runOnUiThread(code: () -> Unit)
@@ -24,7 +29,8 @@ typealias EventHandler<T> = (T) -> Unit
 interface EventSubscriber {
     fun <T: Event> subscribe(type: EventType, handler: EventHandler<T>)
     fun <T: Event> unsubscribe(type: EventType, handler: EventHandler<T>)
-    fun waitForEvent(): Event
+    fun subscribeToEverything(handler: EventHandler<Event>)
+    fun unsubscribeFromEverything(handler: EventHandler<Event>)
 }
 
 interface EventPubSub : EventPublisher, EventSubscriber

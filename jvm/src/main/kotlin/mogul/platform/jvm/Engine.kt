@@ -1,5 +1,7 @@
 package mogul.platform.jvm
 
+import mogul.demo.RunMode
+import mogul.demo.runMode
 import mogul.microdom.Color
 import mogul.microdom.Position
 import mogul.platform.*
@@ -9,6 +11,7 @@ import sdl2cairo.SDL_EventType.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.concurrent.thread
 import mogul.platform.Engine as EngineInterface
 
 typealias UiThreadCode = () -> Unit
@@ -19,7 +22,12 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override val windows = mutableListOf<Window>()
     val windowsById = mutableMapOf<Long, Window>()
     var shouldQuit = false; private set
+    private var eventLoopStarted = false
     val userEvents = UserEvents()
+
+    // This is handled separately from other events to make it work with QueueEventPublisher. Cleanup of this
+    // shit definitely needed.
+    override var onEventLoopStarted = mutableListOf<() -> Unit>()
 
     // Hacky, but easier than messing around with global references in SWIG. Temporary solution.
     val uiThreadCode = ConcurrentHashMap<Int, UiThreadCode>()
@@ -70,18 +78,36 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     }
 
     override fun runOnUiThreadAndWait(code: () -> Unit) {
-        // Ugly hacks like this won't be necessary once coroutines or other threading facilities hit Kotlin Native
-        val future = CompletableFuture<Unit>()
-        val wrapped = {
-            code()
-            future.complete(Unit).let { Unit }
+        if (!eventLoopStarted) {
+            error("runOnUiThreadAndWait called before the event loop has started.")
         }
-        runOnUiThread(wrapped)
-        future.get()
+
+        if (runMode == RunMode.Threaded) {
+            // This will all be figured out later :/ :D ...
+            val future = CompletableFuture<Unit>()
+            val wrapped = {
+                code()
+                future.complete(Unit).let { Unit }
+            }
+            runOnUiThread(wrapped)
+            future.get()
+        }else{
+            code()
+        }
     }
 
     override fun runEfficientEventLoop() {
         val event = SDL_Event()
+        eventLoopStarted = true
+
+        if (runMode == RunMode.Threaded) {
+            thread(name = "onEventLoopStarted") {
+                onEventLoopStarted.forEach { it.invoke() }
+            }
+        }else{
+            onEventLoopStarted.forEach { it.invoke() }
+        }
+
         while (!shouldQuit) {
             // Blocking wait, there are no animation just yet, so we don't need to keep rendering the texture over and over
             if (SDL_WaitEvent(event) == 0) { throw Exception("Error in SDL_WaitEvent") }
@@ -89,6 +115,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
             windows.forEach { if (it.wasInvalidated()) it.render() }
         }
+        eventLoopStarted = false
     }
 
     override fun quit() {
@@ -98,12 +125,14 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
     override fun runGameEventLoop() {
         val event = SDL_Event()
+        eventLoopStarted = true
         while (!shouldQuit) {
             while(SDL_PollEvent(event) != 0) {
                 processEvent(event)
             }
             windows.forEach { it.render() }
         }
+        eventLoopStarted = false
     }
 
     private fun processEvent(event: SDL_Event) {

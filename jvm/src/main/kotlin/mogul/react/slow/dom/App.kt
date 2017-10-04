@@ -121,12 +121,14 @@ fun appKgx(appBuilder: AppKgxBuilder.() -> Unit): Element {
 }
 
 fun runApp(microDom: MicroDom, root: Element) {
-    AppUpdater(root, microDom).update()
-    if (microDom.engine.windows.isEmpty()) {
-        // TODO: this should end asynchronously and without an error, just send a "reconcile done" event and
-        // let the engine handle it
-        microDom.engine.quit()
-        error("Application has no windows.")
+    microDom.engine.onEventLoopStarted.add {
+        AppUpdater(root, microDom).update()
+        if (microDom.engine.windows.isEmpty()) {
+            // TODO: this should end asynchronously and without an error, just send a "reconcile done" event and
+            // let the engine handle it
+            microDom.engine.quit()
+            error("Application has no windows.")
+        }
     }
     microDom.runEventLoop()
 }

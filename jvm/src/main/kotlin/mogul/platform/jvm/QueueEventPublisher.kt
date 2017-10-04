@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class QueueEventPubSub : EventPubSub {
     val subscribers = ConcurrentHashMap<EventType, ConcurrentLinkedQueue<EventHandler<*>>>()
+    val everythingSubscribers = ConcurrentLinkedQueue<EventHandler<Event>>()
 
     override fun <T: Event> subscribe(type: EventType, handler: EventHandler<T>) {
         subscribers.getOrPut(type, { ConcurrentLinkedQueue() }).add(handler)
@@ -17,21 +18,29 @@ class QueueEventPubSub : EventPubSub {
         subscribers[type]?.remove(handler)
     }
 
+    override fun subscribeToEverything(handler: EventHandler<Event>) {
+        everythingSubscribers.add(handler)
+    }
+
+    override fun unsubscribeFromEverything(handler: EventHandler<Event>) {
+        everythingSubscribers.remove(handler)
+    }
+
     val queue: BlockingQueue<Event> = LinkedBlockingQueue<Event>()
 
     override fun publish(event: Event) {
         queue.put(event)
     }
 
-    override fun waitForEvent(): Event {
+    fun waitForEvent() {
         val event = queue.take()
-        // Notify subscribers on the same thread where events are normally processed (i.e. main thread).
+        // Notify subscribers on the same thread where events are normally processed.
         // This shit will be changed very soon anyway...
         subscribers[event.type]?.forEach {
             @Suppress("UNCHECKED_CAST")
             (it as EventHandler<Event>).invoke(event)
         }
-        return event
+        everythingSubscribers.forEach { it.invoke(event) }
     }
 
 }
