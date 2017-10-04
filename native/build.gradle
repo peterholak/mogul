@@ -3,6 +3,7 @@ version '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.1.51'
+    ext.mingw_home = 'c:/bin/msys64/mingw64'
 
     repositories {
         mavenCentral()
@@ -22,31 +23,58 @@ repositories {
 }
 
 konanInterop {
-    pangocairo {
+    pangocairoWin {
         defFile project.file('src/mogul/interop/pangocairo.def')
-        includeDirs "c:/bin/msys64/mingw64/include/pango-1.0",
-                "c:/bin/msys64/mingw64/include/glib-2.0",
-                "c:/bin/msys64/mingw64/include/cairo",
-                "c:/bin/msys64/mingw64/lib/glib-2.0/include"
-        linkerOpts "-Lc:/bin/msys64/mingw64/lib -lpango-1.0 -lgthread-2.0 -lgobject-2.0 -lffi -lglib-2.0 -lintl -lpcre -liconv -lpcre -lcairo -lpixman-1 -lpangocairo-1.0"
-//        includeDirs "/usr/include/cairo"
-//        linkerOpts "-L/usr/lib/x86_64-linux-gnu -lcairo -lpixman-1"
+        includeDirs "$mingw_home/include/pango-1.0",
+                "$mingw_home/include/glib-2.0",
+                "$mingw_home/include/cairo",
+                "$mingw_home/lib/glib-2.0/include"
+        linkerOpts "-L$mingw_home/lib -lpango-1.0 -lgthread-2.0 -lgobject-2.0 -lffi -lglib-2.0 -lintl -lpcre -liconv -lpcre -lcairo -lpixman-1 -lpangocairo-1.0"
+        pkg 'pangocairo'
+        target 'mingw'
     }
 
-    sdl {
+    pangocairoLinux {
+        defFile project.file('src/mogul/interop/pangocairo.def')
+        includeDirs "/usr/include/cairo", "/usr/include/pango-1.0", "/usr/include/glib-2.0", "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+        linkerOpts "-L/usr/lib/x86_64-linux-gnu -lcairo -lpixman-1"
+        pkg 'pangocairo'
+        target 'linux'
+    }
+
+    sdlWin {
         defFile project.file('src/mogul/interop/sdl.def')
-        includeDirs "c:/bin/msys64/mingw64/include/SDL2"
-//        includeDirs '/usr/include/SDL2'
-        linkerOpts '-Lc:/bin/msys64/mingw64/lib -lSDL2'
-//        target 'linux'
+        includeDirs "$mingw_home/include/SDL2"
+        linkerOpts "-L$mingw_home/lib -lSDL2"
+        pkg 'sdl'
+        target 'mingw'
+    }
+
+    sdlLinux {
+        defFile project.file('src/mogul/interop/sdl.def')
+        includeDirs '/usr/include/SDL2'
+        linkerOpts '-lSDL2'
+        pkg 'sdl'
+        target 'linux'
     }
 }
 
 konanArtifacts {
-    "mogul-native" {
+    "mogul-native-linux" {
         inputFiles project.fileTree('src')
-        useInterop 'pangocairo'
-        useInterop 'sdl'
+        useInterop 'pangocairoLinux'
+        useInterop 'sdlLinux'
         extraOpts '-entry', 'mogul.demo.main'
+        target 'linux'
+        outputName 'mogul-native'
+    }
+
+    "mogul-native-win" {
+        inputFiles project.fileTree('src')
+        useInterop 'pangocairoWin'
+        useInterop 'sdlWin'
+        extraOpts '-entry', 'mogul.demo.main'
+        target 'mingw'
+        outputName 'mogul-native'
     }
 }
