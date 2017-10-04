@@ -30,6 +30,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override var onEventLoopStarted = mutableListOf<() -> Unit>()
 
     // Hacky, but easier than messing around with global references in SWIG. Temporary solution.
+    // Also the counter is pointless, see the comment in `runOnUiThread`
     val uiThreadCode = ConcurrentHashMap<Int, UiThreadCode>()
     val uiThreadCodeCounter = AtomicInteger(0)
 
@@ -65,6 +66,8 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     }
 
     override fun runOnUiThread(code: () -> Unit) {
+        // Really this is quite pointless, I could just use a queue for the lambdas, who cares which lambda is
+        // associated with which SDL event, they arrive in order anyway...
         val codeId = uiThreadCodeCounter.incrementAndGet()
         if (codeId == Int.MAX_VALUE) {
             // By the time we reach max, the start of the map will have run long ago

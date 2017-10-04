@@ -8,10 +8,9 @@
 
 package sdl2cairo;
 
-public final class SDL_eventaction {
-  public final static SDL_eventaction SDL_ADDEVENT = new SDL_eventaction("SDL_ADDEVENT");
-  public final static SDL_eventaction SDL_PEEKEVENT = new SDL_eventaction("SDL_PEEKEVENT");
-  public final static SDL_eventaction SDL_GETEVENT = new SDL_eventaction("SDL_GETEVENT");
+public final class SDL_GLContextResetNotification {
+  public final static SDL_GLContextResetNotification SDL_GL_CONTEXT_RESET_NO_NOTIFICATION = new SDL_GLContextResetNotification("SDL_GL_CONTEXT_RESET_NO_NOTIFICATION", SDL2JNI.SDL_GL_CONTEXT_RESET_NO_NOTIFICATION_get());
+  public final static SDL_GLContextResetNotification SDL_GL_CONTEXT_RESET_LOSE_CONTEXT = new SDL_GLContextResetNotification("SDL_GL_CONTEXT_RESET_LOSE_CONTEXT", SDL2JNI.SDL_GL_CONTEXT_RESET_LOSE_CONTEXT_get());
 
   public final int swigValue() {
     return swigValue;
@@ -21,33 +20,33 @@ public final class SDL_eventaction {
     return swigName;
   }
 
-  public static SDL_eventaction swigToEnum(int swigValue) {
+  public static SDL_GLContextResetNotification swigToEnum(int swigValue) {
     if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
       return swigValues[swigValue];
     for (int i = 0; i < swigValues.length; i++)
       if (swigValues[i].swigValue == swigValue)
         return swigValues[i];
-    throw new IllegalArgumentException("No enum " + SDL_eventaction.class + " with value " + swigValue);
+    throw new IllegalArgumentException("No enum " + SDL_GLContextResetNotification.class + " with value " + swigValue);
   }
 
-  private SDL_eventaction(String swigName) {
+  private SDL_GLContextResetNotification(String swigName) {
     this.swigName = swigName;
     this.swigValue = swigNext++;
   }
 
-  private SDL_eventaction(String swigName, int swigValue) {
+  private SDL_GLContextResetNotification(String swigName, int swigValue) {
     this.swigName = swigName;
     this.swigValue = swigValue;
     swigNext = swigValue+1;
   }
 
-  private SDL_eventaction(String swigName, SDL_eventaction swigEnum) {
+  private SDL_GLContextResetNotification(String swigName, SDL_GLContextResetNotification swigEnum) {
     this.swigName = swigName;
     this.swigValue = swigEnum.swigValue;
     swigNext = this.swigValue+1;
   }
 
-  private static SDL_eventaction[] swigValues = { SDL_ADDEVENT, SDL_PEEKEVENT, SDL_GETEVENT };
+  private static SDL_GLContextResetNotification[] swigValues = { SDL_GL_CONTEXT_RESET_NO_NOTIFICATION, SDL_GL_CONTEXT_RESET_LOSE_CONTEXT };
   private static int swigNext = 0;
   private final int swigValue;
   private final String swigName;

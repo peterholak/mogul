@@ -1,29 +1,30 @@
+set MINGW_HOME=c:/bin/msys64/mingw64
+set JDK_HOME=c:/lib/jdk
+
 swig ^
-    -Ic:/bin/msys64/mingw64/include ^
-    -Ic:/bin/msys64/mingw64/include/SDL2 ^
+    -I%MINGW_HOME%/include ^
+    -I%MINGW_HOME%/include/SDL2 ^
     -java -package sdl2cairo -outdir sdl2cairo -o sdl2cairo/sdl_wrap.c sdl.i
 swig ^
-    -Ic:/bin/msys64/mingw64/include ^
-    -Ic:/bin/msys64/mingw64/include/pango-1.0 ^
-    -Ic:/bin/msys64/mingw64/lib/glib-2.0/include ^
-    -Ic:/bin/msys64/mingw64/include/glib-2.0 ^
-    -Ic:/bin/msys64/mingw64/include/cairo ^
-    -java -package sdl2cairo -outdir sdl2cairo -o sdl2cairo/pangocairo_wrap.c pango-cairo-glib.i
+    -I%MINGW_HOME%/include ^
+    -I%MINGW_HOME%/include/cairo ^
+    -java -package sdl2cairo -outdir sdl2cairo -o sdl2cairo/cairo_wrap.c cairo.i
 
 gcc ^
+    -O2 ^
+    -s ^
     -shared ^
-    -Ic:/lib/jdk/include ^
-    -Ic:/lib/jdk/include/win32 ^
-    -Ic:/bin/msys64/mingw64/include/SDL2 ^
+    -I%JDK_HOME%/include ^
+    -I%JDK_HOME%/include/win32 ^
+    -I%MINGW_HOME%/include/SDL2 ^
     -o dll/sdl_wrap.dll sdl2cairo/sdl_wrap.c -lSDL2
 gcc ^
+    -O2 ^
+    -s ^
     -Wno-deprecated-declarations ^
     -shared ^
-    -Ic:/lib/jdk/include ^
-    -Ic:/lib/jdk/include/win32 ^
-    -Ic:/bin/msys64/mingw64/include/pango-1.0 ^
-    -Ic:/bin/msys64/mingw64/lib/glib-2.0/include ^
-    -Ic:/bin/msys64/mingw64/include/glib-2.0 ^
-    -Ic:/bin/msys64/mingw64/include/cairo ^
-    -o dll/pango_cairo_glib_wrap.dll sdl2cairo/pango_cairo_glib_wrap.c ^
-    -lpango-1.0 -lgthread-2.0 -lgobject-2.0 -lffi -lglib-2.0 -lintl -lpcre -lintl -liconv -lpcre -lcairo -lpixman-1 -lpangocairo-1.0
+    -I%JDK_HOME%/include ^
+    -I%JDK_HOME%/include/win32 ^
+    -I%MINGW_HOME%/include/cairo ^
+    -o dll/cairo_wrap.dll sdl2cairo/cairo_wrap.c ^
+    -lcairo
