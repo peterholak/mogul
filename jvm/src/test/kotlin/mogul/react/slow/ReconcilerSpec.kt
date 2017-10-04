@@ -10,11 +10,11 @@ import org.junit.runner.RunWith
 object ReconcilerSpec : Spek({
 
     it("removes subtree when elements are of different type") {
-
+        TODO()
     }
 
     it("preserves subtree when elements are of the same type") {
-
+        TODO()
     }
 
 })
