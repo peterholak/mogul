@@ -23,30 +23,17 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
         val boxStyle = style {
             border = Borders(
                     width = BoxSizes(top = 2, right = 3, bottom = 3, left = 2),
-                    color = BoxColors(
-                            top = 0xAAAAAA.color,
-                            left = 0xAAAAAA.color,
-                            bottom = 0x444444.color,
-                            right = 0x444444.color
-                    )
+                    color = BoxColors(top = 0xAAAAAA.color, left = 0xAAAAAA.color, bottom = 0x444444.color, right = 0x444444.color)
             )
         }
 
         layoutBox(spacing = 10, style = s{ margin = 10.all }) {
             box(
-                    style = s{
-                        width = 50
-                        height = 50
-                        backgroundColor = props.firstColor
-                    } + boxStyle,
+                    style = s{ width = 50; height = 50; backgroundColor = props.firstColor } + boxStyle,
                     events = e{ mouseUp += this@TwoBoxesAndText::smallBoxClicked }
             )
             if (state.clickCount % 3 != 0) {
-                box(style = s {
-                    width = 100;
-                    height = 100;
-                    backgroundColor = props.secondColor
-                } + boxStyle)
+                box(style = s { width = 100;height = 100;backgroundColor = props.secondColor } + boxStyle)
             }else{
                 val smallBoxStyle = style { width = 50; height = 50; backgroundColor = props.secondColor } + boxStyle
                 layoutBox(direction = VerticalDirection) {
