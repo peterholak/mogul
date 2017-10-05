@@ -4,7 +4,8 @@ Too tired to write a proper README right now, stay tuned.
 
 Here's a screenshot, as you can see, it's not practically usable at the moment, but you can already
 see how the code using this library [would typically look like](native/src/mogul/demo/testComponents.kt#L16) (but better).
-Right now the code is pretty hacky, but I will be cleaning that up soon.
+Right now the code is pretty hacky, but I will be cleaning that up soon. I completely avoided reflection
+in order to support Kotlin Native. If it ever gets more reflection capabilities, the code could be nicer.
 
 ![screenshot](screenshot.png)
 
