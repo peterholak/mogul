@@ -44,9 +44,6 @@ fun events(code: Events.() -> Unit): Events {
  * whenever the code in the event handler changes. The idea is that it almost never changes, so 99% of the time,
  * it won't be necessary to change it and the default value (empty string) will be fine.
  *
- * Problem is that Kotlin interfaces don't support SAM conversions, so I cannot have something that can be
- * either a lambda or this object - unless I use [Any] and do a lot of ugly casts.
- *
  * The other alternative is to use bound method references instead of lambdas (or to be ok with those
  * extra re-renders, or to use something like `shouldComponentUpdate`).
  *

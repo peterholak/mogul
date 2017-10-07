@@ -15,15 +15,15 @@ class TwoBoxesState : State({ TwoBoxesState() }) {
 }
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
     // This is a pretty terrible way of initializing state, as it doesn't enforce required initial values...
-    override var state = TwoBoxesState().apply {
+    override val initialState = TwoBoxesState().apply {
         clickCount = 1
     }
 
     override fun render() = kgx {
         val boxStyle = style {
             border = Borders(
-                    width = BoxSizes(top = 2, right = 3, bottom = 3, left = 2),
-                    color = BoxColors(
+                    width = EdgeSizes(top = 2, right = 3, bottom = 3, left = 2),
+                    color = EdgeColors(
                             top = 0xAAAAAA.color,
                             left = 0xAAAAAA.color,
                             bottom = 0x444444.color,
@@ -98,8 +98,8 @@ class Button : Component<ButtonProps>() {
         padding = 10.all
         margin = 20.left
         border = Borders(
-                width = BoxSizes(top = 1, right = 2, bottom = 2, left = 1),
-                color = BoxColors(
+                width = EdgeSizes(top = 1, right = 2, bottom = 2, left = 1),
+                color = EdgeColors(
                         top = 0xAAAAAA.color,
                         left = 0xAAAAAA.color,
                         bottom = 0x444444.color,

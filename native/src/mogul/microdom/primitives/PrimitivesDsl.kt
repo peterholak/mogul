@@ -2,6 +2,7 @@ package mogul.microdom.primitives
 
 import mogul.microdom.*
 
+// Currently missing in Kotlin Native
 annotation class DslMarker
 
 @DslMarker

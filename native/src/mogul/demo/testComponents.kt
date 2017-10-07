@@ -15,25 +15,38 @@ class TwoBoxesState : State({ TwoBoxesState() }) {
 }
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
     // This is a pretty terrible way of initializing state, as it doesn't enforce required initial values...
-    override var state = TwoBoxesState().apply {
+    override val initialState = TwoBoxesState().apply {
         clickCount = 1
     }
 
     override fun render() = kgx {
         val boxStyle = style {
             border = Borders(
-                    width = BoxSizes(top = 2, right = 3, bottom = 3, left = 2),
-                    color = BoxColors(top = 0xAAAAAA.color, left = 0xAAAAAA.color, bottom = 0x444444.color, right = 0x444444.color)
+                    width = EdgeSizes(top = 2, right = 3, bottom = 3, left = 2),
+                    color = EdgeColors(
+                            top = 0xAAAAAA.color,
+                            left = 0xAAAAAA.color,
+                            bottom = 0x444444.color,
+                            right = 0x444444.color
+                    )
             )
         }
 
         layoutBox(spacing = 10, style = s{ margin = 10.all }) {
             box(
-                    style = s{ width = 50; height = 50; backgroundColor = props.firstColor } + boxStyle,
+                    style = s{
+                        width = 50
+                        height = 50
+                        backgroundColor = props.firstColor
+                    } + boxStyle,
                     events = e{ mouseUp += this@TwoBoxesAndText::smallBoxClicked }
             )
             if (state.clickCount % 3 != 0) {
-                box(style = s { width = 100;height = 100;backgroundColor = props.secondColor } + boxStyle)
+                box(style = s {
+                    width = 100;
+                    height = 100;
+                    backgroundColor = props.secondColor
+                } + boxStyle)
             }else{
                 val smallBoxStyle = style { width = 50; height = 50; backgroundColor = props.secondColor } + boxStyle
                 layoutBox(direction = VerticalDirection) {
@@ -85,8 +98,8 @@ class Button : Component<ButtonProps>() {
         padding = 10.all
         margin = 20.left
         border = Borders(
-                width = BoxSizes(top = 1, right = 2, bottom = 2, left = 1),
-                color = BoxColors(
+                width = EdgeSizes(top = 1, right = 2, bottom = 2, left = 1),
+                color = EdgeColors(
                         top = 0xAAAAAA.color,
                         left = 0xAAAAAA.color,
                         bottom = 0x444444.color,

@@ -26,7 +26,7 @@ class Box(
         val border = style.border ?: return
 
         if (border.width.allEqual() && border.color.allEqual()) {
-            val padding = style.padding ?: BoxSizes.zero
+            val padding = style.padding ?: EdgeSizes.zero
             cairo.rectangle(
                     -padding.left,
                     -padding.top,
@@ -38,7 +38,7 @@ class Box(
         }else{
             val width = border.width
             val color = border.color
-            val padding = style.padding ?: BoxSizes.zero
+            val padding = style.padding ?: EdgeSizes.zero
             val xLeft = -padding.left
             val xRight = size.width + padding.right
             val yTop = -padding.top

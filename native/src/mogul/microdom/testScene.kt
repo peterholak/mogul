@@ -4,8 +4,8 @@ import mogul.microdom.primitives.microDom
 
 fun testScene(): Scene {
     val weirdBorders = Borders(
-            width = BoxSizes(top = 2, right = 3, bottom = 3, left = 2),
-            color = BoxColors(top = 0xAAAAAA.color, left = 0xAAAAAA.color, bottom = 0x444444.color, right = 0x444444.color)
+            width = EdgeSizes(top = 2, right = 3, bottom = 3, left = 2),
+            color = EdgeColors(top = 0xAAAAAA.color, left = 0xAAAAAA.color, bottom = 0x444444.color, right = 0x444444.color)
     )
 
     val myStyle = style { width = 100; height = 100; border = weirdBorders }

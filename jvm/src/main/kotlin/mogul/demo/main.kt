@@ -13,7 +13,8 @@ class MyAppState : State({ MyAppState() }) {
     var globalCounter: Int by map
 }
 class MyApp : StatefulComponent<Nothing, MyAppState>() {
-    override var state = MyAppState().apply { windowCount = 1; globalCounter = 0 }
+
+    override val initialState = MyAppState().apply { windowCount = 1; globalCounter = 0 }
 
     override fun render() = appKgx {
 

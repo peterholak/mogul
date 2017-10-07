@@ -47,20 +47,29 @@ abstract class State(private val create: () -> State) : Copyable {
 }
 
 abstract class StatefulComponent<out PropTypes, StateType : Copyable> : Component<PropTypes>() {
-    abstract var state: StateType
+    val state: StateType
+        get() = currentState ?: initialState
+
+    abstract val initialState: StateType
+
+    private var currentState: StateType? = null
     // To be able to actually use this, I need an actual reconciler that doesn't just throw everything away
-    internal var newState: StateType? = null
+    private var newState: StateType? = null
 
     fun setState(mutation: StateType.() -> Unit) {
-        @Suppress("UNCHECKED_CAST")
-        newState = state.copy() as StateType
+        if (newState == null) {
+            @Suppress("UNCHECKED_CAST")
+            newState = state.copy() as StateType
+        }
         mutation(newState!!)
         // TODO: why exactly can't I just put the new state in there right here (so it'd be synchronous)?
+        // TODO: batch updates?
         updater.update()
     }
 
     internal fun updateToNewState() {
-        newState?.let { state = it }
+        newState?.let { currentState = it }
+        newState = null
     }
 }
 

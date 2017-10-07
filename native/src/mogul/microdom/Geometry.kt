@@ -10,9 +10,9 @@ data class Size(val width: Int, val height: Int) {
         val zero = Size(0, 0)
     }
     operator fun plus(other: Size?) = Size(width + (other?.width ?: 0), height + (other?.height ?: 0))
-    operator fun plus(boxSizes: BoxSizes?) = this + (boxSizes?.topLeft ?: zero) + (boxSizes?.bottomRight ?: zero)
+    operator fun plus(edgeSizes: EdgeSizes?) = this + (edgeSizes?.topLeft ?: zero) + (edgeSizes?.bottomRight ?: zero)
     operator fun minus(other: Size?) = Size(width - (other?.width ?: 0), height - (other?.height ?: 0))
-    operator fun minus(boxSizes: BoxSizes?) = this - (boxSizes?.topLeft ?: zero) - (boxSizes?.bottomRight ?: zero)
+    operator fun minus(edgeSizes: EdgeSizes?) = this - (edgeSizes?.topLeft ?: zero) - (edgeSizes?.bottomRight ?: zero)
     operator fun div(by: Int) = Size(width / by, height / by)
 }
 
@@ -43,13 +43,13 @@ data class Rectangle(val topLeft: Position, val size: Size) {
     }
 }
 
-data class BoxSizes(val top: Int = 0, val right: Int = 0, val bottom: Int = 0, val left: Int = 0) {
+data class EdgeSizes(val top: Int = 0, val right: Int = 0, val bottom: Int = 0, val left: Int = 0) {
     val topLeft; get() = Size(left, top)
     val bottomRight; get() = Size(right, bottom)
 
     constructor(all: Int) : this(all, all, all, all)
 
-    infix fun and(other: BoxSizes) = BoxSizes(
+    infix fun and(other: EdgeSizes) = EdgeSizes(
             top + other.top,
             right + other.right,
             bottom + other.bottom,
@@ -59,15 +59,15 @@ data class BoxSizes(val top: Int = 0, val right: Int = 0, val bottom: Int = 0, v
     fun allEqual() = (top == bottom && top == left && top == right)
 
     companion object {
-        val zero; get() = BoxSizes()
+        val zero; get() = EdgeSizes()
     }
 }
 
-data class BoxColors(val top: Color? = null, val right: Color? = null, val bottom: Color? = null, val left: Color? = null) {
+data class EdgeColors(val top: Color? = null, val right: Color? = null, val bottom: Color? = null, val left: Color? = null) {
 
     constructor(all: Color?) : this(all, all, all, all)
 
-    infix fun and(other: BoxColors) = BoxColors(
+    infix fun and(other: EdgeColors) = EdgeColors(
             other.top ?: top,
             other.right ?: right,
             other.bottom ?: bottom,
@@ -77,6 +77,6 @@ data class BoxColors(val top: Color? = null, val right: Color? = null, val botto
     fun allEqual() = (top == bottom && top == left && top == right)
 
     companion object {
-        val none; get() = BoxColors()
+        val none; get() = EdgeColors()
     }
 }
