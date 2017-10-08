@@ -53,7 +53,7 @@ fun constructDomNode(e: InstantiatedElement): Node {
 class DomUpdater(val root: Element, val scene: Scene) : Updater {
     var oldTree: InstantiatedElement? = null
 
-    override fun update() {
+    override fun queueUpdate() {
         val toRemove = mutableListOf<Remove>()
         val tree = ReactReconciler.reconcile(root, oldTree, ReconcileRunArguments(this, toRemove))
         oldTree = tree
@@ -64,6 +64,6 @@ class DomUpdater(val root: Element, val scene: Scene) : Updater {
 // This clearly needs more features in the DOM itself before proceeding...
 fun domRender(root: Element): Scene {
     val scene = Scene(Box()) // lol
-    DomUpdater(root, scene).update()
+    DomUpdater(root, scene).queueUpdate()
     return scene
 }

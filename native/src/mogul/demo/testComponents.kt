@@ -10,14 +10,11 @@ import mogul.react.slow.dom.layoutBox
 import mogul.react.slow.dom.s
 
 data class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, val text: String)
-class TwoBoxesState : State({ TwoBoxesState() }) {
-    var clickCount: Int by map
-}
+data class TwoBoxesState(val clickCount: Int)
+
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
     // This is a pretty terrible way of initializing state, as it doesn't enforce required initial values...
-    override val initialState = TwoBoxesState().apply {
-        clickCount = 1
-    }
+    override val initialState = TwoBoxesState(clickCount = 1)
 
     override fun render() = kgx {
         val boxStyle = style {
@@ -61,9 +58,7 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
     }
 
     fun smallBoxClicked(event: MouseEvent) {
-        setState {
-            clickCount++
-        }
+        setState(state.copy(clickCount = state.clickCount + 1))
     }
 }
 

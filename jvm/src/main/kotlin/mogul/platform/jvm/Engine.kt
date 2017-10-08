@@ -24,6 +24,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     var shouldQuit = false; private set
     private var eventLoopStarted = false
     val userEvents = UserEvents()
+    lateinit var uiThread: Thread
 
     // This is handled separately from other events to make it work with QueueEventPublisher. Cleanup of this
     // shit definitely needed.
@@ -85,7 +86,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
             error("runOnUiThreadAndWait called before the event loop has started.")
         }
 
-        if (runMode == RunMode.Threaded) {
+        if (runMode == RunMode.Threaded && Thread.currentThread() !== uiThread) {
             // This will all be figured out later :/ :D ...
             val future = CompletableFuture<Unit>()
             val wrapped = {
@@ -101,6 +102,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
     override fun runEfficientEventLoop() {
         val event = SDL_Event()
+        uiThread = Thread.currentThread()
         eventLoopStarted = true
         notifyOnStart()
         while (!shouldQuit) {
@@ -120,6 +122,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
     override fun runGameEventLoop() {
         val event = SDL_Event()
+        uiThread = Thread.currentThread()
         eventLoopStarted = true
         notifyOnStart()
         while (!shouldQuit) {

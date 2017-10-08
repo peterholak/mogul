@@ -81,9 +81,6 @@ object ReactReconciler : Reconciler {
     ): InstantiatedElement {
         // TODO: lifecycle willReceiveProps, should update, etc.
         oldTreeInstance.updateProps(root.props)
-        if (oldTreeInstance is StatefulComponent<*, *>) {
-            oldTreeInstance.updateToNewState()
-        }
         val reconciledChildren = listOf(reconcile(oldTreeInstance.render(), oldTree.children.single(), args))
         val childrenChanged = (reconciledChildren.any { it.change != null })
         return InstantiatedElement(

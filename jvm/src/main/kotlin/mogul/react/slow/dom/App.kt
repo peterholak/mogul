@@ -59,8 +59,19 @@ class WindowLifecycle(var window: Window?, element: InstantiatedElement, val mic
 class Later<T>(var value: T? = null)
 class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
     var oldTree: InstantiatedElement? = null
+    var updateQueued = false
 
-    override fun update() {
+    override fun queueUpdate() {
+        if (updateQueued) return
+
+        updateQueued = true
+        microDom.engine.runOnUiThread {
+            doUpdate()
+            updateQueued = false
+        }
+    }
+
+    fun doUpdate() {
         val toRemove = mutableListOf<Remove>()
         val tree = ReactReconciler.reconcile(root, oldTree, ReconcileRunArguments(this, toRemove))
         oldTree = tree
@@ -122,7 +133,7 @@ fun appKgx(appBuilder: AppKgxBuilder.() -> Unit): Element {
 
 fun runApp(microDom: MicroDom, root: Element) {
     microDom.engine.onEventLoopStarted.add {
-        AppUpdater(root, microDom).update()
+        AppUpdater(root, microDom).doUpdate()
         if (microDom.engine.windows.isEmpty()) {
             // TODO: this should end asynchronously and without an error, just send a "reconcile done" event and
             // let the engine handle it

@@ -8,13 +8,13 @@ import mogul.react.slow.dom.appKgx
 import mogul.react.slow.dom.layoutBox
 import mogul.react.slow.dom.runApp
 
-class MyAppState : State({ MyAppState() }) {
-    var windowCount: Int by map
-    var globalCounter: Int by map
-}
+data class MyAppState(
+    val windowCount: Int,
+    val globalCounter: Int
+)
 class MyApp : StatefulComponent<Nothing, MyAppState>() {
 
-    override val initialState = MyAppState().apply { windowCount = 1; globalCounter = 0 }
+    override val initialState = MyAppState(windowCount = 1, globalCounter = 0)
 
     override fun render() = appKgx {
 
@@ -35,15 +35,17 @@ class MyApp : StatefulComponent<Nothing, MyAppState>() {
     }
 
     fun onMoreWindows(event: MouseEvent) {
-        setState { windowCount++ }
+        // This is called separately to test the batching of updates.
+        setState(state.copy(windowCount = state.windowCount + 1))
+        setState(state.copy(globalCounter = state.globalCounter + 1))
     }
 
     fun onFewerWindows(event: MouseEvent) {
-        setState { windowCount-- }
+        setState(state.copy(windowCount = state.windowCount - 1))
     }
 
     fun incrementGlobalCounter(event: MouseEvent) {
-        setState { globalCounter++ }
+        setState(state.copy(globalCounter = state.globalCounter + 1))
     }
 
 }

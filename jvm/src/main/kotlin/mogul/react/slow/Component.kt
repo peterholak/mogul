@@ -1,7 +1,7 @@
 package mogul.react.slow
 
 interface Updater {
-    fun update()
+    fun queueUpdate()
 }
 
 abstract class Component<out PropTypes> {
@@ -31,45 +31,17 @@ abstract class Component<out PropTypes> {
     abstract fun render(): Element
 }
 
-interface Copyable {
-    fun copy(): Copyable
-}
-
-typealias StateMap = MutableMap<String, Any?>
-// Somewhat of an ugly way of dealing with this without using reflection
-abstract class State(private val create: () -> State) : Copyable {
-    protected val map: StateMap = mutableMapOf()
-    override fun copy(): State {
-        val newState = create()
-        newState.map.putAll(map)
-        return newState
-    }
-}
-
-abstract class StatefulComponent<out PropTypes, StateType : Copyable> : Component<PropTypes>() {
+abstract class StatefulComponent<out PropTypes, StateType> : Component<PropTypes>() {
     val state: StateType
         get() = currentState ?: initialState
 
     abstract val initialState: StateType
 
     private var currentState: StateType? = null
-    // To be able to actually use this, I need an actual reconciler that doesn't just throw everything away
-    private var newState: StateType? = null
 
-    fun setState(mutation: StateType.() -> Unit) {
-        if (newState == null) {
-            @Suppress("UNCHECKED_CAST")
-            newState = state.copy() as StateType
-        }
-        mutation(newState!!)
-        // TODO: why exactly can't I just put the new state in there right here (so it'd be synchronous)?
-        // TODO: batch updates?
-        updater.update()
-    }
-
-    internal fun updateToNewState() {
-        newState?.let { currentState = it }
-        newState = null
+    fun setState(newState: StateType) {
+        currentState = newState
+        updater.queueUpdate()
     }
 }
 
