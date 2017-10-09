@@ -41,7 +41,7 @@ object VerticalDirection : Direction() {
 class LayoutBox(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
-        override val style: Style = Style(),
+        override var style: Style = Style(),
         override val events: Events = Events(),
         children: List<Node> = emptyList()
 ) : Container(children) {

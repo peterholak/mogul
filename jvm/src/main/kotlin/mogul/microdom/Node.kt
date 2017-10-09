@@ -1,22 +1,29 @@
 package mogul.microdom
 
 import mogul.microdom.ObservableList.Change.*
-import mogul.platform.Cairo
-import mogul.platform.Event
-import mogul.platform.MouseEvent
+import mogul.platform.*
 
 sealed class Node {
     var parent: Container? = null; internal set
-    var dirty = true; private set
 
-    abstract val style: Style
+    abstract var style: Style
+    open val hoverStyle: Style? = null
+    open val mouseDownStyle: Style? = null
     abstract val events: Events
     abstract fun draw(cairo: Cairo)
     var topLeft: Position? = null
     var cachedLayoutSize: Size? = null
+    var state = NodeState()
 
     /** Returns what the size of the content would be, if not affected by width/height style attributes. */
     abstract fun defaultInnerSize(cairo: Cairo): Size
+
+    fun effectiveStyle(state: NodeState): Style {
+        var result = style
+        if (state.hover && hoverStyle != null) result += hoverStyle!!
+        if (state.mouseDown && mouseDownStyle != null) result += mouseDownStyle!!
+        return result
+    }
 
     fun fireEvent(event: Event) {
         events.map[event.type]?.forEach { it.invoke(event) }
@@ -140,7 +147,7 @@ class Scene(root: Node) {
 
     var root: Node; private set
     // Obviously a better notification system will be used later (or a different mechanism altogether)
-    internal var onRootReplaced: (() -> Unit)? = null
+    internal var onInvalidated: (() -> Unit)? = null
 
     init {
         this.root = root
@@ -158,15 +165,19 @@ class Scene(root: Node) {
     }
 
     fun replaceRoot(newRoot: Node) {
+        root = newRoot
+        invalidate()
+    }
+
+    fun invalidate() {
         // TODO: this will really need thread safety later
         hasLayoutInfo = false
-        root = newRoot
         flatNodes.clear()
         if (root is Container)
             addToFlattenedList(flatNodes, root as Container)
         else
             flatNodes.add(root)
-        onRootReplaced?.invoke()
+        onInvalidated?.invoke()
     }
 
     private fun addToFlattenedList(list: MutableList<Node>, node: Container): MutableList<Node> {
@@ -201,3 +212,9 @@ class Scene(root: Node) {
         return flatNodes.filter { it.boundingRectangle()!!.contains(position) }
     }
 }
+
+/** This could be optimized by having the state represented with bitfields */
+data class NodeState(
+    val hover: Boolean = false,
+    val mouseDown: Boolean = false
+)

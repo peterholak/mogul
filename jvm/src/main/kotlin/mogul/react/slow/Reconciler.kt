@@ -3,7 +3,7 @@ package mogul.react.slow
 import mogul.react.slow.dom.Later
 
 /** Grouped arguments that don't change during an entire run of a reconcile operation, but are just passed down */
-class ReconcileRunArguments(val updater: Updater, val toRemove: MutableList<Remove>)
+class ReconcileRunArguments(val updater: Updater, val toRemove: MutableList<InstantiatedElement>)
 
 interface Reconciler {
     fun reconcile(root: Element, oldTree: InstantiatedElement?, args: ReconcileRunArguments): InstantiatedElement
@@ -53,10 +53,7 @@ object ReactReconciler : Reconciler {
 
             // It's a component, but there is either no instance yet, or it's of a different type -> create a new instance
             root.type.constructComponent != null && root.type != oldTree?.type -> {
-                if (oldTree != null) {
-                    args.toRemove.add(Remove(oldTree))
-                }
-                reconcileNewComponent(root, root.type.constructComponent, args)
+                reconcileNewComponent(root, oldTree, root.type.constructComponent, args)
             }
 
             // They are of the same type, already existing instance, but they are not components
@@ -65,10 +62,7 @@ object ReactReconciler : Reconciler {
 
             // Different type
             else -> {
-                if (oldTree != null) {
-                    args.toRemove.add(Remove(oldTree))
-                }
-                reconcileNewPlatformElement(root, args)
+                reconcileNewPlatformElement(root, oldTree, args)
             }
         }
     }
@@ -92,7 +86,7 @@ object ReactReconciler : Reconciler {
         )
     }
 
-    private fun reconcileNewComponent(root: Element, rootTypeConstruct: ComponentConstructor, args: ReconcileRunArguments): InstantiatedElement {
+    private fun reconcileNewComponent(root: Element, oldTree: InstantiatedElement?, rootTypeConstruct: ComponentConstructor, args: ReconcileRunArguments): InstantiatedElement {
         val newInstance = rootTypeConstruct.invoke()
         newInstance.createInstance(root.props, root.children, args.updater)
         val newRender = newInstance.render()
@@ -101,14 +95,14 @@ object ReactReconciler : Reconciler {
                 props = root.props,
                 children = listOf(reconcile(newRender, null, args)),
                 instance = newInstance,
-                change = Add()
+                change = if (oldTree == null) Add() else Replace(oldTree.instance)
         )
     }
 
     private fun reconcileExistingPlatformElement(root: Element, oldTree: InstantiatedElement, args: ReconcileRunArguments): InstantiatedElement {
         if (root.children.size < oldTree.children.size) {
             args.toRemove.addAll(
-                    oldTree.children.subList(root.children.size, oldTree.children.size).map { Remove(it) }
+                    oldTree.children.subList(root.children.size, oldTree.children.size)
             )
         }
 
@@ -127,13 +121,13 @@ object ReactReconciler : Reconciler {
         )
     }
 
-    private fun reconcileNewPlatformElement(root: Element, args: ReconcileRunArguments): InstantiatedElement {
+    private fun reconcileNewPlatformElement(root: Element, oldTree: InstantiatedElement?, args: ReconcileRunArguments): InstantiatedElement {
         return InstantiatedElement(
                 type = root.type,
                 props = root.props,
                 children = root.children.map { reconcile(it, null, args) },
                 instance = Later<Any>(),
-                change = Add()
+                change = if (oldTree == null) Add() else Replace(oldTree.instance)
         )
     }
 }

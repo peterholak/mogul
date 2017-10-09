@@ -16,19 +16,19 @@ import org.junit.runner.RunWith
 object DomUpdateSpec : Spek({
 
     fun Box.unchanged() =
-        InstantiatedElement(boxType, BoxProps(), emptyList(), this, null)
+        InstantiatedElement(boxType, BoxProps(), emptyList(), Later(this), null)
 
-    fun Box.modified(children: List<InstantiatedElement> = emptyList(), props: BoxProps = BoxProps()) =
-        InstantiatedElement(boxType, BoxProps(), children, this, Modify(props))
+    fun Box.modified(children: List<InstantiatedElement> = emptyList(), props: BoxProps = BoxProps(), oldProps: BoxProps = BoxProps()) =
+        InstantiatedElement(boxType, props, children, Later(this), Modify(oldProps))
 
     fun newBox(props: BoxProps = BoxProps(), children: List<InstantiatedElement> = emptyList()) =
         InstantiatedElement(boxType, props, children, Later<Box>(), Add())
 
-    fun newLayoutBox() =
-        InstantiatedElement(layoutBoxType, LayoutBoxProps(), emptyList(), Later<LayoutBox>(), Add())
+    fun replaceLayoutBox(oldInstance: Any) =
+        InstantiatedElement(layoutBoxType, LayoutBoxProps(), emptyList(), Later<LayoutBox>(), Replace(oldInstance))
 
-    fun Text.modified(props: TextProps) =
-        InstantiatedElement(textType, props, emptyList(), this, Modify(props))
+    fun Text.modified(props: TextProps, oldProps: TextProps = TextProps(this.text)) =
+        InstantiatedElement(textType, props, emptyList(), Later(this), Modify(oldProps))
 
     it("removes all the elements in `toRemove`") {
         val removedBox = Box()
@@ -37,7 +37,7 @@ object DomUpdateSpec : Spek({
         )
         val scene = Scene(oldRoot)
 
-        val toRemove = listOf(Remove(removedBox.unchanged()))
+        val toRemove = listOf(removedBox.unchanged())
         val rootElement = oldRoot.modified()
 
         updateDom(scene, rootElement, toRemove)
@@ -50,9 +50,10 @@ object DomUpdateSpec : Spek({
         val oldRoot = Box()
         val scene = Scene(oldRoot)
 
-        val vdomRoot = newLayoutBox()
+        val vdomRoot = replaceLayoutBox(oldRoot)
 
-        updateDom(scene, vdomRoot, listOf(Remove(oldRoot.unchanged())))
+        val toRemove = listOf(oldRoot.unchanged())
+        updateDom(scene, vdomRoot, toRemove)
 
         assertTrue(scene.root is LayoutBox)
     }
@@ -81,7 +82,7 @@ object DomUpdateSpec : Spek({
 
     it("changes the props on existing modified nodes") {
         val child = Text("Hello")
-        val root = Box(style { width = 50 })
+        val root = Box(style { width = 50 }, children = listOf(child))
         val scene = Scene(root)
 
         val vdomRoot = root.modified(
@@ -96,5 +97,7 @@ object DomUpdateSpec : Spek({
         assertEquals(style { height = 50 }, root.style)
         assertEquals("World", (root.children.single() as Text).text)
     }
+
+    // TODO: test that replaced elements are added to the correct position
 
 })

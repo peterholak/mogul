@@ -53,6 +53,8 @@ class ElementType(val name: String, val constructComponent: ComponentConstructor
     override fun toString(): String {
         return name + if (constructComponent != null) " (C)" else ""
     }
+
+    fun isComponent() = constructComponent != null
 }
 
 data class Element(
@@ -72,5 +74,5 @@ class InstantiatedElement(
 
 sealed class Change
 class Add : Change()
-class Remove(val element: InstantiatedElement): Change()
 class Modify(val oldProps: Any) : Change()
+class Replace(val oldInstance: Any) : Change()

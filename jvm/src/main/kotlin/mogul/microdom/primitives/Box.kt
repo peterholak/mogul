@@ -4,7 +4,7 @@ import mogul.platform.Cairo
 import mogul.microdom.*
 
 class Box(
-    override val style: Style = Style(),
+    override var style: Style = Style(),
     override val events: Events = Events(),
     children: List<Node> = emptyList()
 ) : Container(children) {

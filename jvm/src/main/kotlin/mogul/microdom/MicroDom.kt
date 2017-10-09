@@ -14,12 +14,12 @@ class MicroDom(val engine: Engine, val events: EventPubSub) {
 
     fun registerWindow(window: Window, scene: Scene) {
         scenesByWindow[window] = scene
-        scene.onRootReplaced = { render(window) }
+        scene.onInvalidated = { render(window) }
         render(window)
     }
 
     fun unregisterWindow(window: Window) {
-        sceneForWindow(window).onRootReplaced = null
+        sceneForWindow(window).onInvalidated = null
         scenesByWindow.remove(window)
     }
 

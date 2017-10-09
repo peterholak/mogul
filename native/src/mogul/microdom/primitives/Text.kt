@@ -4,9 +4,9 @@ import mogul.platform.Cairo
 import mogul.microdom.*
 
 class Text(
-    val text: String,
-    override val style: Style = Style(),
-    override val events: Events = Events()
+    var text: String,
+    override var style: Style = Style(),
+    override var events: Events = Events()
 ) : Leaf() {
 
     override fun draw(cairo: Cairo) {

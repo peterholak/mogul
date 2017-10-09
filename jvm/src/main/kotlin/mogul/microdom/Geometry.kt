@@ -59,7 +59,7 @@ data class EdgeSizes(val top: Int = 0, val right: Int = 0, val bottom: Int = 0, 
     fun allEqual() = (top == bottom && top == left && top == right)
 
     companion object {
-        val zero; get() = EdgeSizes()
+        val zero = EdgeSizes()
     }
 }
 
