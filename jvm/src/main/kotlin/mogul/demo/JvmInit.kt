@@ -8,7 +8,7 @@ import mogul.platform.jvm.QueueEventPubSub
 import kotlin.concurrent.thread
 
 enum class RunMode { SingleThreaded, Threaded }
-val runMode = RunMode.Threaded
+val runMode = RunMode.SingleThreaded
 var platformRunEventLoop = ::platformRunEventLoopSingleThread
 
 fun platformInit(): Pair<Engine, EventPubSub> {

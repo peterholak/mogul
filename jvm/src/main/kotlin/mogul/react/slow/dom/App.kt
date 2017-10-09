@@ -33,7 +33,7 @@ class WindowLifecycle(var window: Window?, element: InstantiatedElement, val mic
         microDom.registerWindow(window!!, Scene(constructDomNode(windowElement.children.single())))
     }
 
-    fun update(windowElement: InstantiatedElement) {
+    fun update(windowElement: InstantiatedElement, toRemove: List<Remove>) {
         if (window == null) {
             val props = windowElement.props as WindowProps
             if (props.autoClose === AutoClose.CloseAndDoNotRecreate) {
@@ -44,7 +44,7 @@ class WindowLifecycle(var window: Window?, element: InstantiatedElement, val mic
                 register(windowElement)
             }
         }else {
-            microDom.sceneForWindow(window!!).replaceRoot(constructDomNode(windowElement.children.single()))
+            updateDom(microDom.sceneForWindow(window!!), windowElement.children.single(), toRemove)
         }
     }
 
@@ -91,7 +91,7 @@ class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
                 is Add -> createNewWindow(it)
                 is Modify -> {
                     val lifecycle = (it.instance as Later<*>).value as WindowLifecycle
-                    lifecycle.update(it)
+                    lifecycle.update(it, toRemove)
                 }
             }
         }

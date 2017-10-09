@@ -50,6 +50,13 @@ fun constructDomNode(e: InstantiatedElement): Node {
     }
 }
 
+
+fun updateDom(scene: Scene, e: InstantiatedElement, toRemove: List<Remove>) {
+    scene.replaceRoot(constructDomNode(e))
+//    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+}
+
+
 class DomUpdater(val root: Element, val scene: Scene) : Updater {
     var oldTree: InstantiatedElement? = null
 
