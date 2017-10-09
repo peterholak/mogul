@@ -95,7 +95,7 @@ object ReactReconciler : Reconciler {
                 props = root.props,
                 children = listOf(reconcile(newRender, null, args)),
                 instance = newInstance,
-                change = if (oldTree == null) Add() else Replace(oldTree.instance)
+                change = if (oldTree == null) Add() else Replace(oldTree.instance, oldTree)
         )
     }
 

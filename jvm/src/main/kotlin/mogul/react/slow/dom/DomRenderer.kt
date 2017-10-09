@@ -83,11 +83,22 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
     }
 }
 
-/** Updates the props and children of an existing DOM element, or creates a new DOM element if it didn't exist yet. */
-private fun updateDomElement(parent: Container, e: InstantiatedElement) {
+/**
+ * Updates the props and children of an existing DOM element, or creates a new DOM element if it didn't exist yet.
+ * TODO: the forceReplace bullshit could be done in a cleaner way
+ */
+private fun updateDomElement(parent: Container, e: InstantiatedElement, forceReplace: Boolean = false) {
     // Skip over component elements
     if (e.type.isComponent()) {
-        return updateDomElement(parent, e.children.single())
+        if (e.change is Replace) {
+            parent.replaceChild(
+                    (e.change.oldComponent!!.children.single().instance as Later<Node>).value!!,
+                    constructDomNode(e.children.single())
+            )
+            return
+        }else {
+            return updateDomElement(parent, e.children.single())
+        }
     }
 
     when (e.change) {

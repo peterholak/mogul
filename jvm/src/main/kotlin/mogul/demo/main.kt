@@ -56,5 +56,5 @@ fun main(args: Array<String>) {
     val (engine, events) = platformInit()
     val microDom = MicroDom(engine, events)
     runApp(microDom, myAppType)
-
+//    runApp(microDom, liveReloadType)
 }

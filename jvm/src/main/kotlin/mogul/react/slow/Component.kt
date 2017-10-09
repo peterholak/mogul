@@ -75,4 +75,5 @@ class InstantiatedElement(
 sealed class Change
 class Add : Change()
 class Modify(val oldProps: Any) : Change()
-class Replace(val oldInstance: Any) : Change()
+// TODO: clean this up
+class Replace(val oldInstance: Any, val oldComponent: InstantiatedElement? = null) : Change()

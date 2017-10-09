@@ -45,3 +45,8 @@ kotlin {
         coroutines "enable"
     }
 }
+
+task buildAndCopy {
+    dependsOn 'compileKotlin'
+    dependsOn 'copyMainKotlinClasses'
+}
