@@ -6,6 +6,13 @@ import mogul.platform.*
 typealias Handler<T> = (event: T) -> Unit
 typealias MouseEventHandler = Handler<MouseEvent>
 
+abstract class DomEventType : EventType()
+
+object MouseOver : DomEventType()
+object MouseOut : DomEventType()
+object Click : DomEventType()
+
+
 @MicroDomMarker
 class Events {
     val map = mutableMapOf<EventType, MutableList<Handler<Event>>>()
@@ -13,20 +20,20 @@ class Events {
     override fun equals(other: Any?) = other is Events && other.map == map
     override fun hashCode() = map.hashCode()
 
-    private fun <T: Event> addHandler(type: EventType, handler: Handler<T>) {
+    private fun <T: Event> addHandler(type: DomEventType, handler: Handler<T>) {
         @Suppress("UNCHECKED_CAST")
         map.getOrPut(type, { mutableListOf() }).add(handler as Handler<Event>)
     }
 
     // In the React-like part, just one possible handler per event is enough, not sure about the general "microdom"
     // though.
-    inner class EventDsl<T: Event>(val type: EventType) {
+    inner class EventDsl<T: Event>(val type: DomEventType) {
         operator fun plusAssign(handler: Handler<T>?) = handler?.let { addHandler(type, it) } ?: Unit
     }
 
-    val mouseDown; get() = EventDsl<MouseEvent>(MouseDown)
-    val mouseUp; get() = EventDsl<MouseEvent>(MouseUp)
-    val mouseMove; get() = EventDsl<MouseEvent>(MouseMove)
+    val mouseOver; get() = EventDsl<MouseEvent>(MouseOver)
+    val click; get() = EventDsl<MouseEvent>(Click)
+    val mouseOut; get() = EventDsl<MouseEvent>(MouseOut)
 }
 
 fun events(code: Events.() -> Unit): Events {

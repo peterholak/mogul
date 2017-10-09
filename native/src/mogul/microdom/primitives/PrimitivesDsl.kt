@@ -63,7 +63,7 @@ class TextBuilder(private var text: String) : NodeBuilder() {
 }
 
 class BoxBuilder : ContainerBuilder() {
-    override fun build() = Box(innerStyle, innerEvents, children.mapTo(ObservableList()) { it.build() })
+    override fun build() = Box(innerStyle, null, null, innerEvents, children.mapTo(ObservableList()) { it.build() })
 }
 
 class LayoutBoxBuilder(val direction: Direction) : ContainerBuilder() {

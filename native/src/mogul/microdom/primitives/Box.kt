@@ -5,11 +5,28 @@ import mogul.microdom.*
 
 class Box(
     override var style: Style = Style(),
+    override var hoverStyle: Style? = null,
+    override var mouseDownStyle: Style? = null,
     override val events: Events = Events(),
     children: List<Node> = emptyList()
 ) : Container(children) {
 
+    private fun drawDebugInputRectangle(cairo: Cairo) {
+        cairo.save()
+        cairo.identityMatrix()
+        val br = boundingRectangle()!!
+        cairo.setSourceRgb(0x00FF00.color)
+        cairo.setLineWidth(3)
+        cairo.rectangle(br.left, br.top, br.width, br.height)
+        cairo.stroke()
+        cairo.restore()
+    }
+
     override fun draw(cairo: Cairo) {
+//        drawDebugInputRectangle(cairo)
+
+        val style = effectiveStyle()
+
         val size = innerSize(cairo)
         cairo.save()
         style.margin?.let { cairo.translate(it.left, it.top) }
@@ -22,33 +39,35 @@ class Box(
         cairo.restore()
     }
 
+    fun rectangleWithPadding(size: Size): Rectangle {
+        val padding = style.padding ?: EdgeSizes.zero
+        return Rectangle(
+                Position(-padding.left, -padding.top),
+                Size(size.width + padding.left + padding.right, size.height + padding.top + padding.bottom)
+        )
+    }
+
     private fun drawBorder(cairo: Cairo, size: Size) {
+        val style = effectiveStyle()
+
         val border = style.border ?: return
 
         if (border.width.allEqual() && border.color.allEqual()) {
             val padding = style.padding ?: EdgeSizes.zero
-            cairo.rectangle(
-                    -padding.left,
-                    -padding.top,
-                    size.width + padding.left + padding.right,
-                    size.height + padding.top + padding.bottom
-            )
+            val corners = rectangleWithPadding(size)
+            cairo.rectangle(corners.left, corners.top, corners.width, corners.height)
             cairo.setSourceRgb(border.color.top ?: Color.black)
             cairo.setLineWidth(border.width.top)
         }else{
             val width = border.width
             val color = border.color
-            val padding = style.padding ?: EdgeSizes.zero
-            val xLeft = -padding.left
-            val xRight = size.width + padding.right
-            val yTop = -padding.top
-            val yBottom = size.height + padding.bottom
+            val corners = rectangleWithPadding(size)
             drawSingleBorder(
                     cairo = cairo,
                     borderWidth = width.top,
                     color = color.top,
-                    from = Position(xLeft, yTop),
-                    to = Position(xRight, yTop),
+                    from = corners.topLeft,
+                    to = corners.topRight,
                     extraFrom = -width.left,
                     extraTo = width.right
             )
@@ -56,8 +75,8 @@ class Box(
                     cairo = cairo,
                     borderWidth = width.right,
                     color = color.right,
-                    from = Position(xRight, yTop),
-                    to = Position(xRight, yBottom),
+                    from = corners.topRight,
+                    to = corners.bottomRight,
                     extraFrom = -width.top,
                     extraTo = width.bottom
             )
@@ -65,8 +84,8 @@ class Box(
                     cairo = cairo,
                     borderWidth = width.bottom,
                     color = color.bottom,
-                    from = Position(xRight, yBottom),
-                    to = Position(xLeft, yBottom),
+                    from = corners.bottomRight,
+                    to = corners.bottomLeft,
                     extraFrom = width.right,
                     extraTo = -width.left
             )
@@ -74,8 +93,8 @@ class Box(
                     cairo = cairo,
                     borderWidth = width.left,
                     color = color.left,
-                    from = Position(xLeft, yBottom),
-                    to = Position(xLeft, yTop),
+                    from = corners.bottomLeft,
+                    to = corners.topLeft,
                     extraFrom = width.bottom,
                     extraTo = -width.top
             )
@@ -111,14 +130,19 @@ class Box(
     }
 
     private fun fillRectangle(cairo: Cairo, size: Size) {
+        val style = effectiveStyle()
+        val corners = rectangleWithPadding(size)
+
         style.backgroundColor?.let {
-            cairo.rectangle(0, 0, size.width, size.height)
+            cairo.rectangle(corners.left, corners.top, corners.width, corners.height)
             cairo.setSourceRgb(it)
             cairo.fill()
         }
     }
 
     override fun defaultInnerSize(cairo: Cairo): Size {
+        val style = effectiveStyle()
+
         val width = if (style.width != null) {
             style.width
         }else{

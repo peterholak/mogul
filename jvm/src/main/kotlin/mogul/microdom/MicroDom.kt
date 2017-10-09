@@ -14,7 +14,12 @@ class MicroDom(val engine: Engine, val events: EventPubSub) {
 
     fun registerWindow(window: Window, scene: Scene) {
         scenesByWindow[window] = scene
-        scene.onInvalidated = { render(window) }
+        scene.onInvalidated = { engine.runOnUiThread {
+            // Async operation, the window could have been destroyed in the meantime...
+            if (scenesByWindow.contains(window)) {
+                render(window)
+            }
+        }}
         render(window)
     }
 

@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
+import kotlin.coroutines.experimental.buildSequence
 import mogul.platform.Engine as EngineInterface
 
 typealias UiThreadCode = () -> Unit
@@ -25,6 +26,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     private var eventLoopStarted = false
     val userEvents = UserEvents()
     lateinit var uiThread: Thread
+    var lastMouseState: MouseState = MouseState(Position(0, 0), setOf())
 
     // This is handled separately from other events to make it work with QueueEventPublisher. Cleanup of this
     // shit definitely needed.
@@ -154,12 +156,15 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
             // TODO: only fire events that someone is subscribed to
             // TODO: maybe log warning when the window is not there, but the destroy cycle is kinda shaky right now
             SDL_MOUSEBUTTONDOWN.l -> {
+                lastMouseState = mouseStateFromSdl(lastMouseState, event.button)
                 eventPublisher.publish(MouseEvent(event.button.window ?: return, MouseDown, Position(event.button.x, event.button.y)))
             }
             SDL_MOUSEBUTTONUP.l -> {
+                lastMouseState = mouseStateFromSdl(lastMouseState, event.button)
                 eventPublisher.publish(MouseEvent(event.button.window ?: return, MouseUp, Position(event.button.x, event.button.y)))
             }
             SDL_MOUSEMOTION.l -> {
+                lastMouseState = mouseStateFromSdl(event.motion)
                 eventPublisher.publish(MouseEvent(event.motion.window ?: return, MouseMove, Position(event.motion.x, event.motion.y)))
             }
 
@@ -196,6 +201,8 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     private val SDL_MouseButtonEvent.window; get() = windowsById[windowID]
     private val SDL_MouseMotionEvent.window; get() = windowsById[windowID]
 
+    override fun mouseState() = lastMouseState
+
     override fun cleanup() {
         SDL_Quit()
     }
@@ -231,4 +238,35 @@ class UserEvents {
             }
         }
     }
+}
+
+fun mouseButtonsFromSdlState(state: Long): Set<MouseButton> {
+    return buildSequence {
+        if (state and 1L != 0L) { yield(MouseButton.Left) }
+        if (state and 2L != 0L) { yield(MouseButton.Middle) }
+        if (state and 4L != 0L) { yield(MouseButton.Right) }
+    }.toSet()
+}
+
+fun mouseButtonFromButtonEvent(button: Short): MouseButton {
+    return when(button.toInt()) {
+        1 -> MouseButton.Left
+        2 -> MouseButton.Middle
+        3 -> MouseButton.Right
+        else -> error("Invalid button number")
+    }
+}
+
+fun mouseStateFromSdl(event: SDL_MouseMotionEvent) =
+    MouseState(Position(event.x, event.y), mouseButtonsFromSdlState(event.state))
+
+fun mouseStateFromSdl(previousState: MouseState, event: SDL_MouseButtonEvent): MouseState {
+    return MouseState(
+            Position(event.x, event.y),
+            when(event.type) {
+                SDL_MOUSEBUTTONDOWN.l -> previousState.buttons + mouseButtonFromButtonEvent(event.button)
+                SDL_MOUSEBUTTONUP.l -> previousState.buttons - mouseButtonFromButtonEvent(event.button)
+                else -> error("mouseStateFromSdl: Only mouse up/mouse down events are supported.")
+            }
+    )
 }

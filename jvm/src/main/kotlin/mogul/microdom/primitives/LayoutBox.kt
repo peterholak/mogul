@@ -50,7 +50,7 @@ class LayoutBox(
         cairo.save()
         style.margin?.let { cairo.translate(it.left, it.top) }
         children.forEach { child ->
-            child.topLeft = cairo.userToDevice(0, 0).position
+            child.topLeft = cairo.userToDevice(child.style.margin?.left ?: 0, child.style.margin?.top ?: 0).position
             child.draw(cairo)
             cairo.translate(
                     x = direction.postDrawTranslateX(cairo, child, spacing),

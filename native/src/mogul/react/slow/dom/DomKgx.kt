@@ -22,10 +22,10 @@ fun KgxBuilder.layoutBox(
     children.add(Element(layoutBoxType, LayoutBoxProps(direction, spacing, style), nested.children))
 }
 
-fun KgxBuilder.box(style: Style = Style(), events: Events = Events(), builder: (KgxBuilder.() -> Unit)? = null) {
+fun KgxBuilder.box(style: Style = Style(), hoverStyle: Style? = null, mouseDownStyle: Style? = null, events: Events = Events(), builder: (KgxBuilder.() -> Unit)? = null) {
     val nested = KgxBuilder()
     builder?.invoke(nested)
-    children.add(Element(boxType, BoxProps(style, events), nested.children))
+    children.add(Element(boxType, BoxProps(style, hoverStyle, mouseDownStyle, events), nested.children))
 }
 
 fun KgxBuilder.text(text: String, style: Style = Style()) {

@@ -7,8 +7,8 @@ sealed class Node {
     var parent: Container? = null; internal set
 
     abstract var style: Style
-    open val hoverStyle: Style? = null
-    open val mouseDownStyle: Style? = null
+    open var hoverStyle: Style? = null
+    open var mouseDownStyle: Style? = null
     abstract val events: Events
     abstract fun draw(cairo: Cairo)
     var topLeft: Position? = null
@@ -18,7 +18,7 @@ sealed class Node {
     /** Returns what the size of the content would be, if not affected by width/height style attributes. */
     abstract fun defaultInnerSize(cairo: Cairo): Size
 
-    fun effectiveStyle(state: NodeState): Style {
+    fun effectiveStyle(): Style {
         var result = style
         if (state.hover && hoverStyle != null) result += hoverStyle!!
         if (state.mouseDown && mouseDownStyle != null) result += mouseDownStyle!!
@@ -49,11 +49,13 @@ sealed class Node {
     }
 
     open fun populateLayoutSize(cairo: Cairo) {
+        // could be optimized, same things are calculated twice
         cachedLayoutSize = layoutSize(cairo)
     }
 
     fun boundingRectangle(): Rectangle? = topLeft?.let {
-        Rectangle(it, cachedLayoutSize!!)
+        // TODO: fix this layout nonsense
+        Rectangle(it - style.padding?.topLeft, cachedLayoutSize!! - Size(style.margin?.left ?: 0, 0))
     }
 
     fun replaceWith(newChild: Node) {
@@ -199,17 +201,49 @@ class Scene(root: Node) {
     }
 
     fun processEvent(event: Event) {
-        when (event) {
-            // TODO: only fire events that someone subscribed to
-            // TODO: the same also applies a level up at window
-            is MouseEvent -> { nodesAtPosition(event.position).forEach { it.fireEvent(event) }}
+        if (event !is MouseEvent) return
+
+        // TODO: a more efficient algorithm, maybe store lists of nodes by their state or something
+        val atPosition = nodesAtPosition(event.position)
+
+        // TODO: only invalidate if the style differs, and only the dirty rect, etc.
+        var shouldInvalidate = false
+        flatNodes.forEach {
+            val hoverNow = atPosition.contains(it)
+            when {
+                it.state.hover && !hoverNow -> {
+                    it.state = initialNodeState
+                    it.fireEvent(MouseEvent(event.window, MouseOver, event.position))
+                    shouldInvalidate = true
+                }
+
+                !it.state.hover && hoverNow -> {
+                    it.state = NodeState(hover = true)
+                    it.fireEvent(MouseEvent(event.window, MouseOut, event.position))
+                    shouldInvalidate = true
+                }
+
+                hoverNow && event.type === MouseDown -> {
+                    it.state = NodeState(hover = true, mouseDown = true)
+                    shouldInvalidate = true
+                }
+
+                it.state.mouseDown && hoverNow && event.type === MouseUp -> {
+                    it.state = NodeState(hover = true)
+                    it.fireEvent(MouseEvent(event.window, Click, event.position))
+                    shouldInvalidate = true
+                }
+            }
+        }
+        if (shouldInvalidate) {
+            invalidate()
         }
     }
 
-    fun nodesAtPosition(position: Position): List<Node> {
-        if (!hasLayoutInfo) return emptyList()
+    fun nodesAtPosition(position: Position): Set<Node> {
+        if (!hasLayoutInfo) return emptySet()
         // TODO: obviously use some faster algorithm here later
-        return flatNodes.filter { it.boundingRectangle()!!.contains(position) }
+        return flatNodes.filter { it.boundingRectangle()!!.contains(position) }.toSet()
     }
 }
 
@@ -218,3 +252,4 @@ data class NodeState(
     val hover: Boolean = false,
     val mouseDown: Boolean = false
 )
+val initialNodeState = NodeState(false, false)

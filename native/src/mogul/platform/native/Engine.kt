@@ -147,6 +147,8 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
         }
     }
 
+    override fun mouseState() = TODO()
+
     private val SDL_MouseButtonEvent.window; get() = windowsById[windowID.toLong()]
     private val SDL_MouseMotionEvent.window; get() = windowsById[windowID.toLong()]
 

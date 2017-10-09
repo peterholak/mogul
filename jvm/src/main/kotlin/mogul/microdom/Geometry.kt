@@ -2,7 +2,10 @@ package mogul.microdom
 
 import mogul.platform.XY
 
-data class Position(val x: Int, val y: Int)
+data class Position(val x: Int, val y: Int) {
+    operator fun plus(other: Size?) = Position(x + (other?.width ?: 0), y + (other?.height ?: 0))
+    operator fun minus(other: Size?) = Position(x - (other?.width ?: 0), y - (other?.height ?: 0))
+}
 val XY.position; get() = Position(x.toInt(), y.toInt())
 
 data class Size(val width: Int, val height: Int) {
@@ -23,7 +26,9 @@ data class Rectangle(val topLeft: Position, val size: Size) {
     val height; get() = size.height
     val bottom; get() = topLeft.y + size.height
     val right; get() = topLeft.x + size.width
-    val bottomRight; get() = Position(bottom, right)
+    val bottomRight; get() = Position(right, bottom)
+    val topRight; get() = Position(right, top)
+    val bottomLeft; get() = Position(left, bottom)
 
     constructor(left: Int, top: Int, width: Int, height: Int) : this(Position(left, top), Size(width, height))
     constructor(topLeft: Position, bottomRight: Position) :

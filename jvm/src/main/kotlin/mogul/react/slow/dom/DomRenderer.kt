@@ -7,7 +7,12 @@ import mogul.react.slow.*
 interface NodeProps {
     val style: Style
 }
-data class BoxProps(override val style: Style = Style(), val events: Events = Events()) : NodeProps
+data class BoxProps(
+    override val style: Style = Style(),
+    val hoverStyle: Style? = null,
+    val mouseDownStyle: Style? = null,
+    val events: Events = Events()
+) : NodeProps
 data class TextProps(val text: String, override val style: Style = Style(), val events: Events = Events()) : NodeProps
 data class LayoutBoxProps(
         val direction: Direction = HorizontalDirection,
@@ -30,7 +35,7 @@ fun constructDomNode(e: InstantiatedElement): Node {
     val result: Node = when (e.type) {
         boxType -> {
             val props = e.props as BoxProps
-            Box(props.style, props.events, e.children.map { constructDomNode(it) })
+            Box(props.style, props.hoverStyle, props.mouseDownStyle, props.events, e.children.map { constructDomNode(it) })
         }
         textType -> {
             val props = e.props as TextProps

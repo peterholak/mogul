@@ -35,7 +35,7 @@ class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>()
                         height = 50
                         backgroundColor = props.firstColor
                     } + boxStyle,
-                    events = e{ mouseUp += this@TwoBoxesAndText::smallBoxClicked }
+                    events = e{ click += this@TwoBoxesAndText::smallBoxClicked }
             )
             if (state.clickCount % 3 != 0) {
                 box(style = s {
@@ -105,7 +105,12 @@ class Button : Component<ButtonProps>() {
     override fun render(): Element {
 
         return kgx {
-            box(style = buttonStyle, events = e{ mouseUp += props.onClick }) {
+            box(
+                    style = buttonStyle,
+                    hoverStyle = style{ backgroundColor = Color.white },
+                    mouseDownStyle = style{ borders(1, Color.black) },
+                    events = e{ click += props.onClick }
+            ) {
                 -props.text
             }
         }

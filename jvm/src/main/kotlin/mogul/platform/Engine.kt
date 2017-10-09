@@ -1,6 +1,7 @@
 package mogul.platform
 
 import mogul.microdom.Color
+import mogul.microdom.Position
 import mogul.microdom.color
 
 interface Engine {
@@ -19,7 +20,12 @@ interface Engine {
     fun quit()
     fun cleanup()
     fun quitting(): Boolean
+    fun mouseState(): MouseState
 }
+
+/** TODO: support for more buttons, more pointers in fact, but for now, this will suffice */
+enum class MouseButton { Left, Middle, Right }
+class MouseState(val position: Position, val buttons: Set<MouseButton>)
 
 interface EventPublisher {
     fun publish(event: Event)
