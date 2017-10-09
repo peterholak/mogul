@@ -2,7 +2,7 @@ An experiment that could one day become a flexible GUI library for Kotlin (JVM a
 
 Too tired to write a proper README right now, stay tuned.
 
-Here's a gif of fiddling around with the live reload (sped up 50%, I don't type that fast, real-time refresh delay is about a second).
+Here's a gif of fiddling around with the live reload (sped up 50%, I don't type that fast, real-time refresh delay is about a second on Windows).
 
 ![livereload](https://imgur.com/6a9df6J.gif)
 
