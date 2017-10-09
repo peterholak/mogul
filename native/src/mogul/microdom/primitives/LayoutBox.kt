@@ -42,7 +42,7 @@ class LayoutBox(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
         override var style: Style = Style(),
-        override val events: Events = Events(),
+        override var events: Events = Events(),
         children: List<Node> = emptyList()
 ) : Container(children) {
 

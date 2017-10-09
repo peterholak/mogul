@@ -85,7 +85,7 @@ val fourBoxesType = ElementType("FourBoxes", { FourBoxes() })
 fun KgxBuilder.fourBoxes(title: String, onMoreWindows: MouseEventHandler? = null, onFewerWindows: MouseEventHandler? = null) =
     children.add(Element(fourBoxesType, FourBoxesProps(title, onMoreWindows, onFewerWindows)))
 
-data class ButtonProps(val text: String, val onClick: MouseEventHandler? = null)
+data class ButtonProps(val text: String, val style: Style = Style(), val onClick: MouseEventHandler? = null)
 class Button : Component<ButtonProps>() {
 
     val buttonStyle = style {
@@ -106,7 +106,7 @@ class Button : Component<ButtonProps>() {
 
         return kgx {
             box(
-                    style = buttonStyle,
+                    style = buttonStyle + props.style,
                     hoverStyle = style{ backgroundColor = Color.white },
                     mouseDownStyle = style{ borders(1, Color.black) },
                     events = e{ click += props.onClick }
@@ -118,5 +118,5 @@ class Button : Component<ButtonProps>() {
 
 }
 val buttonType = ElementType("Button", { Button() })
-fun KgxBuilder.button(text: String, onClick: MouseEventHandler? = null) =
-    children.add(Element(buttonType, ButtonProps(text, onClick)))
+fun KgxBuilder.button(text: String, style: Style = Style(), onClick: MouseEventHandler? = null) =
+    children.add(Element(buttonType, ButtonProps(text, style, onClick)))

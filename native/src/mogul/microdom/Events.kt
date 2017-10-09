@@ -31,6 +31,8 @@ class Events {
         operator fun plusAssign(handler: Handler<T>?) = handler?.let { addHandler(type, it) } ?: Unit
     }
 
+    fun clearAll() = map.clear()
+
     val mouseOver; get() = EventDsl<MouseEvent>(MouseOver)
     val click; get() = EventDsl<MouseEvent>(Click)
     val mouseOut; get() = EventDsl<MouseEvent>(MouseOut)

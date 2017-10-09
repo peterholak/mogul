@@ -4,6 +4,7 @@ import mogul.microdom.Color
 import mogul.microdom.MicroDom
 import mogul.microdom.Scene
 import mogul.microdom.color
+import mogul.microdom.primitives.MicroDomMarker
 import mogul.platform.*
 import mogul.react.slow.*
 
@@ -122,6 +123,7 @@ class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
     }
 }
 
+@MicroDomMarker
 class AppKgxBuilder {
     val children = mutableListOf<Element>()
     fun window(title: String, width: Int, height: Int, background: Color = 0xDDDDDD.color, root: Element) {
@@ -148,4 +150,4 @@ fun runApp(microDom: MicroDom, root: Element) {
     microDom.runEventLoop()
 }
 
-fun runApp(microDom: MicroDom, rootType: ElementType) = runApp(microDom, Element(rootType, Unit))
+fun runApp(microDom: MicroDom, rootType: ElementType, rootProps: Any = Unit) = runApp(microDom, Element(rootType, rootProps))

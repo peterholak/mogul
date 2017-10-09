@@ -6,19 +6,24 @@ import mogul.react.slow.*
 
 interface NodeProps {
     val style: Style
+    val events: Events
 }
 data class BoxProps(
     override val style: Style = Style(),
     val hoverStyle: Style? = null,
     val mouseDownStyle: Style? = null,
-    val events: Events = Events()
+    override val events: Events = Events()
 ) : NodeProps
-data class TextProps(val text: String, override val style: Style = Style(), val events: Events = Events()) : NodeProps
+data class TextProps(
+    val text: String,
+    override val style: Style = Style(),
+    override val events: Events = Events()
+) : NodeProps
 data class LayoutBoxProps(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
         override val style: Style = Style(),
-        val events: Events = Events()
+        override val events: Events = Events()
 ) : NodeProps
 
 val boxType = ElementType("dom.box")
@@ -61,8 +66,13 @@ fun constructDomNode(e: InstantiatedElement): Node {
 fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<InstantiatedElement>) {
 
     toRemove.forEach {
-        val node = it.castDomInstance<Node>()
-        node.parent?.children?.remove(node)
+        if (it.type.isComponent()) {
+            val node = it.children.single().castDomInstance<Node>()
+            node.parent?.children?.remove(node)
+        }else {
+            val node = it.castDomInstance<Node>()
+            node.parent?.children?.remove(node)
+        }
     }
 
     when (root.change) {
@@ -83,11 +93,22 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
     }
 }
 
-/** Updates the props and children of an existing DOM element, or creates a new DOM element if it didn't exist yet. */
-private fun updateDomElement(parent: Container, e: InstantiatedElement) {
+/**
+ * Updates the props and children of an existing DOM element, or creates a new DOM element if it didn't exist yet.
+ * TODO: the forceReplace bullshit could be done in a cleaner way
+ */
+private fun updateDomElement(parent: Container, e: InstantiatedElement, forceReplace: Boolean = false) {
     // Skip over component elements
     if (e.type.isComponent()) {
-        return updateDomElement(parent, e.children.single())
+        if (e.change is Replace) {
+            parent.replaceChild(
+                    (e.change.oldComponent!!.children.single().instance as Later<Node>).value!!,
+                    constructDomNode(e.children.single())
+            )
+            return
+        }else {
+            return updateDomElement(parent, e.children.single())
+        }
     }
 
     when (e.change) {
@@ -111,6 +132,7 @@ private fun updateDomElement(parent: Container, e: InstantiatedElement) {
 
 private fun updateNodeProps(node: Node, oldProps: NodeProps, newProps: NodeProps) {
     node.style = newProps.style
+    node.events = newProps.events
 
     // TODO: all the other props
     when(node) {

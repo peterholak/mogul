@@ -95,12 +95,13 @@ object ReactReconciler : Reconciler {
                 props = root.props,
                 children = listOf(reconcile(newRender, null, args)),
                 instance = newInstance,
-                change = if (oldTree == null) Add() else Replace(oldTree.instance)
+                change = if (oldTree == null) Add() else Replace(oldTree.instance, oldTree)
         )
     }
 
     private fun reconcileExistingPlatformElement(root: Element, oldTree: InstantiatedElement, args: ReconcileRunArguments): InstantiatedElement {
-        if (root.children.size < oldTree.children.size) {
+        val childrenRemoved = root.children.size < oldTree.children.size
+        if (childrenRemoved) {
             args.toRemove.addAll(
                     oldTree.children.subList(root.children.size, oldTree.children.size)
             )
@@ -110,7 +111,7 @@ object ReactReconciler : Reconciler {
             // TODO: Here the `key` and shit will come into play, for now just this:
             reconcile(item, oldTree.children.getOrNull(index), args)
         }
-        val childrenChanged = reconciledChildren.any { it.change != null }
+        val childrenChanged = childrenRemoved || reconciledChildren.any { it.change != null }
         // TODO: if nothing changed, just return oldTree directly?
         return InstantiatedElement(
                 type = root.type,
