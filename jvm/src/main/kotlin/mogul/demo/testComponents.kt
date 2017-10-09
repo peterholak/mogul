@@ -13,7 +13,6 @@ data class TwoBoxesAndTextProps(val firstColor: Color, val secondColor: Color, v
 data class TwoBoxesState(val clickCount: Int)
 
 class TwoBoxesAndText : StatefulComponent<TwoBoxesAndTextProps, TwoBoxesState>() {
-    // This is a pretty terrible way of initializing state, as it doesn't enforce required initial values...
     override val initialState = TwoBoxesState(clickCount = 1)
 
     override fun render() = kgx {
