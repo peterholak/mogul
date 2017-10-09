@@ -150,4 +150,4 @@ fun runApp(microDom: MicroDom, root: Element) {
     microDom.runEventLoop()
 }
 
-fun runApp(microDom: MicroDom, rootType: ElementType) = runApp(microDom, Element(rootType, Unit))
+fun runApp(microDom: MicroDom, rootType: ElementType, rootProps: Any = Unit) = runApp(microDom, Element(rootType, rootProps))

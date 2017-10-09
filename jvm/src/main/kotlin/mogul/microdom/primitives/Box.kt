@@ -7,7 +7,7 @@ class Box(
     override var style: Style = Style(),
     override var hoverStyle: Style? = null,
     override var mouseDownStyle: Style? = null,
-    override val events: Events = Events(),
+    override var events: Events = Events(),
     children: List<Node> = emptyList()
 ) : Container(children) {
 

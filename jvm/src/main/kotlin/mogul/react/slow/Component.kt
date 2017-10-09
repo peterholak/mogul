@@ -28,6 +28,10 @@ abstract class Component<out PropTypes> {
         hackyProps = newProps as PropTypes
     }
 
+    fun forceUpdate() {
+        updater.queueUpdate()
+    }
+
     abstract fun render(): Element
 }
 

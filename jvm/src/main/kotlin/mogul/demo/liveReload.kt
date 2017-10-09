@@ -2,32 +2,39 @@ package mogul.demo
 
 import mogul.microdom.primitives.VerticalDirection
 import mogul.microdom.style
+import mogul.platform.Engine
 import mogul.platform.MouseEvent
 import mogul.react.slow.*
 import mogul.react.slow.dom.appKgx
 import mogul.react.slow.dom.layoutBox
 import java.io.File
-import java.io.FileNotFoundException
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.StandardWatchEventKinds.*
-import java.nio.file.WatchService
+import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
+import java.nio.file.StandardWatchEventKinds.OVERFLOW
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
+data class LiveReloadProps(val engine: Engine)
+class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>() {
 
-class LiveReloadDemo : StatefulComponent<Nothing, Nothing?>() {
-
-    override val initialState: Nothing? = null
+    data class State(val nonLiveCounter: Int)
+    override val initialState = State(nonLiveCounter = 0)
     var loader = LiveClassLoader()
     var type: ElementType = dynamicElementType()
+
     var watchServiceRunning = false
 
     override fun render() = appKgx {
         window(title="Live reload demo", width=500, height=500, root = kgx{
 
             layoutBox(style = style{ margin = 20.top }, spacing = 10, direction = VerticalDirection) {
-                button("Force reload", onClick = this@LiveReloadDemo::onReloadClicked)
+                layoutBox(spacing = 5) {
+                    button("Force reload", onClick = this@LiveReloadDemo::onReloadClicked)
+                    -"Non-live counter: ${state.nonLiveCounter}"
+                    button("Increment", onClick = this@LiveReloadDemo::increment)
+                }
                 children.add(Element(type, Unit))
             }
 
@@ -42,12 +49,15 @@ class LiveReloadDemo : StatefulComponent<Nothing, Nothing?>() {
         reload()
     }
 
+    fun increment(event: MouseEvent) {
+        setState(state.copy(nonLiveCounter = state.nonLiveCounter + 1))
+    }
+
     fun reload() {
         loader = LiveClassLoader()
         val newVersion = loader.loadClass("mogul.demo.LiveComponent")
         type = dynamicElementType()
-        setState(null)
-
+        forceUpdate()
     }
 
     fun dynamicElementType(): ElementType {
@@ -65,8 +75,8 @@ class LiveReloadDemo : StatefulComponent<Nothing, Nothing?>() {
         thread(name="LiveReload file watcher") {
             // The file gets written twice on each change, we only want to read after every second write.
             var ignoreReload = true
-            while(true) {
-                val key = watcher.take()
+            while(!props.engine.quitting()) {
+                val key = watcher.poll(1000, TimeUnit.MILLISECONDS) ?: continue
                 key.pollEvents().forEach {
                     val kind = it.kind()
                     if (kind == OVERFLOW) {
@@ -78,7 +88,7 @@ class LiveReloadDemo : StatefulComponent<Nothing, Nothing?>() {
                     if (filename.toString() == "LiveComponent.class") {
                         if (!ignoreReload) {
                             // TODO: solve this cleanly
-                            Thread.sleep(200)
+                            Thread.sleep(100)
                             reload()
                         }
                         ignoreReload = !ignoreReload

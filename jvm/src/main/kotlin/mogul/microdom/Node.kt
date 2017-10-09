@@ -9,7 +9,7 @@ sealed class Node {
     abstract var style: Style
     open var hoverStyle: Style? = null
     open var mouseDownStyle: Style? = null
-    abstract val events: Events
+    abstract var events: Events
     abstract fun draw(cairo: Cairo)
     var topLeft: Position? = null
     var cachedLayoutSize: Size? = null

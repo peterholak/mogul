@@ -6,19 +6,24 @@ import mogul.react.slow.*
 
 interface NodeProps {
     val style: Style
+    val events: Events
 }
 data class BoxProps(
     override val style: Style = Style(),
     val hoverStyle: Style? = null,
     val mouseDownStyle: Style? = null,
-    val events: Events = Events()
+    override val events: Events = Events()
 ) : NodeProps
-data class TextProps(val text: String, override val style: Style = Style(), val events: Events = Events()) : NodeProps
+data class TextProps(
+    val text: String,
+    override val style: Style = Style(),
+    override val events: Events = Events()
+) : NodeProps
 data class LayoutBoxProps(
         val direction: Direction = HorizontalDirection,
         val spacing: Int = 0,
         override val style: Style = Style(),
-        val events: Events = Events()
+        override val events: Events = Events()
 ) : NodeProps
 
 val boxType = ElementType("dom.box")
@@ -61,8 +66,13 @@ fun constructDomNode(e: InstantiatedElement): Node {
 fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<InstantiatedElement>) {
 
     toRemove.forEach {
-        val node = it.castDomInstance<Node>()
-        node.parent?.children?.remove(node)
+        if (it.type.isComponent()) {
+            val node = it.children.single().castDomInstance<Node>()
+            node.parent?.children?.remove(node)
+        }else {
+            val node = it.castDomInstance<Node>()
+            node.parent?.children?.remove(node)
+        }
     }
 
     when (root.change) {
@@ -122,6 +132,7 @@ private fun updateDomElement(parent: Container, e: InstantiatedElement, forceRep
 
 private fun updateNodeProps(node: Node, oldProps: NodeProps, newProps: NodeProps) {
     node.style = newProps.style
+    node.events = newProps.events
 
     // TODO: all the other props
     when(node) {
