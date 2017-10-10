@@ -2,6 +2,7 @@ package mogul.microdom
 
 import mogul.microdom.primitives.microDom
 
+@Suppress("unused")
 fun testScene(): Scene {
     val weirdBorders = Borders(
             width = EdgeSizes(top = 2, right = 3, bottom = 3, left = 2),

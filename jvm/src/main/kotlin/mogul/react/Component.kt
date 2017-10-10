@@ -1,4 +1,4 @@
-package mogul.react.slow
+package mogul.react
 
 interface Updater {
     fun queueUpdate()
@@ -50,7 +50,7 @@ abstract class StatefulComponent<out PropTypes, StateType> : Component<PropTypes
 }
 
 typealias ComponentConstructor = () -> Component<Any>
-val stringType = ElementType("string")
+//val stringType = ElementType("string")
 
 // This is because Kotlin Native currently doesn't support much reflection, otherwise Component::class could be used.
 class ElementType(val name: String, val constructComponent: ComponentConstructor? = null) {

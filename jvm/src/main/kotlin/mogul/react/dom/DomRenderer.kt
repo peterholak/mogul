@@ -1,36 +1,10 @@
-package mogul.react.slow.dom
+package mogul.react.dom
 
 import mogul.microdom.*
 import mogul.microdom.primitives.*
-import mogul.react.slow.*
+import mogul.react.*
 
-interface NodeProps {
-    val style: Style
-    val events: Events
-}
-data class BoxProps(
-    override val style: Style = Style(),
-    val hoverStyle: Style? = null,
-    val mouseDownStyle: Style? = null,
-    override val events: Events = Events()
-) : NodeProps
-data class TextProps(
-    val text: String,
-    override val style: Style = Style(),
-    override val events: Events = Events()
-) : NodeProps
-data class LayoutBoxProps(
-        val direction: Direction = HorizontalDirection,
-        val spacing: Int = 0,
-        override val style: Style = Style(),
-        override val events: Events = Events()
-) : NodeProps
-
-val boxType = ElementType("dom.box")
-val textType = ElementType("dom.text")
-val layoutBoxType = ElementType("dom.layoutBox")
-
-class InvalidElementType(element: InstantiatedElement) : Exception()
+class InvalidElementType : Exception()
 
 fun constructDomNode(e: InstantiatedElement): Node {
     if (e.type.isComponent()) {
@@ -57,9 +31,9 @@ fun constructDomNode(e: InstantiatedElement): Node {
                     e.children.map { constructDomNode(it) }
             )
         }
-        else -> throw InvalidElementType(e)
+        else -> throw InvalidElementType()
     }
-    return e.populateDomInstance(result)
+    return e.populateLaterInstance(result)
 }
 
 
@@ -67,10 +41,10 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
 
     toRemove.forEach {
         if (it.type.isComponent()) {
-            val node = it.children.single().castDomInstance<Node>()
+            val node = it.children.single().castLaterInstance<Node>()
             node.parent?.children?.remove(node)
         }else {
-            val node = it.castDomInstance<Node>()
+            val node = it.castLaterInstance<Node>()
             node.parent?.children?.remove(node)
         }
     }
@@ -83,7 +57,7 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
             scene.replaceRoot(constructDomNode(root))
 
         is Modify -> {
-            val rootNode = root.castDomInstance<Container>()
+            val rootNode = root.castLaterInstance<Container>()
             updateNodeProps(rootNode, root.change.oldProps as NodeProps, root.props as NodeProps)
             root.children.forEach {
                 updateDomElement(rootNode, it)
@@ -95,14 +69,13 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
 
 /**
  * Updates the props and children of an existing DOM element, or creates a new DOM element if it didn't exist yet.
- * TODO: the forceReplace bullshit could be done in a cleaner way
  */
-private fun updateDomElement(parent: Container, e: InstantiatedElement, forceReplace: Boolean = false) {
+private fun updateDomElement(parent: Container, e: InstantiatedElement) {
     // Skip over component elements
     if (e.type.isComponent()) {
         if (e.change is Replace) {
             parent.replaceChild(
-                    (e.change.oldComponent!!.children.single().instance as Later<Node>).value!!,
+                    e.change.oldComponent!!.children.single().castLaterInstance(),
                     constructDomNode(e.children.single())
             )
             return
@@ -119,7 +92,7 @@ private fun updateDomElement(parent: Container, e: InstantiatedElement, forceRep
             parent.replaceChild((e.change.oldInstance as Later<*>).value as Node, constructDomNode(e))
 
         is Modify -> {
-            val instance = e.castDomInstance<Node>()
+            val instance = e.castLaterInstance<Node>()
             updateNodeProps(instance, e.change.oldProps as NodeProps, e.props as NodeProps)
             if (instance is Container) {
                 e.children.forEach {
@@ -130,6 +103,7 @@ private fun updateDomElement(parent: Container, e: InstantiatedElement, forceRep
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 private fun updateNodeProps(node: Node, oldProps: NodeProps, newProps: NodeProps) {
     node.style = newProps.style
     node.events = newProps.events
@@ -141,36 +115,4 @@ private fun updateNodeProps(node: Node, oldProps: NodeProps, newProps: NodeProps
             node.text = props.text
         }
     }
-}
-
-
-class DomUpdater(val root: Element, val scene: Scene) : Updater {
-    var oldTree: InstantiatedElement? = null
-
-    override fun queueUpdate() {
-        doUpdate()
-    }
-
-    fun doUpdate() {
-        val toRemove = mutableListOf<InstantiatedElement>()
-        val tree = ReactReconciler.reconcile(root, oldTree, ReconcileRunArguments(this, toRemove))
-        oldTree = tree
-        scene.replaceRoot(constructDomNode(tree))
-    }
-}
-
-// This clearly needs more features in the DOM itself before proceeding...
-fun domRender(root: Element): Scene {
-    val scene = Scene(Box()) // lol
-    DomUpdater(root, scene).queueUpdate()
-    return scene
-}
-
-inline fun <reified T> InstantiatedElement.castDomInstance() =
-    (instance as Later<*>).value as T
-
-inline fun <reified T> InstantiatedElement.populateDomInstance(data: T): T {
-    @Suppress("UNCHECKED_CAST")
-    (instance as Later<T?>).value = data
-    return data
 }

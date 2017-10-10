@@ -10,7 +10,6 @@ import sdl2cairo.pango.*
 import mogul.platform.Window as WindowInterface
 import mogul.platform.Cairo as CairoInterface
 
-fun l_(o: Any) = (o.javaClass.getMethod("swigValue").invoke(o) as Int).toLong()
 val SDL_EventType.l; get() = (javaClass.getMethod("swigValue").invoke(this) as Int).toLong()
 
 class Window(
@@ -28,7 +27,7 @@ class Window(
             SDL_WINDOWPOS_UNDEFINED.toInt(),
             width,
             height,
-            l_(SDL_WindowFlags.SDL_WINDOW_SHOWN)
+            SDL_WindowFlags.SDL_WINDOW_SHOWN.swigValue().toLong()
     ) ?: throw Exception("Failed to create window")
 
     internal val id: Long = SDL_GetWindowID(window)
@@ -36,7 +35,7 @@ class Window(
     val renderer = SDL_CreateRenderer(
             window,
             -1,
-            l_(SDL_RendererFlags.SDL_RENDERER_ACCELERATED) or l_(SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC)
+            SDL_RendererFlags.SDL_RENDERER_ACCELERATED.swigValue().toLong() or SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC.swigValue().toLong()
     ) ?: throw Exception("Failed to initialize renderer")
 
     val texture = SDL_CreateTexture(

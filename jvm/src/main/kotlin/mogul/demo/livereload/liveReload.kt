@@ -1,12 +1,13 @@
-package mogul.demo
+package mogul.demo.livereload
 
+import mogul.demo.button
 import mogul.microdom.primitives.VerticalDirection
 import mogul.microdom.style
 import mogul.platform.Engine
 import mogul.platform.MouseEvent
-import mogul.react.slow.*
-import mogul.react.slow.dom.appKgx
-import mogul.react.slow.dom.layoutBox
+import mogul.react.*
+import mogul.react.dom.appGui
+import mogul.react.dom.layoutBox
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Path
@@ -17,19 +18,19 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 data class LiveReloadProps(val engine: Engine)
+@Suppress("UNUSED_PARAMETER", "unused")
 class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>() {
 
     data class State(val nonLiveCounter: Int)
     override val initialState = State(nonLiveCounter = 0)
-    var loader = LiveClassLoader()
     var type: ElementType = dynamicElementType()
 
     var watchServiceRunning = false
 
-    override fun render() = appKgx {
-        window(title="Live reload demo", width=500, height=500, root = kgx{
+    override fun render() = appGui {
+        window(title = "Live reload demo", width = 500, height = 500, root = gui {
 
-            layoutBox(style = style{ margin = 20.top }, spacing = 10, direction = VerticalDirection) {
+            layoutBox(style = style { margin = 20.top }, spacing = 10, direction = VerticalDirection) {
                 layoutBox(spacing = 5) {
                     button("Force reload", onClick = this@LiveReloadDemo::onReloadClicked)
                     -"Non-live counter: ${state.nonLiveCounter}"
@@ -54,8 +55,6 @@ class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>(
     }
 
     fun reload() {
-        loader = LiveClassLoader()
-        val newVersion = loader.loadClass("mogul.demo.LiveComponent")
         type = dynamicElementType()
         forceUpdate()
     }
@@ -63,13 +62,13 @@ class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>(
     fun dynamicElementType(): ElementType {
         return ElementType("LiveComponent", {
             @Suppress("UNCHECKED_CAST")
-            loader.loadClass("mogul.demo.LiveComponent").newInstance() as Component<Any>
+            LiveClassLoader().loadClass("mogul.demo.livereload.LiveComponent").newInstance() as Component<Any>
         })
     }
 
     fun startWatchService() {
         val watcher = FileSystems.getDefault().newWatchService()
-        val path = Paths.get("build/kotlin-classes/main/mogul/demo/")
+        val path = Paths.get("build/kotlin-classes/main/mogul/demo/livereload/")
         path.register(watcher, ENTRY_MODIFY)
 
         thread(name="LiveReload file watcher") {
@@ -108,7 +107,7 @@ class LiveClassLoader : ClassLoader() {
     val customCache: MutableMap<String, Class<*>> = mutableMapOf()
 
     override fun loadClass(name: String?): Class<*> {
-        if (name?.startsWith("mogul.demo.LiveComponent") != true) {
+        if (name?.startsWith("mogul.demo.livereload.LiveComponent") != true) {
             return super.loadClass(name)
         }
         return findClass(name)
@@ -120,8 +119,8 @@ class LiveClassLoader : ClassLoader() {
             return customCache[name]!!
         }
 
-        val shortName = name.substring("mogul.demo.".length)
-        val fileName = "build/kotlin-classes/main/mogul/demo/$shortName.class"
+        val shortName = name.substring("mogul.demo.livereload.".length)
+        val fileName = "build/kotlin-classes/main/mogul/demo/livereload/$shortName.class"
         val bytes = File(fileName).readBytes()
         val cls = defineClass(name, bytes, 0, bytes.size)
         customCache.put(name, cls)
@@ -129,4 +128,5 @@ class LiveClassLoader : ClassLoader() {
     }
 }
 
+@Suppress("unused")
 val liveReloadType = ElementType("LiveReload", { LiveReloadDemo() })

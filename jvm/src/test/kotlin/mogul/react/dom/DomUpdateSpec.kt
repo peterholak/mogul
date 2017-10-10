@@ -1,11 +1,11 @@
-package mogul.react.slow.dom
+package mogul.react.dom
 
 import mogul.microdom.Scene
 import mogul.microdom.primitives.Box
 import mogul.microdom.primitives.LayoutBox
 import mogul.microdom.primitives.Text
 import mogul.microdom.style
-import mogul.react.slow.*
+import mogul.react.*
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
 import org.junit.Assert.*

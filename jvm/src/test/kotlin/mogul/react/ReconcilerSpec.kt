@@ -1,4 +1,4 @@
-package mogul.react.slow
+package mogul.react
 
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it

@@ -13,6 +13,7 @@ object MouseOut : DomEventType()
 object Click : DomEventType()
 
 
+@Suppress("unused")
 @MicroDomMarker
 class Events {
     val map = mutableMapOf<EventType, MutableList<Handler<Event>>>()
@@ -27,14 +28,14 @@ class Events {
 
     // In the React-like part, just one possible handler per event is enough, not sure about the general "microdom"
     // though.
-    inner class EventDsl<T: Event>(val type: DomEventType) {
+    inner class EventDsl<out T: Event>(val type: DomEventType) {
         operator fun plusAssign(handler: Handler<T>?) = handler?.let { addHandler(type, it) } ?: Unit
     }
 
     fun clearAll() = map.clear()
 
-    val mouseOver; get() = EventDsl<MouseEvent>(MouseOver)
     val click; get() = EventDsl<MouseEvent>(Click)
+    val mouseOver; get() = EventDsl<MouseEvent>(MouseOver)
     val mouseOut; get() = EventDsl<MouseEvent>(MouseOut)
 }
 
@@ -44,6 +45,7 @@ fun events(code: Events.() -> Unit): Events {
     return e
 }
 
+@Suppress("unused")
 /**
  * Shitty unfinished hack for the problem where each lambda gets re-created on every render(), and then it appears
  * as if props have changed (because the lambda instance is different) when in reality they haven't,
@@ -58,9 +60,10 @@ fun events(code: Events.() -> Unit): Events {
  *
  * I'm currently experimenting with various approaches to things, so classes like this exist around the codebase.
  */
-class UniqueLambdaWrapper<T>(val tag: String = "", val lambda: T) {
+class UniqueLambdaWrapper<out T>(val tag: String = "", val lambda: T) {
     override fun equals(other: Any?) = other is UniqueLambdaWrapper<*> && other.tag == tag
     override fun hashCode() = tag.hashCode()
 }
+@Suppress("unused")
 /** See [UniqueLambdaWrapper] */
 fun <T> u(tag: String = "", lambda: T) = UniqueLambdaWrapper(tag, lambda)

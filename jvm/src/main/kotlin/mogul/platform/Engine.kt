@@ -25,6 +25,7 @@ interface Engine {
 
 /** TODO: support for more buttons, more pointers in fact, but for now, this will suffice */
 enum class MouseButton { Left, Middle, Right }
+@Suppress("unused")
 class MouseState(val position: Position, val buttons: Set<MouseButton>)
 
 interface EventPublisher {

@@ -29,8 +29,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.18"
-    compile group: 'net.java.dev.jna', name: 'jna', version: "$jna_version"
-    compile group: 'net.java.dev.jna', name: 'jna-platform', version: "$jna_version"
     testCompile "com.nhaarman:mockito-kotlin-kt1.1:1.5.0"
     testCompile "org.junit.platform:junit-platform-runner:1.0.0"
     testCompile "org.jetbrains.spek:spek-api:$spek_version"
@@ -46,6 +44,10 @@ kotlin {
     }
 }
 
+/**
+ * Have this task running continuously (`-t`) in background for live reload.
+ * If the compilation is slow, try running `clean` first.
+ */
 task buildAndCopy {
     dependsOn 'compileKotlin'
     dependsOn 'copyMainKotlinClasses'

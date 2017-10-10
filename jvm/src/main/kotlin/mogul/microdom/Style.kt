@@ -2,13 +2,6 @@ package mogul.microdom
 
 import mogul.microdom.primitives.MicroDomMarker
 
-class StyleAttribute(val inherited: Boolean = false)
-
-// Doing it this way instead of annotations, because Kotlin Native doesn't support much reflection atm.
-val StyleMetadata = mapOf(
-        "color" to StyleAttribute(true)
-)
-
 @Suppress("unused")
 @MicroDomMarker
 class Style private constructor(private val map: MutableMap<String, Any?>) {
