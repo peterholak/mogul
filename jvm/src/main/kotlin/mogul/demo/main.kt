@@ -1,8 +1,5 @@
 package mogul.demo
 
-import mogul.demo.livereload.LiveComponent
-import mogul.demo.livereload.LiveReloadProps
-import mogul.demo.livereload.liveReloadType
 import mogul.microdom.MicroDom
 import mogul.microdom.primitives.VerticalDirection
 import mogul.platform.MouseEvent

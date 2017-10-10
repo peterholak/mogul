@@ -70,11 +70,10 @@ sealed class Node {
 // TODO: this doesn't really notify on all operations yet, so that needs to be fixed
 class ObservableList<T>(private val list: MutableList<T> = mutableListOf()): MutableList<T> by list {
 
-    constructor(vararg children: T) : this(children.toMutableList())
-
     val listeners = mutableListOf<(change: Change<T>) -> Unit>()
     private fun notifyListeners(change: Change<T>) { listeners.forEach { it.invoke(change) }}
 
+    @Suppress("unused")
     sealed class Change<T> {
         class Added<T>(val elements: Collection<T>) : Change<T>()
         class Removed<T>(val elements: Collection<T>) : Change<T>()

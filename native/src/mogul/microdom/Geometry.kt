@@ -30,10 +30,12 @@ data class Rectangle(val topLeft: Position, val size: Size) {
     val topRight; get() = Position(right, top)
     val bottomLeft; get() = Position(left, bottom)
 
+    @Suppress("unused")
     constructor(left: Int, top: Int, width: Int, height: Int) : this(Position(left, top), Size(width, height))
     constructor(topLeft: Position, bottomRight: Position) :
             this(topLeft, Size(bottomRight.x - topLeft.x, bottomRight.y - topLeft.y))
 
+    @Suppress("unused")
     fun overlaps(other: Rectangle) =
         left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
 

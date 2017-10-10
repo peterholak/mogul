@@ -165,6 +165,7 @@ class UserEvents {
         memScoped {
             val event = alloc<SDL_Event>()
             event.type = SDL_USEREVENT
+            event.user.windowID = window.id.toInt()
             event.user.type = invalidatedEventType
             SDL_PushEvent(event.ptr)
         }

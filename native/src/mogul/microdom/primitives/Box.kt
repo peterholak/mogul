@@ -11,6 +11,7 @@ class Box(
     children: List<Node> = emptyList()
 ) : Container(children) {
 
+    @Suppress("unused")
     private fun drawDebugInputRectangle(cairo: Cairo) {
         cairo.save()
         cairo.identityMatrix()
@@ -53,7 +54,6 @@ class Box(
         val border = style.border ?: return
 
         if (border.width.allEqual() && border.color.allEqual()) {
-            val padding = style.padding ?: EdgeSizes.zero
             val corners = rectangleWithPadding(size)
             cairo.rectangle(corners.left, corners.top, corners.width, corners.height)
             cairo.setSourceRgb(border.color.top ?: Color.black)
