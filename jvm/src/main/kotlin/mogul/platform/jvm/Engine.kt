@@ -80,7 +80,7 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
         // TODO: here could be checks and all, but this is such a hacky solution it's probably going to be completely replaced anyway
         uiThreadCode[codeId] = code
-        SDL_PushEvent(userEvents.createRunOnUiThreadEvent(codeId))
+        SDL_PushEvent(userEvents.newRunOnUiThread(codeId))
     }
 
     override fun runOnUiThreadAndWait(code: () -> Unit) {
@@ -168,13 +168,28 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
                 eventPublisher.publish(MouseEvent(event.motion.window ?: return, MouseMove, Position(event.motion.x, event.motion.y)))
             }
 
-            userEvents.invalidatedEventType ->
+            userEvents.invalidated ->
                 windowsById[event.user.windowID]!!.render()
 
-            userEvents.runOnUiThreadEventType -> {
+            userEvents.runOnUiThread -> {
                 val codeId = event.user.code
                 uiThreadCode[codeId]!!.invoke()
                 uiThreadCode.remove(codeId)
+            }
+
+            /** See [fireExtraMouseEvents] */
+            userEvents.pollGlobalMouseUp -> {
+                val window = windowsById[event.user.windowID]!!
+                val mouseState = globalMouseState()
+                // Yeah, I know, but this will be fixed on the SDL level later...
+                SDL_Delay(20)
+                // For now only left button is supported
+                if (!mouseState.buttons.contains(MouseButton.Left)) {
+                    val relative = mouseState.position - window.getPosition()
+                    eventPublisher.publish(MouseEvent(window, MouseUp, relative))
+                }else{
+                    SDL_PushEvent(userEvents.newPollGlobalMouseUp(window))
+                }
             }
         }
     }
@@ -188,6 +203,9 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
             SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED ->
                 window.invalidate()
+
+            SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED ->
+                fireExtraMouseEvents(window)
 
             SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE -> {
                 when(window.autoClose) {
@@ -207,6 +225,41 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
         SDL_Quit()
     }
 
+    /**
+     * When a window is inactive and the user presses a mouse button in it,
+     * SDL will not register the "mouse down" event. This hack works around that.
+     */
+    private fun fireExtraMouseEvents(window: Window) {
+        val mouseState = globalMouseState()
+        val relative = mouseState.position - window.getPosition()
+        mouseState.buttons.forEach {
+            eventPublisher.publish(MouseEvent(window, MouseDown, relative))
+        }
+        /**
+         * SDL will not only miss the "mouse down" event, it will also not
+         * fire the corresponding "mouse up" event, so for now the hack
+         * is to keep polling the global mouse state until we find
+         * that the mouse button is no longer pressed down.
+         * Polling about 50 times a second is pretty light on the CPU, so not a huge deal.
+         * The mouse lag (up to 20ms) is also not a big deal in this case (it only happens if the window
+         * didn't have focus before the mouse button was pressed down).
+         */
+        if (mouseState.buttons.contains(MouseButton.Left)) {
+            SDL_PushEvent(userEvents.newPollGlobalMouseUp(window))
+        }
+    }
+
+    private fun globalMouseState(): MouseState {
+        val xPtr = new_intp()
+        val yPtr = new_intp()
+        val buttons = SDL_GetGlobalMouseState(xPtr, yPtr)
+        val x = intp_value(xPtr)
+        val y = intp_value(yPtr)
+        delete_intp(xPtr)
+        delete_intp(yPtr)
+        return MouseState(Position(x, y), mouseButtonsFromSdlState(buttons))
+    }
+
     private companion object {
         init {
             System.loadLibrary("sdl_wrap")
@@ -216,31 +269,44 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 }
 
 class UserEvents {
-    private val start = SDL_RegisterEvents(2) // TODO: check result
-    val invalidatedEventType = start
-    val runOnUiThreadEventType = start + 1
+    private val start = SDL_RegisterEvents(3) // TODO: check result
+    val invalidated = start
+    val runOnUiThread = start + 1
+    val pollGlobalMouseUp = start + 2
 
-    fun createInvalidatedEvent(window: Window) =
+    fun newInvalidated(window: Window) =
         SDL_Event().apply {
             type = SDL_USEREVENT.l
-            user = SDL_UserEvent().apply {
-                type = invalidatedEventType
-                windowID = window.id
+            user = SDL_UserEvent().also { u ->
+                u.type = invalidated
+                u.windowID = window.id
             }
         }
 
-    fun createRunOnUiThreadEvent(codeId: Int): SDL_Event {
+    fun newRunOnUiThread(codeId: Int): SDL_Event {
         return SDL_Event().apply {
             type = SDL_USEREVENT.l
-            user = SDL_UserEvent().apply {
-                type = runOnUiThreadEventType
-                code = codeId
+            user = SDL_UserEvent().also { u ->
+                u.type = runOnUiThread
+                u.code = codeId
+            }
+        }
+    }
+
+    /** See [Engine.fireExtraMouseEvents] */
+    fun newPollGlobalMouseUp(window: Window): SDL_Event {
+        return SDL_Event().apply {
+            type = SDL_USEREVENT.l
+            user = SDL_UserEvent().also { u ->
+                u.type = pollGlobalMouseUp
+                u.windowID = window.id
             }
         }
     }
 }
 
 fun mouseButtonsFromSdlState(state: Long): Set<MouseButton> {
+    if (state == 0L) return emptySet()
     return buildSequence {
         if (state and 1L != 0L) { yield(MouseButton.Left) }
         if (state and 2L != 0L) { yield(MouseButton.Middle) }

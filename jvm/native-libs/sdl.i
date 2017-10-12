@@ -30,3 +30,4 @@ typedef unsigned long long Uint64;
 %include <SDL2/SDL_render.h>
 %include <SDL2/SDL_pixels.h>
 %include <SDL2/SDL_mouse.h>
+%include <SDL2/SDL_timer.h>

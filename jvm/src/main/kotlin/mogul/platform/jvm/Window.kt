@@ -1,6 +1,7 @@
 package mogul.platform.jvm
 
 import mogul.microdom.Color
+import mogul.microdom.Position
 import mogul.microdom.setSourceRgb
 import mogul.platform.Antialias
 import mogul.platform.AutoClose
@@ -76,7 +77,7 @@ class Window(
 
     override fun invalidate() {
         invalidated = true
-        SDL_PushEvent(userEvents.createInvalidatedEvent(this))
+        SDL_PushEvent(userEvents.newInvalidated(this))
     }
 
     override fun render() {
@@ -84,5 +85,15 @@ class Window(
         SDL2.SDL_RenderCopy(renderer, texture, null, null)
         SDL2.SDL_RenderPresent(renderer)
         invalidated = false
+    }
+
+    override fun getPosition(): Position {
+        val xPtr = new_intp()
+        val yPtr = new_intp()
+        SDL_GetWindowPosition(window, xPtr, yPtr)
+        return Position(intp_value(xPtr), intp_value(yPtr)).also {
+            delete_intp(xPtr)
+            delete_intp(yPtr)
+        }
     }
 }

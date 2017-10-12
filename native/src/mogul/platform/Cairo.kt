@@ -17,6 +17,7 @@ interface Cairo {
     fun setFontSize(size: Number)
     fun showText(utf8: String)
     fun textExtents(utf8: String): cairo_text_extents_t
+    fun textExtentsXY(utf8: String): XY
     fun setLineWidth(width: Number)
     fun setAntialias(antialias: Antialias)
     fun setLineJoin(lineJoin: LineJoin)

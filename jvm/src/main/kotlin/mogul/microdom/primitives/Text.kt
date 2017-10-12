@@ -24,8 +24,8 @@ class Text(
     override fun defaultInnerSize(cairo: Cairo): Size {
         cairo.selectFontFace("sans-serif")
         cairo.setFontSize(style.fontSize ?: 20.0)
-        return cairo.textExtents(text).let {
-            Size(it.width.toInt(), it.height.toInt())
+        return cairo.textExtentsXY(text).let {
+            Size(it.x.toInt(), it.y.toInt())
         }
     }
 }

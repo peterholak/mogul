@@ -7,6 +7,7 @@ import kotlinx.cinterop.*
 import sdl.*
 import pangocairo.*
 import mogul.platform.Engine as EngineInterface
+import kotlin.coroutines.experimental.buildSequence
 
 class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override val windows = mutableListOf<mogul.platform.Window>()
@@ -125,6 +126,21 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
             userEvents.invalidatedEventType ->
                 windowsById[event.user.windowID.toLong()]?.render()
+
+            /** See [fireExtraMouseEvents] */
+            userEvents.pollGlobalMouseUpEventType -> {
+                val window = windowsById[event.user.windowID.toLong()]!!
+                val mouseState = globalMouseState()
+                // Yeah, I know, but this will be fixed on the SDL level later...
+                SDL_Delay(20)
+                // For now only left button is supported
+                if (!mouseState.buttons.contains(MouseButton.Left)) {
+                    val relative = mouseState.position - window.getPosition()
+                    eventPublisher.publish(MouseEvent(window, MouseUp, relative))
+                }else{
+                    userEvents.pushPollGlobalMouseUpEvent(window)
+                }
+            }
         }
     }
 
@@ -137,6 +153,9 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
 
             SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED.value ->
                 window.invalidate()
+
+            SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED.value ->
+                fireExtraMouseEvents(window)
 
             SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE.value -> {
                 when(window.autoClose) {
@@ -155,11 +174,35 @@ class Engine(val eventPublisher: EventPublisher) : EngineInterface {
     override fun cleanup() {
         SDL_Quit()
     }
+
+    /** See docs for the same method in the JVM version. */
+    private fun fireExtraMouseEvents(window: Window) {
+        val mouseState = globalMouseState()
+        val relative = mouseState.position - window.getPosition()
+        mouseState.buttons.forEach {
+            eventPublisher.publish(MouseEvent(window, MouseDown, relative))
+        }
+        if (mouseState.buttons.contains(MouseButton.Left)) {
+            userEvents.pushPollGlobalMouseUpEvent(window)
+        }
+    }
+
+    private fun globalMouseState(): MouseState {
+        var result: MouseState? = null
+        memScoped {
+            val xPtr = alloc<IntVar>()
+            val yPtr = alloc<IntVar>()
+            val buttons = SDL_GetGlobalMouseState(xPtr.ptr, yPtr.ptr)
+            result = MouseState(Position(xPtr.value, yPtr.value), mouseButtonsFromSdlState(buttons))
+        }
+        return result!!
+    }
 }
 
 class UserEvents {
-    private val start = SDL_RegisterEvents(1) // TODO: check result
+    private val start = SDL_RegisterEvents(2) // TODO: check result
     val invalidatedEventType = start
+    val pollGlobalMouseUpEventType = start + 1
 
     fun pushInvalidatedEvent(window: Window) {
         memScoped {
@@ -170,4 +213,24 @@ class UserEvents {
             SDL_PushEvent(event.ptr)
         }
     }
+
+    /** See [Engine.fireExtraMouseEvents] */
+    fun pushPollGlobalMouseUpEvent(window: Window) {
+        memScoped {
+            val event = alloc<SDL_Event>()
+            event.type = SDL_USEREVENT
+            event.user.windowID = window.id.toInt()
+            event.user.type = pollGlobalMouseUpEventType
+            SDL_PushEvent(event.ptr)
+        }
+    }
+}
+
+fun mouseButtonsFromSdlState(state: Uint32): Set<MouseButton> {
+    if (state == 0) return emptySet()
+    return buildSequence {
+        if (state and 1 != 0) { yield(MouseButton.Left) }
+        if (state and 2 != 0) { yield(MouseButton.Middle) }
+        if (state and 4 != 0) { yield(MouseButton.Right) }
+    }.toSet()
 }

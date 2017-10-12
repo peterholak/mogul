@@ -25,6 +25,13 @@ class Cairo(val cairo: SWIGTYPE_p__cairo) : CairoInterface {
         cairo_text_extents(cairo, utf8, extents)
         return extents
     }
+    override fun textExtentsXY(utf8: String): XY {
+        val extents = cairo_text_extents_t()
+        cairo_text_extents(cairo, utf8, extents)
+        return XY(extents.width, extents.height).also {
+            extents.delete()
+        }
+    }
     override fun setLineWidth(width: Number) = cairo_set_line_width(cairo, width.toDouble())
     override fun setAntialias(antialias: Antialias) = cairo_set_antialias(cairo, antialias.value)
     override fun setLineJoin(lineJoin: LineJoin) = cairo_set_line_join(cairo, lineJoin.value)
@@ -35,6 +42,9 @@ class Cairo(val cairo: SWIGTYPE_p__cairo) : CairoInterface {
         doublep_assign(xp, x.toDouble())
         doublep_assign(yp, y.toDouble())
         cairo_user_to_device(cairo, xp, yp)
-        return XY(doublep_value(xp), doublep_value(yp))
+        return XY(doublep_value(xp), doublep_value(yp)).also {
+            delete_doublep(xp)
+            delete_doublep(yp)
+        }
     }
 }

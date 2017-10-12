@@ -20,10 +20,19 @@ class Cairo(val cairo: CPointer<cairo_t>): CairoInterface {
     override fun setFontSize(size: Number) = cairo_set_font_size(cairo, size.toDouble())
     override fun showText(utf8: String) = cairo_show_text(cairo, utf8)
     override fun textExtents(utf8: String): cairo_text_extents_t {
-        // TODO: memory leak, maybe wrap this in a refcounted holder? just copy values?
+        // TODO: memory leak (unless caller frees it), maybe wrap this in a refcounted holder? just copy values?
         val extents = nativeHeap.alloc<cairo_text_extents_t>()
         cairo_text_extents(cairo, utf8, extents.ptr)
         return extents
+    }
+    override fun textExtentsXY(utf8: String): XY {
+        var result: XY? = null
+        memScoped {
+            val extents = alloc<cairo_text_extents_t>()
+            cairo_text_extents(cairo, utf8, extents.ptr)
+            result = XY(extents.width, extents.height)
+        }
+        return result!!
     }
     override fun setLineWidth(width: Number) = cairo_set_line_width(cairo, width.toDouble())
     override fun setAntialias(antialias: Antialias) = cairo_set_antialias(cairo, antialias.value)

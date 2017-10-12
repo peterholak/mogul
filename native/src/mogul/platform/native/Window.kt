@@ -79,4 +79,15 @@ class Window(
         SDL_RenderPresent(renderer)
         invalidated = false
     }
+
+    override fun getPosition(): Position {
+        var result: Position? = null
+        memScoped {
+            val xPtr = alloc<IntVar>()
+            val yPtr = alloc<IntVar>()
+            SDL_GetWindowPosition(window, xPtr.ptr, yPtr.ptr)
+            result = Position(xPtr.value, yPtr.value)
+        }
+        return result!!
+    }
 }

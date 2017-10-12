@@ -4,7 +4,9 @@ import mogul.platform.XY
 
 data class Position(val x: Int, val y: Int) {
     operator fun plus(other: Size?) = Position(x + (other?.width ?: 0), y + (other?.height ?: 0))
+    operator fun plus(other: Position) = Position(x + other.x, y + other.y)
     operator fun minus(other: Size?) = Position(x - (other?.width ?: 0), y - (other?.height ?: 0))
+    operator fun minus(other: Position) = Position(x - other.x, y - other.y)
 }
 val XY.position; get() = Position(x.toInt(), y.toInt())
 
