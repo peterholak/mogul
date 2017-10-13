@@ -1,5 +1,7 @@
 package mogul.demo
 
+import mogul.kobx.globalKobxCounter
+import mogul.kobx.kobxCounter
 import mogul.microdom.MicroDom
 import mogul.microdom.primitives.VerticalDirection
 import mogul.platform.MouseEvent
@@ -32,6 +34,8 @@ class MyApp : StatefulComponent<Nothing, MyAppState>() {
                     )
                     -"Global counter: ${state.globalCounter}"
                     button(text = "Increment", onClick = this@MyApp::incrementGlobalCounter)
+                    kobxCounter()
+                    globalKobxCounter()
                 }
             })
         }

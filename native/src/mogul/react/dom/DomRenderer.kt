@@ -41,11 +41,13 @@ fun updateDom(scene: Scene, root: InstantiatedElement, toRemove: List<Instantiat
 
     toRemove.forEach {
         if (it.type.isComponent()) {
-            val node = it.children.single().castLaterInstance<Node>()
-            node.parent?.children?.remove(node)
+            // It can also be a WindowLifecycle instance if a window was removed.
+            // TODO: find out why this check wasn't needed before but is now
+            val node = it.children.single().tryCastLaterInstance<Node>()
+            node?.parent?.children?.remove(node)
         }else {
-            val node = it.castLaterInstance<Node>()
-            node.parent?.children?.remove(node)
+            val node = it.tryCastLaterInstance<Node>()
+            node?.parent?.children?.remove(node)
         }
     }
 
