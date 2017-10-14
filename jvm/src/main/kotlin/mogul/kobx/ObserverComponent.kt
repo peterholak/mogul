@@ -1,18 +1,17 @@
 package mogul.kobx
 
 import mogul.react.Component
+import mogul.react.ComponentDecorator
 import mogul.react.Element
 
-abstract class ObserverComponent<out PropTypes>(val kobx: KobX) : Component<PropTypes>() {
-    override final fun render(): Element {
+class ObserverComponent<out PropTypes>(val kobx: KobX, inner: Component<PropTypes>) :
+        ComponentDecorator<PropTypes>(inner)
+{
+    override fun render(): Element {
         var result: Element? = null
-        kobx.reaction({ result = renderObserved() }) {
+        kobx.reaction({ result = inner.render() }) {
             forceUpdate()
         }
         return result!!
     }
-
-    // I could just let the users use the real render if I also made `render` called by a wrapper in `Component`
-    // and then made the reconciler call the wrapper instead.
-    abstract fun renderObserved(): Element
 }

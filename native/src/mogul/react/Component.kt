@@ -15,14 +15,14 @@ abstract class Component<out PropTypes> {
 
     // This hack is here to hide the implementation details from users who implement components
     // - if only Kotlin had some construct to easily auto-inherit the default constructor...
-    internal fun createInstance(props: Any, children: List<Element>, updater: Updater) {
+    open internal fun createInstance(props: Any, children: List<Element>, updater: Updater) {
         @Suppress("UNCHECKED_CAST")
         hackyProps = props as PropTypes
         hackyChildren = children
         this.updater = updater
     }
 
-    internal fun updateProps(newProps: Any) {
+    open internal fun updateProps(newProps: Any) {
         // TODO: this should really only update the props that have changed (maybe to preserve some identity semantics?)
         @Suppress("UNCHECKED_CAST")
         hackyProps = newProps as PropTypes
@@ -33,6 +33,20 @@ abstract class Component<out PropTypes> {
     }
 
     abstract fun render(): Element
+}
+
+abstract class ComponentDecorator<out PropTypes>(val inner: Component<PropTypes>) : Component<PropTypes>() {
+    override fun createInstance(props: Any, children: List<Element>, updater: Updater) {
+        super.createInstance(props, children, updater)
+        inner.createInstance(props, children, updater)
+    }
+
+    override fun updateProps(newProps: Any) {
+        super.updateProps(newProps)
+        inner.updateProps(newProps)
+    }
+
+    override fun render(): Element = inner.render()
 }
 
 abstract class StatefulComponent<out PropTypes, StateType> : Component<PropTypes>() {
