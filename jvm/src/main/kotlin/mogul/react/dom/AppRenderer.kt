@@ -2,10 +2,11 @@ package mogul.react.dom
 
 import mogul.microdom.MicroDom
 import mogul.react.*
+import mogul.react.injection.ServiceContainer
 
 val appType = ElementType("app")
 
-class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
+class AppUpdater(val root: Element, val microDom: MicroDom, val container: ServiceContainer) : Updater {
     var oldTree: InstantiatedElement? = null
     var updateQueued = false
 
@@ -21,7 +22,7 @@ class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
 
     fun doUpdate() {
         val toRemove = mutableListOf<InstantiatedElement>()
-        val tree = reconcile(root, oldTree, ReconcileRunArguments(this, toRemove))
+        val tree = reconcile(root, oldTree, ReconcileRunArguments(this, container, toRemove))
         oldTree = tree
 
         // The <app> can potentially be wrapped in a custom component...
@@ -69,9 +70,9 @@ class AppUpdater(val root: Element, val microDom: MicroDom) : Updater {
     }
 }
 
-fun runApp(microDom: MicroDom, root: Element) {
+fun runApp(microDom: MicroDom, root: Element, container: ServiceContainer = ServiceContainer()) {
     microDom.engine.onEventLoopStarted.add {
-        AppUpdater(root, microDom).doUpdate()
+        AppUpdater(root, microDom, container).doUpdate()
         if (microDom.engine.windows.isEmpty()) {
             // TODO: this should end asynchronously and without an error, just send a "reconcile done" event and
             // let the engine handle it
@@ -82,5 +83,5 @@ fun runApp(microDom: MicroDom, root: Element) {
     microDom.runEventLoop()
 }
 
-fun runApp(microDom: MicroDom, rootType: ElementType, rootProps: Any = Unit) =
-    runApp(microDom, Element(rootType, rootProps))
+fun runApp(microDom: MicroDom, rootType: ElementType, rootProps: Any = Unit, container: ServiceContainer = ServiceContainer()) =
+    runApp(microDom, Element(rootType, rootProps), container)

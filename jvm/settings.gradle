@@ -1,1 +1,2 @@
 rootProject.name = 'mogul-jvm'
+include ':processor'

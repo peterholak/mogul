@@ -1,6 +1,6 @@
 package mogul.demo.livereload
 
-import mogul.demo.button
+import mogul.generated.button
 import mogul.microdom.primitives.VerticalDirection
 import mogul.microdom.style
 import mogul.platform.Engine

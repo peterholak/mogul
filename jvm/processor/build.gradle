@@ -1,0 +1,6 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    compile files("$System.env.JAVA_HOME/lib/tools.jar")
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+}

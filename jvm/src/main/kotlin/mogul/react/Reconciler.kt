@@ -1,7 +1,9 @@
 package mogul.react
 
+import mogul.react.injection.ServiceContainer
+
 /** Grouped arguments that don't change during an entire run of a reconcile operation, but are just passed down */
-class ReconcileRunArguments(val updater: Updater, val toRemove: MutableList<InstantiatedElement>)
+class ReconcileRunArguments(val updater: Updater, val container: ServiceContainer, val toRemove: MutableList<InstantiatedElement>)
 
 /** This should have pretty much the same behavior as described in https://reactjs.org/docs/reconciliation.html */
 fun reconcile(root: Element, oldTree: InstantiatedElement?, args: ReconcileRunArguments): InstantiatedElement {
@@ -47,7 +49,7 @@ private fun reconcileExistingComponent(
 }
 
 private fun reconcileNewComponent(root: Element, oldTree: InstantiatedElement?, rootTypeConstruct: ComponentConstructor, args: ReconcileRunArguments): InstantiatedElement {
-    val newInstance = rootTypeConstruct.invoke()
+    val newInstance = rootTypeConstruct.invoke(args.container)
     newInstance.createInstance(root.props, root.children, args.updater)
     val newRender = newInstance.render()
     return InstantiatedElement(

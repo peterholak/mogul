@@ -1,5 +1,7 @@
 package mogul.react
 
+import mogul.react.injection.ServiceContainer
+
 interface Updater {
     fun queueUpdate()
 }
@@ -11,7 +13,6 @@ abstract class Component<out PropTypes> {
     protected lateinit var updater: Updater
     val props
         get() = hackyProps!!
-    val children by lazy { hackyChildren }
 
     // This hack is here to hide the implementation details from users who implement components
     // - if only Kotlin had some construct to easily auto-inherit the default constructor...
@@ -22,9 +23,9 @@ abstract class Component<out PropTypes> {
         this.updater = updater
     }
 
+    @Suppress("UNCHECKED_CAST")
     open internal fun updateProps(newProps: Any) {
-        // TODO: this should really only update the props that have changed (maybe to preserve some identity semantics?)
-        @Suppress("UNCHECKED_CAST")
+        // TODO: this should only update the props that have changed (maybe to preserve some identity semantics?)
         hackyProps = newProps as PropTypes
     }
 
@@ -63,7 +64,7 @@ abstract class StatefulComponent<out PropTypes, StateType> : Component<PropTypes
     }
 }
 
-typealias ComponentConstructor = () -> Component<Any>
+typealias ComponentConstructor = (container: ServiceContainer) -> Component<*>
 //val stringType = ElementType("string")
 
 // This is because Kotlin Native currently doesn't support much reflection, otherwise Component::class could be used.
