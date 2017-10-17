@@ -54,8 +54,8 @@ kotlin {
  * If the compilation is slow, try running `clean` first.
  */
 task buildAndCopy {
-    dependsOn 'compileKotlin'
-    dependsOn 'copyMainKotlinClasses'
+    dependsOn 'classes'
+//    dependsOn 'copyMainKotlinClasses'
 }
 
 apply plugin: 'idea'

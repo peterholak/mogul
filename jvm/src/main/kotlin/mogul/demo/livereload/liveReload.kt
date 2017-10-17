@@ -60,7 +60,7 @@ class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>(
     }
 
     fun dynamicElementType(): ElementType {
-        return ElementType("LiveComponent", {
+        return ElementType(LiveComponent::class.simpleName!!, {
             @Suppress("UNCHECKED_CAST")
             LiveClassLoader().loadClass("mogul.demo.livereload.LiveComponent").newInstance() as Component<Any>
         })
@@ -68,7 +68,7 @@ class LiveReloadDemo : StatefulComponent<LiveReloadProps, LiveReloadDemo.State>(
 
     fun startWatchService() {
         val watcher = FileSystems.getDefault().newWatchService()
-        val path = Paths.get("build/kotlin-classes/main/mogul/demo/livereload/")
+        val path = Paths.get("build/classes/kotlin/main/mogul/demo/livereload/")
         path.register(watcher, ENTRY_MODIFY)
 
         thread(name="LiveReload file watcher") {
@@ -120,7 +120,7 @@ class LiveClassLoader : ClassLoader() {
         }
 
         val shortName = name.substring("mogul.demo.livereload.".length)
-        val fileName = "build/kotlin-classes/main/mogul/demo/livereload/$shortName.class"
+        val fileName = "build/classes/kotlin/main/mogul/demo/livereload/$shortName.class"
         val bytes = File(fileName).readBytes()
         val cls = defineClass(name, bytes, 0, bytes.size)
         customCache.put(name, cls)

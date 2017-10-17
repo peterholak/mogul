@@ -2,9 +2,9 @@ An experiment that could one day become a flexible GUI library for Kotlin (JVM a
 
 If you just want to download a binary to run it, check out the releases github tab.
 
-Here's a gif of fiddling around with the live reload (sped up 50%, real-time refresh delay is about a second on Windows).
+Here's a gif of fiddling around with the live reload (sped up rougly 40%, real-time refresh delay is about a second on Windows).
 
-![livereload](https://imgur.com/6a9df6J.gif)
+![livereload](https://imgur.com/IN6BUkS.gif)
 
 The live reload currently only works on the JVM.
 
