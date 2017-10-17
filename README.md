@@ -68,6 +68,18 @@ The React design is followed pretty closely right now, but over time, I might gr
 
 Implementation-wise, it's currently using [SDL](http://libsdl.org/) for window management and [cairo](https://www.cairographics.org/) for drawing. In the future, I might use [pango](http://www.pango.org/) for text layout or switch to [Skia](https://skia.org/) (which will need a C wrapper for its C++ API).
 
+Windows are also managed in a React-like way
+
+```kotlin
+appGui {
+    window(title = "My Window", root = gui {
+        button(text="Click me.")
+    })
+}
+```
+
+`appGui` is the top-level application component.
+
 There is a very simple scene graph library that acts as a DOM, but the aim is most definitely not to reinvent HTML or SVG with all of their complexities. There will only be a fairly minimal set of features for flexbox-like layout. Rectangles and text are basically all that's needed (plus some other shapes). Not having to support so many features and possible cases should also help performance (and of course size). Compared to the actual browser DOM, it is also possible to write completely new low-level elements as part of an application or a library, so that you can only include those that your application actually needs.
 
 Styles are defined with CSS-like Style objects, because I like how they can be composed together (`style = buttonStyle + redBorders`) and inherited by child components.
