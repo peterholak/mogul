@@ -10,7 +10,6 @@ class ObserverComponent<out PropTypes>(val kobx: KobX, inner: Component<PropType
     var previousReaction: Reaction? = null
     override fun render(): Element {
         var result: Element? = null
-        // TODO: dispose previous reaction, or have an auto-update for an existing one or something
         previousReaction?.let { kobx.dispose(it) }
         previousReaction = kobx.reaction(
                 trackCode = { result = inner.render() },
