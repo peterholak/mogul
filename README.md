@@ -62,11 +62,11 @@ Here's a screenshot, as you can see, it's not practically usable at the moment. 
 
 ![screenshot](screenshot.png)
 
-Right now the code is pretty hacky, has pretty bad performance and a lot of TODO comments, but I will be cleaning that up soon. I completely avoided reflection in order to support Kotlin Native. If it ever gets more reflection capabilities, the code could be nicer, especially the part that deals with injecting dependencies into components.
+Right now the code is pretty hacky, has pretty bad performance (unnecessary redraws, slow algorithms) and a lot of TODO comments, but I will be cleaning that up soon. I completely avoided reflection in order to support Kotlin Native. If it ever gets more reflection capabilities, the code could be nicer, especially the part that deals with injecting dependencies into components.
 
 The React design is followed pretty closely right now, but over time, I might gradually change it into something more suitable for Kotlin. For now, it also has most of the React 15 limitations and issues (no Fiber yet).
 
-Implementation-wise, it's currently using [SDL](http://libsdl.org/) for window management and [cairo](https://www.cairographics.org/) for drawing. In the future, I might use [pango](http://www.pango.org/) for text layout or switch to [Skia](https://skia.org/) (which will need a C wrapper for its C++ API).
+Implementation-wise, it's currently using [SDL](http://libsdl.org/) for window management and [cairo](https://www.cairographics.org/) for drawing. In the future I'll probably change it to  [Skia](https://skia.org/) (the [fork](https://github.com/mono/skia) used by [SkiaSharp](https://github.com/mono/SkiaSharp) has much more extensive C API) for performance reasons.
 
 Windows are also managed in a React-like way
 
